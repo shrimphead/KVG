@@ -1,0 +1,16 @@
+/*****************************************************************************
+ Comment module
+ *****************************************************************************/
+.comment .control-links ul.links a {
+  color: #8b8b8b;
+}
+
+/*****************************************************************************
+ Node module
+ *****************************************************************************/
+.node .control-links .node_button_read_more {
+  background: url(images/btn-purple.gif) no-repeat left top;
+}
+.node .control-links ul.links a {
+  color: #8b8b8b;
+}

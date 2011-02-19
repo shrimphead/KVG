@@ -1,0 +1,57 @@
+=========================
+Color Paper 6.x 1.0 beta1
+=========================
+23 Nov 2008 - First release.
+            - Tested with Firefox 3, IE 7, Google Chrome, Safari 3.1.
+
+=========================
+Color Paper 6.x 1.0 beta2
+=========================
+26 Nov 2008 - Corrected version numbers in theme info files.
+
+=========================
+Color Paper 6.x 1.0 beta3
+=========================
+27 Nov 2008 - Fixed bug with min-width property not set.
+
+=========================
+Color Paper 6.x 1.0 beta4
+=========================
+1 Dec 2008 - Added feature request for hiding the date information when display
+             post information is disabled.
+             http://drupal.org/node/341115
+
+
+=========================
+Color Paper 6.x 2.0 beta1
+=========================
+21 Dec 2008 - Edited theme image files with updated copy.
+            - Deleted several unused images.
+            - Changed RSS icon. Now using icon by barrymieny of deviantART.
+              http://barrymieny.deviantart.com/art/NewsFire-55219003
+            - Made several changes to layout styles. Renamed color hex code to
+              lowercase.
+            - Reedited logo.psd file. Users do not need to resize the logo file
+              anymore. Just change the text and save as logo.png.
+            - Moved comment count details to comment-wrapper.tpl.php file.
+            - Added PNG fix support for #logo and .feed-icon, using jQuery
+              pngFix from http://jquery.andreaseberhard.de/pngFix/
+            - Added breadcrumb navigation to theme.
+            - Does not need fix-ie.css anymore.
+            - Compatible and tested with Firefox 3, Firefox 2, IE7, IE6,
+              Google Chrome 1, Safari 3.2, Opera 9.6.
+
+=========================
+Color Paper 6.x 2.0 beta2
+=========================
+27 Dec 2008 - Added menu-leaf.gif for li.leaf.
+
+=========================
+Color Paper 6.x 2.0 beta3
+=========================
+29 Dec 2008 - Changed the way $submitted is displayed.
+
+=========================
+Color Paper 6.x 2.0 beta4
+=========================
+17 Jan 2009 - Fixed bug with tabs overlapping each other.

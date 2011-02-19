@@ -1,0 +1,4 @@
+; $Id:
+name = Admin Default Filter
+description = Forces to use Full HTML as a default filter for admin users
+core = 6.x

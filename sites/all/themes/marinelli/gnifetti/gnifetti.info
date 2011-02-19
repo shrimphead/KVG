@@ -1,0 +1,28 @@
+
+
+name = Gnifetti
+
+description = Marinelli with both sidebars on the left
+
+version = VERSION
+
+core = 6.x
+
+engine = phptemplate
+
+stylesheets[all][] = gnifetti.css
+
+base theme = marinelli
+
+
+
+
+
+
+
+; Information added by drupal.org packaging script on 2009-04-21
+version = "6.x-2.94"
+core = "6.x"
+project = "marinelli"
+datestamp = "1240309283"
+

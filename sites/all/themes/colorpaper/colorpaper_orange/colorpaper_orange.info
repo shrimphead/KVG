@@ -1,0 +1,30 @@
+name        = Color Paper - Orange
+description = A free professional WordPress theme, created by the <a href="http://www.dreamtemplate.com/">DreamTemplate</a> team. This theme aims to combine visual appeal with clean typography and vivid design elements.<br />This theme was converted to Drupal theme by <a href="http://kahthong.com/">Leow Kah Thong</a>.
+screenshot  = screenshot.png
+version     = VERSION
+core        = 6.x
+engine      = phptemplate
+base theme  = colorpaper
+
+regions[sidebar]     = Sidebar
+regions[page_title]  = Page title
+regions[content_top] = Content top
+regions[content]     = Content
+
+features[] = logo
+features[] = name
+features[] = mission
+features[] = comment_user_picture
+features[] = favicon
+features[] = primary_links
+features[] = secondary_links
+
+stylesheets[all][] = colorpaper-orange.css
+
+
+; Information added by drupal.org packaging script on 2009-01-17
+version = "6.x-2.0-beta4"
+core = "6.x"
+project = "colorpaper"
+datestamp = "1232207409"
+
