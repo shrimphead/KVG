@@ -111,17 +111,53 @@ function visitor_guide_browser_views_default_views() {
       'empty_zero' => 0,
       'link_to_node' => 0,
       'label_type' => 'none',
-      'format' => 'image_logo_default',
+      'format' => 'visitor_guide_thumbnail_default',
       'multiple' => array(
-        'group' => TRUE,
+        'group' => 1,
         'multiple_number' => '',
         'multiple_from' => '',
-        'multiple_reversed' => FALSE,
+        'multiple_reversed' => 0,
       ),
       'exclude' => 0,
       'id' => 'field_image_fid',
       'table' => 'node_data_field_image',
       'field' => 'field_image_fid',
+      'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
+    ),
+    'edit_node' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'text' => '<< EDIT >>',
+      'exclude' => 0,
+      'id' => 'edit_node',
+      'table' => 'node',
+      'field' => 'edit_node',
+      'override' => array(
+        'button' => 'Override',
+      ),
       'relationship' => 'none',
     ),
   ));
@@ -132,6 +168,104 @@ function visitor_guide_browser_views_default_views() {
       'table' => 'node',
       'field' => 'title',
       'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('arguments', array(
+    'field_year_value' => array(
+      'default_action' => 'not found',
+      'style_plugin' => 'default_summary',
+      'style_options' => array(),
+      'wildcard' => 'all',
+      'wildcard_substitution' => 'All',
+      'title' => '',
+      'breadcrumb' => '',
+      'default_argument_type' => 'fixed',
+      'default_argument' => '',
+      'validate_type' => 'none',
+      'validate_fail' => 'not found',
+      'add_table' => 0,
+      'require_value' => 0,
+      'reduce_duplicates' => 0,
+      'id' => 'field_year_value',
+      'table' => 'node_data_field_year',
+      'field' => 'field_year_value',
+      'validate_user_argument_type' => 'uid',
+      'validate_user_roles' => array(
+        '2' => 0,
+        '8' => 0,
+        '4' => 0,
+      ),
+      'relationship' => 'none',
+      'default_options_div_prefix' => '',
+      'default_argument_fixed' => '',
+      'default_argument_user' => 0,
+      'default_argument_php' => '',
+      'validate_argument_node_type' => array(
+        'webform' => 0,
+        'page' => 0,
+        'directory' => 0,
+        'visitor_guide_pages' => 0,
+        'images' => 0,
+      ),
+      'validate_argument_node_access' => 0,
+      'validate_argument_nid_type' => 'nid',
+      'validate_argument_vocabulary' => array(
+        '2' => 0,
+        '1' => 0,
+      ),
+      'validate_argument_type' => 'tid',
+      'validate_argument_transform' => 0,
+      'validate_user_restrict_roles' => 0,
+      'validate_argument_php' => '',
+    ),
+    'title' => array(
+      'default_action' => 'not found',
+      'style_plugin' => 'default_summary',
+      'style_options' => array(),
+      'wildcard' => 'all',
+      'wildcard_substitution' => 'All',
+      'title' => '',
+      'breadcrumb' => '',
+      'default_argument_type' => 'fixed',
+      'default_argument' => '',
+      'validate_type' => 'none',
+      'validate_fail' => 'not found',
+      'glossary' => 0,
+      'limit' => '0',
+      'case' => 'none',
+      'path_case' => 'none',
+      'transform_dash' => 0,
+      'id' => 'title',
+      'table' => 'node',
+      'field' => 'title',
+      'validate_user_argument_type' => 'uid',
+      'validate_user_roles' => array(
+        '2' => 0,
+        '8' => 0,
+        '4' => 0,
+      ),
+      'relationship' => 'none',
+      'default_options_div_prefix' => '',
+      'default_argument_fixed' => '',
+      'default_argument_user' => 0,
+      'default_argument_php' => '',
+      'validate_argument_node_type' => array(
+        'webform' => 0,
+        'page' => 0,
+        'directory' => 0,
+        'visitor_guide_pages' => 0,
+        'images' => 0,
+      ),
+      'validate_argument_node_access' => 0,
+      'validate_argument_nid_type' => 'nid',
+      'validate_argument_vocabulary' => array(
+        '2' => 0,
+        '1' => 0,
+      ),
+      'validate_argument_type' => 'tid',
+      'validate_argument_transform' => 0,
+      'validate_user_restrict_roles' => 0,
+      'validate_argument_php' => '',
     ),
   ));
   $handler->override_option('filters', array(
@@ -194,10 +328,11 @@ function visitor_guide_browser_views_default_views() {
   ));
   $handler->override_option('title', 'Visitor Guide');
   $handler->override_option('use_ajax', TRUE);
-  $handler->override_option('items_per_page', 3);
+  $handler->override_option('items_per_page', 7);
   $handler->override_option('use_pager', 'mini');
   $handler->override_option('style_plugin', 'grid');
   $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler->override_option('arguments', array());
   $handler->override_option('path', 'visitor-guide');
   $handler->override_option('menu', array(
     'type' => 'normal',
@@ -367,6 +502,39 @@ function visitor_guide_browser_views_default_views() {
       ),
       'relationship' => 'none',
     ),
+    'edit_node' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'text' => '<< EDIT >>',
+      'exclude' => 0,
+      'id' => 'edit_node',
+      'table' => 'node',
+      'field' => 'edit_node',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
   ));
   $handler->override_option('arguments', array(
     'field_year_value' => array(
@@ -390,6 +558,82 @@ function visitor_guide_browser_views_default_views() {
     'page_1' => 'page_1',
     'default' => 0,
   ));
+  $handler = $view->new_display('attachment', 'Listings', 'attachment_2');
+  $handler->override_option('relationships', array(
+    'field_directory_reference_nid' => array(
+      'label' => 'Listings',
+      'required' => 1,
+      'delta' => '-1',
+      'id' => 'field_directory_reference_nid',
+      'table' => 'node_data_field_directory_reference',
+      'field' => 'field_directory_reference_nid',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('filters', array(
+    'status_extra' => array(
+      'operator' => '=',
+      'value' => '',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'status_extra',
+      'table' => 'node',
+      'field' => 'status_extra',
+      'relationship' => 'none',
+    ),
+    'field_year_value' => array(
+      'operator' => '=',
+      'value' => '2011',
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => 'field_year_value_op',
+        'label' => 'Content: Year (field_year)',
+        'use_operator' => FALSE,
+        'identifier' => 'field_year_value',
+        'remember' => FALSE,
+        'single' => TRUE,
+        'optional' => TRUE,
+      ),
+      'case' => 1,
+      'id' => 'field_year_value',
+      'table' => 'node_data_field_year',
+      'field' => 'field_year_value',
+      'relationship' => 'none',
+    ),
+    'type' => array(
+      'operator' => 'in',
+      'value' => array(
+        'directory' => 'directory',
+      ),
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'type',
+      'table' => 'node',
+      'field' => 'type',
+      'relationship' => 'none',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+    ),
+  ));
+  $handler->override_option('attachment_position', 'after');
+  $handler->override_option('inherit_arguments', TRUE);
+  $handler->override_option('inherit_exposed_filters', FALSE);
+  $handler->override_option('inherit_pager', FALSE);
+  $handler->override_option('render_pager', TRUE);
+  $handler->override_option('displays', array());
 
   $views[$view->name] = $view;
 

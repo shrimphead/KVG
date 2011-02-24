@@ -6,6 +6,76 @@
 function visitor_guide_browser_content_default_fields() {
   $fields = array();
 
+  // Exported field: field_directory_reference
+  $fields['visitor_guide_pages-field_directory_reference'] = array(
+    'field_name' => 'field_directory_reference',
+    'type_name' => 'visitor_guide_pages',
+    'display_settings' => array(
+      'label' => array(
+        'format' => 'above',
+        'exclude' => 0,
+      ),
+      'teaser' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'full' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '4' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '5' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'token' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+    ),
+    'widget_active' => '1',
+    'type' => 'nodereference',
+    'required' => '1',
+    'multiple' => '1',
+    'module' => 'nodereference',
+    'active' => '1',
+    'referenceable_types' => array(
+      'page' => 'page',
+      'directory' => 'directory',
+      'visitor_guide_pages' => 0,
+      'webform' => 0,
+    ),
+    'advanced_view' => '--',
+    'advanced_view_args' => '',
+    'widget' => array(
+      'autocomplete_match' => 'contains',
+      'size' => '60',
+      'default_value' => array(
+        '0' => array(
+          'nid' => NULL,
+          '_error_element' => 'default_value_widget][field_directory_reference][0][nid][nid',
+        ),
+      ),
+      'default_value_php' => NULL,
+      'label' => 'Listings',
+      'weight' => '-3',
+      'description' => 'Include all ads that appear on this page.',
+      'type' => 'nodereference_autocomplete',
+      'module' => 'nodereference',
+    ),
+  );
+
   // Exported field: field_image
   $fields['visitor_guide_pages-field_image'] = array(
     'field_name' => 'field_image',
@@ -31,13 +101,13 @@ function visitor_guide_browser_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'filefield',
-    'required' => '1',
+    'required' => '0',
     'multiple' => '0',
     'module' => 'filefield',
     'active' => '1',
     'list_field' => '0',
     'list_default' => 1,
-    'description_field' => '0',
+    'description_field' => '1',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
       'file_path' => 'visitor_guide_pages',
@@ -94,6 +164,11 @@ function visitor_guide_browser_content_default_fields() {
       'insert_default' => 'auto',
       'insert_class' => '',
       'insert_width' => '650',
+      'imagecrop' => 0,
+      'imagecrop_presets' => array(
+        'front_page_lead_article' => 0,
+        'front_page_small_articles' => 0,
+      ),
       'label' => 'Image',
       'weight' => '-4',
       'description' => 'Upload visitor guide page',
@@ -151,7 +226,8 @@ function visitor_guide_browser_content_default_fields() {
     'allowed_values' => '2011
 2012
 2013
-2014',
+2014
+2010',
     'allowed_values_php' => '',
     'widget' => array(
       'default_value' => array(
@@ -161,7 +237,7 @@ function visitor_guide_browser_content_default_fields() {
       ),
       'default_value_php' => NULL,
       'label' => 'Year',
-      'weight' => '-3',
+      'weight' => '-2',
       'description' => '',
       'type' => 'optionwidgets_select',
       'module' => 'optionwidgets',
@@ -171,6 +247,7 @@ function visitor_guide_browser_content_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Image');
+  t('Listings');
   t('Year');
 
   return $fields;
