@@ -14,7 +14,7 @@ function kvg_directory_content_default_fields() {
       'weight' => '-1',
       'parent' => 'group_contact',
       'label' => array(
-        'format' => 'inline',
+        'format' => 'hidden',
       ),
       'teaser' => array(
         'format' => 'hidden',
@@ -59,11 +59,11 @@ function kvg_directory_content_default_fields() {
       'weight' => '-4',
       'parent' => 'group_contact',
       'label' => array(
-        'format' => 'inline',
+        'format' => 'hidden',
       ),
       'teaser' => array(
-        'format' => 'default',
-        'exclude' => 0,
+        'format' => 'hidden',
+        'exclude' => 1,
       ),
       'full' => array(
         'format' => 'default',
@@ -117,7 +117,7 @@ function kvg_directory_content_default_fields() {
         'exclude' => 1,
       ),
       'full' => array(
-        'format' => 'imagefield__lightbox2_compact__image_vertical__original',
+        'format' => 'default',
         'exclude' => 0,
       ),
       '4' => array(
@@ -171,7 +171,7 @@ function kvg_directory_content_default_fields() {
         'image_vertical' => 0,
       ),
       'label' => 'Optional Image',
-      'weight' => '-2',
+      'weight' => '-3',
       'description' => 'Upload image',
       'type' => 'imagefield_widget',
       'module' => 'imagefield',
@@ -189,7 +189,7 @@ function kvg_directory_content_default_fields() {
         'format' => 'hidden',
       ),
       'teaser' => array(
-        'format' => 'imagefield__lightbox2__image_logo__original',
+        'format' => 'image_logo_linked',
         'exclude' => 0,
       ),
       'full' => array(
@@ -226,8 +226,8 @@ function kvg_directory_content_default_fields() {
       'file_extensions' => 'pdf jpg gif png',
       'file_path' => 'kvg_pdf',
       'progress_indicator' => 'bar',
-      'max_filesize_per_file' => '350k',
-      'max_filesize_per_node' => '',
+      'max_filesize_per_file' => '2MB',
+      'max_filesize_per_node' => '5MB',
       'insert' => FALSE,
       'insert_styles' => array(
         '0' => 1,
@@ -260,11 +260,11 @@ function kvg_directory_content_default_fields() {
       'weight' => '-3',
       'parent' => 'group_contact',
       'label' => array(
-        'format' => 'inline',
+        'format' => 'hidden',
       ),
       'teaser' => array(
-        'format' => 'default',
-        'exclude' => 0,
+        'format' => 'hidden',
+        'exclude' => 1,
       ),
       'full' => array(
         'format' => 'default',
@@ -325,7 +325,7 @@ function kvg_directory_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'text',
-    'required' => '0',
+    'required' => '1',
     'multiple' => '2',
     'module' => 'text',
     'active' => '1',
@@ -361,7 +361,7 @@ services|Services',
       'weight' => '-2',
       'parent' => 'group_contact',
       'label' => array(
-        'format' => 'inline',
+        'format' => 'hidden',
       ),
       'teaser' => array(
         'format' => 'hidden',
@@ -457,11 +457,11 @@ services|Services',
     'active' => '1',
     'text_processing' => '0',
     'max_length' => '',
-    'allowed_values' => '2011
+    'allowed_values' => '2010
+2011
 2012
 2013
-2014
-2010',
+2014',
     'allowed_values_php' => '',
     'widget' => array(
       'default_value' => array(

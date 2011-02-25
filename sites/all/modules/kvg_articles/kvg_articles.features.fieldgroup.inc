@@ -11,22 +11,24 @@ function kvg_articles_fieldgroup_default_groups() {
     'group_type' => 'standard',
     'type_name' => 'page',
     'group_name' => 'group_ad_relations',
-    'label' => 'Related Ads',
+    'label' => 'Related Nodes',
     'settings' => array(
       'form' => array(
         'style' => 'fieldset_collapsed',
-        'description' => 'Select ads related to this article. The related ad will appear at the bottom of the article.',
+        'description' => 'Select ads or other articles related to this article. They will appear as link at the bottom of the article.',
       ),
       'display' => array(
-        'description' => '',
+        'weight' => '11',
+        'label' => 'hidden',
         'teaser' => array(
-          'format' => 'fieldset',
+          'format' => 'hidden',
           'exclude' => 0,
         ),
         'full' => array(
           'format' => 'fieldset',
           'exclude' => 0,
         ),
+        'description' => '',
         '4' => array(
           'format' => 'fieldset',
           'exclude' => 0,
@@ -47,18 +49,70 @@ function kvg_articles_fieldgroup_default_groups() {
           'format' => 'fieldset',
           'exclude' => 0,
         ),
-        'label' => 'above',
       ),
     ),
-    'weight' => '10',
+    'weight' => '11',
     'fields' => array(
       '0' => 'field_directory_reference',
     ),
   );
 
+  // Exported group: group_images
+  $groups['page-group_images'] = array(
+    'group_type' => 'standard',
+    'type_name' => 'page',
+    'group_name' => 'group_images',
+    'label' => 'Images',
+    'settings' => array(
+      'form' => array(
+        'style' => 'fieldset',
+        'description' => '',
+      ),
+      'display' => array(
+        'weight' => '-2',
+        'label' => 'hidden',
+        'teaser' => array(
+          'format' => 'hidden',
+          'exclude' => 0,
+        ),
+        'full' => array(
+          'format' => 'no_style',
+          'exclude' => 0,
+        ),
+        'description' => '',
+        '4' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '2' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '3' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '5' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        'token' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+      ),
+    ),
+    'weight' => '-2',
+    'fields' => array(
+      '0' => 'field_image_horizontal',
+      '1' => 'field_image_vertical',
+    ),
+  );
+
   // Translatables
   // Included for use with string extractors like potx.
-  t('Related Ads');
+  t('Images');
+  t('Related Nodes');
 
   return $groups;
 }

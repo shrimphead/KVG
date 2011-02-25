@@ -29,7 +29,7 @@ function kvg_admin_menu_default_menu_links() {
     'menu_name' => 'menu-edit-menu',
     'link_path' => 'directory/admin',
     'router_path' => 'directory',
-    'link_title' => 'Edit Directory Items',
+    'link_title' => 'Edit Content',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -83,7 +83,7 @@ function kvg_admin_menu_default_menu_links() {
   t('Create Article Item');
   t('Create Directory Item');
   t('Edit Articles');
-  t('Edit Directory Items');
+  t('Edit Content');
 
 
   return $menu_links;

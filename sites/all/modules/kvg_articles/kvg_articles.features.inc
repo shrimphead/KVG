@@ -38,16 +38,11 @@ function kvg_articles_imagecache_default_presets() {
       'actions' => array(
         '0' => array(
           'weight' => '0',
-          'module' => 'imagecrop',
-          'action' => 'imagecrop_javascript',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
           'data' => array(
-            'width' => '800',
+            'width' => '820',
             'height' => '360',
-            'xoffset' => '',
-            'yoffset' => '',
-            'resizable' => 0,
-            'aspect' => 'CROP',
-            'disable_if_no_data' => 0,
           ),
         ),
       ),
@@ -57,16 +52,11 @@ function kvg_articles_imagecache_default_presets() {
       'actions' => array(
         '0' => array(
           'weight' => '0',
-          'module' => 'imagecrop',
-          'action' => 'imagecrop_javascript',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
           'data' => array(
-            'width' => '250',
+            'width' => '300',
             'height' => '120',
-            'xoffset' => '',
-            'yoffset' => '',
-            'resizable' => 0,
-            'aspect' => 'CROP',
-            'disable_if_no_data' => 0,
           ),
         ),
       ),

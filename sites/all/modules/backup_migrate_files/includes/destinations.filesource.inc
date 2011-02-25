@@ -1,5 +1,4 @@
 <?php
-// $Id: destinations.filesource.inc,v 1.4 2010/11/09 05:41:11 ronan Exp $
 
 
 /**

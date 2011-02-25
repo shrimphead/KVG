@@ -11,16 +11,17 @@ function kvg_articles_content_default_fields() {
     'field_name' => 'field_directory_reference',
     'type_name' => 'page',
     'display_settings' => array(
+      'weight' => '2',
+      'parent' => 'group_ad_relations',
       'label' => array(
-        'format' => 'above',
-        'exclude' => 0,
+        'format' => 'hidden',
       ),
       'teaser' => array(
-        'format' => 'default',
+        'format' => 'hidden',
         'exclude' => 0,
       ),
       'full' => array(
-        'format' => 'default',
+        'format' => 'teaser',
         'exclude' => 0,
       ),
       '4' => array(
@@ -46,7 +47,7 @@ function kvg_articles_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'nodereference',
-    'required' => '1',
+    'required' => '0',
     'multiple' => '1',
     'module' => 'nodereference',
     'active' => '1',
@@ -76,25 +77,41 @@ function kvg_articles_content_default_fields() {
     ),
   );
 
-  // Exported field: field_image
-  $fields['page-field_image'] = array(
-    'field_name' => 'field_image',
+  // Exported field: field_image_horizontal
+  $fields['page-field_image_horizontal'] = array(
+    'field_name' => 'field_image_horizontal',
     'type_name' => 'page',
     'display_settings' => array(
-      'weight' => '-8',
-      'parent' => '',
+      'weight' => '15',
+      'parent' => 'group_images',
       'label' => array(
         'format' => 'hidden',
       ),
       'teaser' => array(
-        'format' => 'imagefield__lightbox2__image_logo__original',
+        'format' => 'front_page_lead_article_linked',
         'exclude' => 0,
       ),
       'full' => array(
-        'format' => 'imagefield__lightbox2__image_logo__original',
+        'format' => 'imagefield__lightbox2__article_horizontal__original',
         'exclude' => 0,
       ),
       '4' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      '5' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      'token' => array(
         'format' => 'image_plain',
         'exclude' => 0,
       ),
@@ -107,15 +124,15 @@ function kvg_articles_content_default_fields() {
     'active' => '1',
     'list_field' => '0',
     'list_default' => 1,
-    'description_field' => '1',
+    'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
       'file_path' => 'images/articles',
       'progress_indicator' => 'bar',
-      'max_filesize_per_file' => '3MB',
-      'max_filesize_per_node' => '5MB',
+      'max_filesize_per_file' => '3mB',
+      'max_filesize_per_node' => '5mB',
       'max_resolution' => '2000x2000',
-      'min_resolution' => '0',
+      'min_resolution' => '',
       'alt' => '',
       'custom_alt' => 1,
       'title' => '',
@@ -123,58 +140,90 @@ function kvg_articles_content_default_fields() {
       'title_type' => 'textfield',
       'default_image' => NULL,
       'use_default_image' => 0,
-      'insert' => 0,
-      'insert_styles' => array(
-        'auto' => 0,
-        'link' => 0,
-        'image' => 0,
-        'imagecache_box' => 0,
-        'imagecache_image_horizontal' => 0,
-        'imagecache_image_logo' => 0,
-        'imagecache_image_vertical' => 0,
-        'lightbox2--box--box' => 0,
-        'lightbox2--box--image_horizontal' => 0,
-        'lightbox2--box--image_logo' => 0,
-        'lightbox2--box--image_vertical' => 0,
-        'lightbox2--box--original' => 0,
-        'lightbox2--image_horizontal--box' => 0,
-        'lightbox2--image_horizontal--image_horizontal' => 0,
-        'lightbox2--image_horizontal--image_logo' => 0,
-        'lightbox2--image_horizontal--image_vertical' => 0,
-        'lightbox2--image_horizontal--original' => 0,
-        'lightbox2--image_logo--box' => 0,
-        'lightbox2--image_logo--image_horizontal' => 0,
-        'lightbox2--image_logo--image_logo' => 0,
-        'lightbox2--image_logo--image_vertical' => 0,
-        'lightbox2--image_logo--original' => 0,
-        'lightbox2--image_vertical--box' => 0,
-        'lightbox2--image_vertical--image_horizontal' => 0,
-        'lightbox2--image_vertical--image_logo' => 0,
-        'lightbox2--image_vertical--image_vertical' => 0,
-        'lightbox2--image_vertical--original' => 0,
-        'lightbox2--link--box' => 0,
-        'lightbox2--link--image_horizontal' => 0,
-        'lightbox2--link--image_logo' => 0,
-        'lightbox2--link--image_vertical' => 0,
-        'lightbox2--original--box' => 0,
-        'lightbox2--original--image_horizontal' => 0,
-        'lightbox2--original--image_logo' => 0,
-        'lightbox2--original--image_vertical' => 0,
-      ),
-      'insert_default' => 'auto',
-      'insert_class' => '',
-      'insert_width' => '650',
       'imagecrop' => 0,
       'imagecrop_presets' => array(
-        'article_vertical' => 0,
-        'image_horizontal' => 0,
-        'article_horizontal' => 0,
         'front_page_lead_article' => 0,
         'front_page_small_articles' => 0,
       ),
-      'label' => 'Images',
-      'weight' => '-2',
-      'description' => 'Upload images. <em>NOTE: Horizontal images should be uploaded first - if any.</em>',
+      'label' => 'Image Horizontal',
+      'weight' => '15',
+      'description' => '',
+      'type' => 'imagefield_widget',
+      'module' => 'imagefield',
+    ),
+  );
+
+  // Exported field: field_image_vertical
+  $fields['page-field_image_vertical'] = array(
+    'field_name' => 'field_image_vertical',
+    'type_name' => 'page',
+    'display_settings' => array(
+      'weight' => '16',
+      'parent' => 'group_images',
+      'label' => array(
+        'format' => 'hidden',
+      ),
+      'teaser' => array(
+        'format' => 'front_page_small_articles_linked',
+        'exclude' => 0,
+      ),
+      'full' => array(
+        'format' => 'imagefield__lightbox2__article_vertical__original',
+        'exclude' => 0,
+      ),
+      '4' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      '5' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      'token' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+    ),
+    'widget_active' => '1',
+    'type' => 'filefield',
+    'required' => '0',
+    'multiple' => '0',
+    'module' => 'filefield',
+    'active' => '1',
+    'list_field' => '0',
+    'list_default' => 1,
+    'description_field' => '0',
+    'widget' => array(
+      'file_extensions' => 'png gif jpg jpeg',
+      'file_path' => 'images/articles',
+      'progress_indicator' => 'bar',
+      'max_filesize_per_file' => '3mB',
+      'max_filesize_per_node' => '5mB',
+      'max_resolution' => '2000x2000',
+      'min_resolution' => '',
+      'alt' => '',
+      'custom_alt' => 1,
+      'title' => '',
+      'custom_title' => 1,
+      'title_type' => 'textfield',
+      'default_image' => NULL,
+      'use_default_image' => 0,
+      'imagecrop' => 0,
+      'imagecrop_presets' => array(
+        'front_page_lead_article' => 0,
+        'front_page_small_articles' => 0,
+      ),
+      'label' => 'Image Vertical',
+      'weight' => '16',
+      'description' => '',
       'type' => 'imagefield_widget',
       'module' => 'imagefield',
     ),
@@ -182,7 +231,8 @@ function kvg_articles_content_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
-  t('Images');
+  t('Image Horizontal');
+  t('Image Vertical');
   t('Related Businesses');
 
   return $fields;

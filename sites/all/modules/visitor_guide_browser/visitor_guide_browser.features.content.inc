@@ -46,7 +46,7 @@ function visitor_guide_browser_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'nodereference',
-    'required' => '1',
+    'required' => '0',
     'multiple' => '1',
     'module' => 'nodereference',
     'active' => '1',
@@ -223,11 +223,11 @@ function visitor_guide_browser_content_default_fields() {
     'active' => '1',
     'text_processing' => '0',
     'max_length' => '',
-    'allowed_values' => '2011
+    'allowed_values' => '2010
+2011
 2012
 2013
-2014
-2010',
+2014',
     'allowed_values_php' => '',
     'widget' => array(
       'default_value' => array(

@@ -453,7 +453,7 @@ function kvg_admin_views_default_views() {
   $handler->override_option('path', 'admin/kvg/directory');
   $handler->override_option('menu', array(
     'type' => 'default tab',
-    'title' => 'Admin',
+    'title' => 'Edit Directory',
     'description' => 'Edit Directory',
     'weight' => '-30',
     'name' => 'navigation',
@@ -467,8 +467,8 @@ function kvg_admin_views_default_views() {
   ));
   $handler = $view->new_display('page', 'Articles', 'page_2');
   $handler->override_option('fields', array(
-    'field_image_fid' => array(
-      'label' => '',
+    'field_image_horizontal_fid' => array(
+      'label' => 'Horizontal',
       'alter' => array(
         'alter_text' => 0,
         'text' => '',
@@ -491,7 +491,7 @@ function kvg_admin_views_default_views() {
       'hide_empty' => 0,
       'empty_zero' => 0,
       'link_to_node' => 0,
-      'label_type' => 'none',
+      'label_type' => 'custom',
       'format' => 'admin_thumbnail_default',
       'multiple' => array(
         'group' => TRUE,
@@ -500,9 +500,50 @@ function kvg_admin_views_default_views() {
         'multiple_reversed' => FALSE,
       ),
       'exclude' => 0,
-      'id' => 'field_image_fid',
-      'table' => 'node_data_field_image',
-      'field' => 'field_image_fid',
+      'id' => 'field_image_horizontal_fid',
+      'table' => 'node_data_field_image_horizontal',
+      'field' => 'field_image_horizontal_fid',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+    'field_image_vertical_fid' => array(
+      'label' => 'Vertical',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'label_type' => 'custom',
+      'format' => 'admin_thumbnail_default',
+      'multiple' => array(
+        'group' => TRUE,
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_reversed' => FALSE,
+      ),
+      'exclude' => 0,
+      'id' => 'field_image_vertical_fid',
+      'table' => 'node_data_field_image_vertical',
+      'field' => 'field_image_vertical_fid',
       'override' => array(
         'button' => 'Use default',
       ),
