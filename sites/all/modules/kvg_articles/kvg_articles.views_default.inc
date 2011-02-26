@@ -204,6 +204,38 @@ function kvg_articles_views_default_views() {
       ),
       'relationship' => 'none',
     ),
+    'nothing' => array(
+      'label' => '',
+      'alter' => array(
+        'text' => '<div id=\'lead-article-extra-links\'>INSERT MENU ITEMS HERE
+</div>',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'exclude' => 0,
+      'id' => 'nothing',
+      'table' => 'views',
+      'field' => 'nothing',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
   ));
   $handler->override_option('sorts', array(
     'position' => array(
@@ -235,7 +267,6 @@ function kvg_articles_views_default_views() {
   $handler->override_option('cache', array(
     'type' => 'none',
   ));
-  $handler->override_option('title', 'Visit Kaslo!');
   $handler->override_option('items_per_page', 1);
   $handler->override_option('distinct', 1);
   $handler->override_option('style_plugin', 'semanticviews_default');
@@ -258,6 +289,32 @@ function kvg_articles_views_default_views() {
       'striping_classes' => 'odd even',
     ),
   ));
+  $handler->override_option('row_plugin', 'semanticviews_fields');
+  $handler->override_option('row_options', array(
+    'semantic_html' => array(
+      'field_image_horizontal_fid' => array(
+        'element_type' => 'div',
+        'class' => 'lead-article-image-horz',
+      ),
+      'title' => array(
+        'element_type' => 'h2',
+        'class' => 'lead-article-title',
+      ),
+      'body' => array(
+        'element_type' => 'p',
+        'class' => 'lead-article-body',
+      ),
+      'edit_node' => array(
+        'element_type' => 'span',
+        'class' => 'lead-article-edit',
+      ),
+      'view_node' => array(
+        'element_type' => 'span',
+        'class' => 'lead-article-link',
+      ),
+    ),
+    'skip_blank' => 0,
+  ));
   $handler = $view->new_display('page', 'Page - lead', 'page_1');
   $handler->override_option('path', 'front');
   $handler->override_option('menu', array(
@@ -276,39 +333,6 @@ function kvg_articles_views_default_views() {
   ));
   $handler = $view->new_display('attachment', 'Attachment', 'attachment_1');
   $handler->override_option('fields', array(
-    'title' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 0,
-      'exclude' => 0,
-      'id' => 'title',
-      'table' => 'node',
-      'field' => 'title',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
     'field_image_horizontal_fid' => array(
       'label' => '',
       'alter' => array(
@@ -345,6 +369,39 @@ function kvg_articles_views_default_views() {
       'id' => 'field_image_horizontal_fid',
       'table' => 'node_data_field_image_horizontal',
       'field' => 'field_image_horizontal_fid',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+    'title' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'exclude' => 0,
+      'id' => 'title',
+      'table' => 'node',
+      'field' => 'title',
       'override' => array(
         'button' => 'Use default',
       ),
@@ -464,6 +521,31 @@ function kvg_articles_views_default_views() {
     'columns' => '3',
     'alignment' => 'horizontal',
     'fill_single_line' => 1,
+  ));
+  $handler->override_option('row_options', array(
+    'semantic_html' => array(
+      'field_image_horizontal_fid' => array(
+        'element_type' => 'div',
+        'class' => 'sub-article-image-horz',
+      ),
+      'title' => array(
+        'element_type' => 'h3',
+        'class' => 'sub-article-header',
+      ),
+      'body' => array(
+        'element_type' => 'p',
+        'class' => 'sub-article-body',
+      ),
+      'edit_node' => array(
+        'element_type' => 'span',
+        'class' => 'sub-article-edit',
+      ),
+      'view_node' => array(
+        'element_type' => 'span',
+        'class' => 'sub-article-link',
+      ),
+    ),
+    'skip_blank' => 0,
   ));
   $handler->override_option('attachment_position', 'after');
   $handler->override_option('inherit_arguments', TRUE);

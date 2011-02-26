@@ -1,6 +1,6 @@
 ; $Id$
-name = Theme_template
-description = Description of Theme
+name = kvg
+description = Based on Framework theme.
 core = 6.x
 engine = phptemplate
 
@@ -16,15 +16,15 @@ engine = phptemplate
 ; regions[footer] = Footer
 
 ; If this theme references another theme.
-;base theme = reference
+base theme = framework
 
 ; scripts[] = "scripts/script.js"
 
-stylesheets[all][] = style.css
+stylesheets[all][] = css/style.css
 ; stylesheets[screen][] = "base.css"
 ; stylesheets[screen][] = "base.css"
 
 ; Information added by drupal.org
 version = "6.x-1.0"
 core = "6.x"
-project = "demo"
+project = "kvg"

@@ -51,10 +51,10 @@ function visitor_guide_browser_content_default_fields() {
     'module' => 'nodereference',
     'active' => '1',
     'referenceable_types' => array(
-      'page' => 'page',
       'directory' => 'directory',
       'visitor_guide_pages' => 0,
       'webform' => 0,
+      'article' => 'article',
     ),
     'advanced_view' => '--',
     'advanced_view_args' => '',

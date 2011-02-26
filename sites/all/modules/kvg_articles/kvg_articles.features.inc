@@ -41,7 +41,7 @@ function kvg_articles_imagecache_default_presets() {
           'module' => 'imagecache',
           'action' => 'imagecache_scale_and_crop',
           'data' => array(
-            'width' => '820',
+            'width' => '940',
             'height' => '360',
           ),
         ),
@@ -60,26 +60,6 @@ function kvg_articles_imagecache_default_presets() {
           ),
         ),
       ),
-    ),
-  );
-  return $items;
-}
-
-/**
- * Implementation of hook_node_info().
- */
-function kvg_articles_node_info() {
-  $items = array(
-    'page' => array(
-      'name' => t('Article'),
-      'module' => 'features',
-      'description' => t('<em>Articles</em> are for creating static pages of editorial content. It allows all basic editing, bolding, linking, that you would expect from a basic text editor. '),
-      'has_title' => '1',
-      'title_label' => t('Title'),
-      'has_body' => '1',
-      'body_label' => t('Body'),
-      'min_word_count' => '0',
-      'help' => '',
     ),
   );
   return $items;

@@ -17,7 +17,59 @@ function kvg_directory_views_default_views() {
   $view->api_version = 2;
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   $handler = $view->new_display('default', 'Defaults', 'default');
+  $handler->override_option('relationships', array(
+    'field_kvg_ad_fid' => array(
+      'label' => 'Visitor Guide Ad',
+      'required' => 0,
+      'delta' => -1,
+      'id' => 'field_kvg_ad_fid',
+      'table' => 'node_data_field_kvg_ad',
+      'field' => 'field_kvg_ad_fid',
+      'relationship' => 'none',
+    ),
+  ));
   $handler->override_option('fields', array(
+    'field_kvg_ad_fid' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'label_type' => 'none',
+      'format' => 'image_logo_linked',
+      'multiple' => array(
+        'group' => TRUE,
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_reversed' => FALSE,
+      ),
+      'exclude' => 0,
+      'id' => 'field_kvg_ad_fid',
+      'table' => 'node_data_field_kvg_ad',
+      'field' => 'field_kvg_ad_fid',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
     'title' => array(
       'label' => '',
       'alter' => array(
@@ -203,6 +255,58 @@ function kvg_directory_views_default_views() {
       'field' => 'view_node',
       'relationship' => 'none',
     ),
+    'edit_node' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'text' => '<< EDIT >>',
+      'exclude' => 0,
+      'id' => 'edit_node',
+      'table' => 'node',
+      'field' => 'edit_node',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
+  $handler->override_option('sorts', array(
+    'status' => array(
+      'order' => 'DESC',
+      'id' => 'status',
+      'table' => 'files',
+      'field' => 'status',
+      'relationship' => 'field_kvg_ad_fid',
+    ),
+    'title' => array(
+      'order' => 'ASC',
+      'id' => 'title',
+      'table' => 'node',
+      'field' => 'title',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
   ));
   $handler->override_option('filters', array(
     'status' => array(
@@ -243,822 +347,134 @@ function kvg_directory_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('title', 'Directory of Kaslo Businesses');
-  $handler->override_option('items_per_page', 0);
+  $handler->override_option('items_per_page', 15);
+  $handler->override_option('use_pager', '1');
   $handler->override_option('link_display', 'page_7');
   $handler->override_option('distinct', 1);
-  $handler->override_option('style_plugin', 'table');
+  $handler->override_option('style_plugin', 'semanticviews_default');
   $handler->override_option('style_options', array(
     'grouping' => '',
-    'override' => 1,
-    'sticky' => 0,
-    'order' => 'asc',
-    'columns' => array(
-      'title' => 'title',
-      'body' => 'body',
-      'field_phone_value' => 'field_phone_value',
-      'city' => 'field_phone_value',
-      'street' => 'field_phone_value',
-      'view_node_1' => 'view_node_1',
+    'group' => array(
+      'element_type' => 'h3',
+      'class' => 'title',
     ),
-    'info' => array(
+    'list' => array(
+      'element_type' => 'ul',
+      'class' => 'directory-list',
+    ),
+    'row' => array(
+      'element_type' => 'div',
+      'class' => 'directory-row',
+      'last_every_nth' => '0',
+      'first_class' => 'first',
+      'last_class' => 'last',
+      'striping_classes' => 'odd even',
+    ),
+  ));
+  $handler->override_option('row_plugin', 'semanticviews_fields');
+  $handler->override_option('row_options', array(
+    'semantic_html' => array(
+      'field_kvg_ad_fid' => array(
+        'element_type' => 'div',
+        'class' => 'directory-ad',
+      ),
       'title' => array(
-        'sortable' => 0,
-        'separator' => '',
+        'element_type' => 'h3',
+        'class' => 'directory-title',
       ),
       'body' => array(
-        'separator' => '',
+        'element_type' => 'p',
+        'class' => 'directory-body',
       ),
       'field_phone_value' => array(
-        'separator' => '<br>',
+        'element_type' => 'span',
+        'class' => 'directory-address',
+        'label_element_type' => 'label',
+        'label_class' => 'directory-address-label',
       ),
       'city' => array(
-        'sortable' => 0,
-        'separator' => '',
+        'element_type' => 'span',
+        'class' => 'directory-city',
+        'label_element_type' => 'label',
+        'label_class' => 'directory-city-label',
       ),
       'street' => array(
-        'sortable' => 0,
-        'separator' => '',
+        'element_type' => 'span',
+        'class' => 'directory-street',
       ),
       'view_node_1' => array(
-        'separator' => '',
+        'element_type' => 'span',
+        'class' => 'directory-link',
       ),
     ),
-    'default' => 'title',
-  ));
-  $handler->override_option('row_plugin', 'node');
-  $handler->override_option('row_options', array(
-    'relationship' => 'none',
-    'build_mode' => 'teaser',
-    'links' => 1,
-    'comments' => 0,
-  ));
-  $handler = $view->new_display('page', 'Art', 'page_1');
-  $handler->override_option('filters', array(
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'node',
-      'field' => 'status',
-      'relationship' => 'none',
-    ),
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'directory' => 'directory',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_section_value_many_to_one' => array(
-      'operator' => 'or',
-      'value' => array(
-        'art' => 'art',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'field_section_value_many_to_one',
-      'table' => 'node_data_field_section',
-      'field' => 'field_section_value_many_to_one',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-      'reduce_duplicates' => 1,
-    ),
-  ));
-  $handler->override_option('title', 'Directory of Kaslo Artists & Artisans');
-  $handler->override_option('path', 'art');
-  $handler->override_option('menu', array(
-    'type' => 'normal',
-    'title' => 'Artists',
-    'description' => 'Directory of Kaslo Artists & Artisans',
-    'weight' => '0',
-    'name' => 'menu-directory',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
-  ));
-  $handler = $view->new_display('page', 'Acc', 'page_2');
-  $handler->override_option('filters', array(
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'node',
-      'field' => 'status',
-      'relationship' => 'none',
-    ),
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'directory' => 'directory',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_section_value_many_to_one' => array(
-      'operator' => 'or',
-      'value' => array(
-        'accommodations' => 'accommodations',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'field_section_value_many_to_one',
-      'table' => 'node_data_field_section',
-      'field' => 'field_section_value_many_to_one',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-      'reduce_duplicates' => 1,
-    ),
-  ));
-  $handler->override_option('title', 'Directory of Kaslo & Area Accommodations');
-  $handler->override_option('path', 'accommodations');
-  $handler->override_option('menu', array(
-    'type' => 'normal',
-    'title' => 'Accommodations',
-    'description' => 'Where to stay in Kaslo and around',
-    'weight' => '0',
-    'name' => 'menu-directory',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
-  ));
-  $handler = $view->new_display('page', 'Events', 'page_3');
-  $handler->override_option('filters', array(
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'node',
-      'field' => 'status',
-      'relationship' => 'none',
-    ),
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'directory' => 'directory',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_section_value_many_to_one' => array(
-      'operator' => 'or',
-      'value' => array(
-        'events' => 'events',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'field_section_value_many_to_one',
-      'table' => 'node_data_field_section',
-      'field' => 'field_section_value_many_to_one',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-      'reduce_duplicates' => 1,
-    ),
-  ));
-  $handler->override_option('title', 'Directory of Kaslo Events & Attractions');
-  $handler->override_option('path', 'events');
-  $handler->override_option('menu', array(
-    'type' => 'normal',
-    'title' => 'Events & Attractions',
-    'description' => 'Events and organizers of events in the Kaslo area.',
-    'weight' => '0',
-    'name' => 'menu-directory',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
-  ));
-  $handler = $view->new_display('page', 'Eat', 'page_4');
-  $handler->override_option('filters', array(
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'node',
-      'field' => 'status',
-      'relationship' => 'none',
-    ),
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'directory' => 'directory',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_section_value_many_to_one' => array(
-      'operator' => 'or',
-      'value' => array(
-        'eateries' => 'eateries',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'field_section_value_many_to_one',
-      'table' => 'node_data_field_section',
-      'field' => 'field_section_value_many_to_one',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-      'reduce_duplicates' => 1,
-    ),
-  ));
-  $handler->override_option('title', 'Directory of Kaslo Restaurants & Eateries');
-  $handler->override_option('path', 'restaurants');
-  $handler->override_option('menu', array(
-    'type' => 'normal',
-    'title' => 'Restaurants',
-    'description' => 'Where to eat when you get here.',
-    'weight' => '0',
-    'name' => 'menu-directory',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
-  ));
-  $handler = $view->new_display('page', 'Shop', 'page_5');
-  $handler->override_option('filters', array(
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'node',
-      'field' => 'status',
-      'relationship' => 'none',
-    ),
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'directory' => 'directory',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_section_value_many_to_one' => array(
-      'operator' => 'or',
-      'value' => array(
-        'shopping' => 'shopping',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'field_section_value_many_to_one',
-      'table' => 'node_data_field_section',
-      'field' => 'field_section_value_many_to_one',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-      'reduce_duplicates' => 1,
-    ),
-  ));
-  $handler->override_option('path', 'shopping');
-  $handler->override_option('menu', array(
-    'type' => 'normal',
-    'title' => 'Shopping',
-    'description' => 'Things to buy',
-    'weight' => '0',
-    'name' => 'menu-directory',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
-  ));
-  $handler = $view->new_display('page', 'Services', 'page_6');
-  $handler->override_option('filters', array(
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'node',
-      'field' => 'status',
-      'relationship' => 'none',
-    ),
-    'type' => array(
-      'operator' => 'in',
-      'value' => array(
-        'directory' => 'directory',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-    ),
-    'field_section_value_many_to_one' => array(
-      'operator' => 'or',
-      'value' => array(
-        'services' => 'services',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'field_section_value_many_to_one',
-      'table' => 'node_data_field_section',
-      'field' => 'field_section_value_many_to_one',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-      'reduce_duplicates' => 1,
-    ),
-  ));
-  $handler->override_option('title', 'Directory of Kaslo Services');
-  $handler->override_option('path', 'services');
-  $handler->override_option('menu', array(
-    'type' => 'normal',
-    'title' => 'Services',
-    'description' => 'Services offered in Kaslo',
-    'weight' => '0',
-    'name' => 'menu-directory',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
+    'skip_blank' => 0,
   ));
   $handler = $view->new_display('page', 'Directory', 'page_7');
-  $handler->override_option('fields', array(
-    'title' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'link_to_node' => 1,
-      'exclude' => 0,
-      'id' => 'title',
-      'table' => 'node',
-      'field' => 'title',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Override',
-      ),
-    ),
-    'body' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 1,
-        'max_length' => '80',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'body',
-      'table' => 'node_revisions',
-      'field' => 'body',
-      'relationship' => 'none',
-    ),
-    'city' => array(
-      'id' => 'city',
-      'table' => 'location',
-      'field' => 'city',
-    ),
-    'field_phone_value' => array(
-      'label' => 'Address',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 1,
-        'max_length' => '16',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 0,
-      'label_type' => 'custom',
-      'format' => 'default',
-      'multiple' => array(
-        'group' => 1,
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_reversed' => 0,
-      ),
-      'exclude' => 0,
-      'id' => 'field_phone_value',
-      'table' => 'node_data_field_phone',
-      'field' => 'field_phone_value',
-      'relationship' => 'none',
-    ),
-    'street' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 1,
-        'max_length' => '60',
-        'word_boundary' => 1,
-        'ellipsis' => 0,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 1,
-      'empty_zero' => 1,
-      'style' => 'both',
-      'exclude' => 0,
-      'id' => 'street',
-      'table' => 'location',
-      'field' => 'street',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-    ),
-    'view_node_1' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'text' => 'More Info',
-      'exclude' => 0,
-      'id' => 'view_node_1',
-      'table' => 'node',
-      'field' => 'view_node',
-      'relationship' => 'none',
-    ),
+  $handler->override_option('arguments', array(
     'field_section_value' => array(
-      'label' => 'Section',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_node' => 0,
-      'label_type' => 'widget',
-      'format' => 'default',
-      'multiple' => array(
-        'group' => 1,
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_reversed' => 0,
-      ),
-      'exclude' => 0,
+      'default_action' => 'default',
+      'style_plugin' => 'default_summary',
+      'style_options' => array(),
+      'wildcard' => 'all',
+      'wildcard_substitution' => 'All',
+      'title' => '',
+      'breadcrumb' => '',
+      'default_argument_type' => 'fixed',
+      'default_argument' => '',
+      'validate_type' => 'none',
+      'validate_fail' => 'not found',
+      'add_table' => 0,
+      'require_value' => 0,
+      'reduce_duplicates' => 0,
       'id' => 'field_section_value',
       'table' => 'node_data_field_section',
       'field' => 'field_section_value',
+      'validate_user_argument_type' => 'uid',
+      'validate_user_roles' => array(
+        '2' => 0,
+        '8' => 0,
+        '4' => 0,
+      ),
       'override' => array(
         'button' => 'Use default',
       ),
       'relationship' => 'none',
+      'default_options_div_prefix' => '',
+      'default_argument_fixed' => 'accommodations',
+      'default_argument_user' => 0,
+      'default_argument_php' => '',
+      'validate_argument_node_type' => array(
+        'webform' => 0,
+        'directory' => 0,
+        'visitor_guide_pages' => 0,
+        'article' => 0,
+      ),
+      'validate_argument_node_access' => 0,
+      'validate_argument_nid_type' => 'nid',
+      'validate_argument_vocabulary' => array(
+        '2' => 0,
+        '1' => 0,
+      ),
+      'validate_argument_type' => 'tid',
+      'validate_argument_transform' => 0,
+      'validate_user_restrict_roles' => 0,
+      'validate_argument_php' => '',
     ),
   ));
-  $handler->override_option('filters', array(
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'node',
-      'field' => 'status',
-      'relationship' => 'none',
-    ),
-    'type_1' => array(
-      'operator' => 'in',
-      'value' => array(
-        'directory' => 'directory',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'type_1',
-      'table' => 'node',
-      'field' => 'type',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-    'field_section_value_many_to_one' => array(
-      'operator' => 'or',
-      'value' => array(
-        'art' => 'art',
-        'events' => 'events',
-        'accommodations' => 'accommodations',
-        'eateries' => 'eateries',
-        'shopping' => 'shopping',
-        'services' => 'services',
-      ),
-      'group' => '0',
-      'exposed' => TRUE,
-      'expose' => array(
-        'use_operator' => 0,
-        'operator' => 'field_section_value_many_to_one_op',
-        'identifier' => 'section/',
-        'label' => 'Search by Section',
-        'optional' => 1,
-        'single' => 1,
-        'remember' => 0,
-        'reduce' => 0,
-      ),
-      'id' => 'field_section_value_many_to_one',
-      'table' => 'node_data_field_section',
-      'field' => 'field_section_value_many_to_one',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-      'reduce_duplicates' => 0,
-    ),
-    'keys' => array(
-      'operator' => 'optional',
-      'value' => '',
-      'group' => '0',
-      'exposed' => TRUE,
-      'expose' => array(
-        'use_operator' => 0,
-        'operator' => 'search',
-        'identifier' => 'search',
-        'label' => 'Keyword:',
-        'optional' => 1,
-        'remember' => 0,
-      ),
-      'id' => 'keys',
-      'table' => 'search_index',
-      'field' => 'keys',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('items_per_page', 20);
-  $handler->override_option('use_pager', '1');
-  $handler->override_option('style_options', array(
-    'grouping' => '',
-    'override' => 1,
-    'sticky' => 1,
-    'order' => 'asc',
-    'columns' => array(
-      'field_image_fid' => 'field_image_fid',
-      'title' => 'title',
-      'body' => 'body',
-      'field_phone_value' => 'field_phone_value',
-      'field_address_value' => 'field_phone_value',
-      'view_node' => 'body',
-      'field_section_value' => 'field_section_value',
-    ),
-    'info' => array(
-      'field_image_fid' => array(
-        'separator' => '',
-      ),
-      'title' => array(
-        'sortable' => 0,
-        'separator' => '',
-      ),
-      'body' => array(
-        'separator' => '<br>',
-      ),
-      'field_phone_value' => array(
-        'separator' => '<br>',
-      ),
-      'field_address_value' => array(
-        'sortable' => 0,
-        'separator' => '',
-      ),
-      'view_node' => array(
-        'separator' => '',
-      ),
-      'field_section_value' => array(
-        'separator' => '',
-      ),
-    ),
-    'default' => '-1',
-  ));
-  $handler->override_option('row_plugin', 'fields');
-  $handler->override_option('row_options', array());
-  $handler->override_option('path', 'directory');
+  $handler->override_option('path', 'directory/%');
   $handler->override_option('menu', array(
     'type' => 'normal',
-    'title' => 'Search Kaslo Businesses',
-    'description' => 'Search Kaslo Business Directory',
+    'title' => 'Directory',
+    'description' => '',
     'weight' => '0',
-    'name' => 'menu-directory',
+    'name' => 'menu-articles',
   ));
   $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
+    'type' => 'normal',
+    'title' => 'Directory',
     'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
+    'weight' => '0',
+    'name' => 'menu-articles',
   ));
 
   $views[$view->name] = $view;
