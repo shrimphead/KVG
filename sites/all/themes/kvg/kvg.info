@@ -16,12 +16,12 @@ engine = phptemplate
 ; regions[footer] = Footer
 
 ; If this theme references another theme.
-base theme = framework
+base theme = ninesixty
+;base theme = framework
 
 ; scripts[] = "scripts/script.js"
 
 stylesheets[all][] = css/style.css
-; stylesheets[screen][] = "base.css"
 ; stylesheets[screen][] = "base.css"
 
 ; Information added by drupal.org

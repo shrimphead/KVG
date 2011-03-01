@@ -1,3 +1,188 @@
-#navigation {
-  background-color: #FFEAAD;
+/************************ VARIABLES */
+/*
+* PRIMARY COLOURS 
+*/
+@lake: #4A708D;
+@sky: #6D96A6;
+@forest: #4A592A;
+@moss: #9AA644;
+@salmon: #D49693;
+@black: #20151C;
+@white: #EBF1F3;
+
+/* ACCENT COLOURS */
+@yellow: #FFF8B2;
+@orange: #DEA140;
+@red: #A32B26;
+@wine: #590D0B;
+
+/************************* MIXINS */
+/* image curl shading
+* courtesy of http://www.matthamm.com/box-shadow-curl.html
+*/
+.image-curl {
+  /* for the object itself */
+  padding: 0;
+  border: 1px solid @white;
+  position: relative;
+  float: left;
+  background: #ffffff; /* old browsers */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 60px rgba(0, 0, 0, 0.1) inset;
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+}
+.image-curl-after {
+  /*   for the object with ':after' */
+  z-index: -1; 
+  position: absolute; 
+  background: transparent; 
+  width: 70%; 
+  height: 55%; 
+  content: ''; 
+  right: 10px; 
+  bottom: 10px; 
+  transform: skew(15deg) rotate(6deg);
+  -webkit-transform: skew(15deg) rotate(6deg);
+  -moz-transform: skew(15deg) rotate(6deg);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+  -webkit-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+  -moz-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+} 
+.image-curl-before {
+  /*   for the object with ':before' */
+  z-index: -2; 
+  position: absolute; 
+  background: transparent; 
+  width: 70%; 
+  height: 55%; 
+  content: ''; 
+  left: 10px; 
+  bottom: 10px; 
+  transform: skew(-15deg) rotate(-6deg); 
+  -webkit-transform: skew(-15deg) rotate(-6deg); 
+  -moz-transform: skew(-15deg) rotate(-6deg); 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+  -webkit-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+  -moz-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+}
+
+.col(@cols: 2, @gap: 20px) {    
+  -webkit-column-count : @cols;
+  -webkit-column-gap : @gap;
+  -moz-column-count : @cols;
+  -moz-column-gap : @gap;
+}
+/* rounded corners */
+.rounded-corners (@radius: 15px) {
+  border-radius: @radius;
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+}
+
+/************************** DRUPAL */
+.messages {
+  padding: 20px;
+  background-color: @yellow;
+  border-left: 10px solid @wine;
+  margin: 20px 0px;
+}
+
+/************************** BASE */
+body {
+  background-color: @lake;
+  font-size: 14pt;
+  font-family:"Trebuchet MS", Trebuchet, 'Lucida Sans Unicode', 'Lucida Grand', 'Lucida Sans', Arial, sans-serif;
+  line-height: 1.429;
+}
+#page {
+  background-color: @white;
+}
+
+#site-menu {
+  font-size: .9em;
+  line-break: 1em;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+a:hover {
+  color: @red;
+}
+
+/************************* FRONT */
+.sub-article-image-horz, .lead-article-image-horz {
+  img {
+    .image-curl;
+  }
+  img:after {
+    .image-curl-before;
+  }
+  img:before {
+    .image-curl-before;
+  }
+}
+
+.lead-article-body {
+  width: 600px;
+  .col;
+}
+#lead-article-extra-links {
+  width: 80px;
+  clear: none;
+  background-color: @orange;
+  color: @white;
+}
+
+/***************************** DIRECTORY */
+.item-list {
+  ul li.views-row{
+    list-style-type: none;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    border-top: solid 1pt @salmon;
+  }
+}
+.views-field-title {
+  font-size: larger;
+  a {
+    text-decoration: none;
+    color: @black;
+  }
+}
+.views-field-body {
+  color: @lake;
+  p {
+    margin: 0px;
+    padding: 0px;
+    display: inline;
+  }
+}
+
+.views-field-field-phone-value, 
+.views-field-city,
+.views-field-street{
+  font-size: small;
+  color: @black;
+  line-height: 1em;
+  display: inline;
+}
+.views-field-view-node-1,
+.views-field-edit-node {
+  float: right;
+  a {
+    background-color: @orange;
+    color: @white;
+    padding: 4px;
+    margin-top: 15px;
+    .rounded-corners(5px);
+  }    
+  a:hover {
+    background: @wine;
+  }
+}
+.views-field-edit-node {
+  a {
+    background-color: @red;
+  }
 }

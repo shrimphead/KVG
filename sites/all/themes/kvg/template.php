@@ -53,5 +53,18 @@ function phptemplate_preprocess_page(&$vars) {
   foreach ($suggestions as $tmp) {
     $vars['template_files'][] = $tmp;
   }
+  
+
+  /**
+  * rejigger front page logo
+  */
+  if($vars['logo']) {
+    $preset = 'front_page_logo';
+    $alt_text = $vars['site_slogan'];
+    $title = $vars['head_title'];
+    $vars['logo_header'] = theme('imagecache', $preset, 'logo.gif', $alt_text, $title, $attributes);  
+  }
+  
+  dsm($vars);
 }
 
