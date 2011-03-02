@@ -30,22 +30,17 @@
 
     <?php if ($main_menu_links || $secondary_menu_links): ?>
       <div id="site-menu" class="grid-12">
-        <div id="main-menu" class="grid-12 alpha omega">
-          <?php print $main_menu_links; ?>
-        </div>
-        <div id="admin-edit-menu" class="grid-12 alpha omega">
-          <?php print $secondary_menu_links; ?>
-        </div>
+        <?php print $main_menu_links; ?>
+        <?php print $secondary_menu_links; ?>
+        <?php if ($search_box): ?>
+          <div id="search-box" class="grid-12 alpha omega"><?php print $search_box; ?></div>
+        <?php endif; ?>
+      </div>
+      <div id="submit-block" class="grid-2 omega">
+        <?php print $submit_menu_link; ?>
       </div>
     <?php endif; ?>
-    
-    <div id="submit-button" class="grid-2">
-      button
-    </div>
 
-    <?php if ($search_box): ?>
-<!--       <div id="search-box" class="grid-6 prefix-10"><?php print $search_box; ?></div> -->
-    <?php endif; ?>
     </div>
 
 

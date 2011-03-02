@@ -16,15 +16,15 @@
   <div id="page" class="container-16 clear-block">
 
     <div id="site-header" class="clear-block">
-      <div id="branding" class="grid-4 clear-block">
-      <?php if ($linked_logo_img): ?>
-        <span id="logo" class="grid-1 alpha"><?php print $linked_logo_img; ?></span>
+      <div id="branding" class="grid-2 clear-block">
+      <?php if ($logo_header): ?>
+        <span id="logo" class="grid-1 alpha"><?php print $logo_header; ?></span>
       <?php endif; ?>
       <?php if ($linked_site_name): ?>
-        <h1 id="site-name" class="grid-3 omega"><?php print $linked_site_name; ?></h1>
+<!--         <h1 id="site-name" class="grid-3 omega"><?php #print $linked_site_name; ?></h1> -->
       <?php endif; ?>
       <?php if ($site_slogan): ?>
-        <div id="site-slogan" class="grid-3 omega"><?php print $site_slogan; ?></div>
+<!--         <div id="site-slogan" class="grid-3 omega"><?php #print $site_slogan; ?></div> -->
       <?php endif; ?>
       </div>
 
@@ -32,12 +32,15 @@
       <div id="site-menu" class="grid-12">
         <?php print $main_menu_links; ?>
         <?php print $secondary_menu_links; ?>
+        <?php if ($search_box): ?>
+          <div id="search-box" class="grid-12 alpha omega"><?php print $search_box; ?></div>
+        <?php endif; ?>
+      </div>
+      <div id="submit-block" class="grid-2 omega">
+        <?php print $submit_menu_link; ?>
       </div>
     <?php endif; ?>
 
-    <?php if ($search_box): ?>
-      <div id="search-box" class="grid-6 prefix-10"><?php print $search_box; ?></div>
-    <?php endif; ?>
     </div>
 
 
@@ -57,10 +60,8 @@
 
 
     <div id="main" class="column <?php print ns('grid-16', $left, 4, $right, 3) . ' ' . ns('push-4', !$left, 4); ?>">
+      <h1>custom page tpl.php</h1>
       <?php print $breadcrumb; ?>
-      <?php if ($title): ?>
-        <h1 class="title" id="page-title"><?php print $title; ?></h1>
-      <?php endif; ?>
       <?php if ($tabs): ?>
         <div class="tabs"><?php print $tabs; ?></div>
       <?php endif; ?>

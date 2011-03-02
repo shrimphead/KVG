@@ -26,10 +26,6 @@ ul.menu{list-style:none;border:none;text-align:left;}ul.menu li{margin:0 0 0 0.5
 
 
 
-#block-feedback-form,#block-feedback-form .feedback-link,#block-feedback-form .feedback-link *,#block-feedback-form .content,#block-feedback-form form,#block-feedback-form form label{float:none;margin:0;padding:0;border:0;font-size:100%;font-weight:normal;color:inherit;}#block-feedback-form{display:none;position:fixed;bottom:60px;right:20px;overflow:hidden;z-index:10;}* html #block-feedback-form{position:absolute;}#block-feedback-form .feedback-link{padding:0.3em 0;text-align:right;font-size:12px;}#block-feedback-form .feedback-link *{display:inline;font-size:12px;}#block-feedback-form form{border:1px solid #ccc;padding:6px;background-color:#fff;opacity:0.9;width:200px;}#block-feedback-form .feedback-help{margin:0 0 0.5em;font-size:10px;line-height:normal;}#block-feedback-form .feedback-submitted{margin-top:0.2em;font-size:10px;}#block-feedback-form .form-textarea{width:97%;}#block-feedback-form .feedback-message{height:10ex;}#block-feedback-form .resizable-textarea .grippie{width:204px;}* html #block-feedback-form .resizable-textarea textarea{width:200px;}#block-feedback-form #feedback-throbber{height:20px;}#block-feedback-form .throbbing{background:url(/kvg/sites/all/modules/feedback/images/throbber.gif) no-repeat left center;}#block-feedback-form #feedback-submit{background-color:#fff;margin:0;}
-
-
-
 
 .filefield-icon{margin:0 2px 0 0;}.filefield-element{margin:1em 0;white-space:normal;}.filefield-element .widget-preview{float:left;padding:0 10px 0 0;margin:0 10px 0 0;border-width:0 1px 0 0;border-style:solid;border-color:#CCC;max-width:30%;}.filefield-element .widget-edit{float:left;max-width:70%;}.filefield-element .filefield-preview{width:16em;overflow:hidden;}.filefield-element .widget-edit .form-item{margin:0 0 1em 0;}.filefield-element input.form-submit,.filefield-element input.form-file{margin:0;}.filefield-element input.progress-disabled{float:none;display:inline;}.filefield-element div.ahah-progress,.filefield-element div.throbber{display:inline;float:none;padding:1px 13px 2px 3px;}.filefield-element div.ahah-progress-bar{display:none;margin-top:4px;width:28em;padding:0;}.filefield-element div.ahah-progress-bar div.bar{margin:0;}
 
@@ -46,9 +42,6 @@ div.panel-pane div.admin-links{font-size:xx-small;margin-right:1em;}div.panel-pa
 div.fieldgroup{margin:.5em 0 1em 0;}div.fieldgroup .content{padding-left:1em;}
 
 .views-exposed-form .views-exposed-widget{float:left;padding:.5em 1em 0 0;}.views-exposed-form .views-exposed-widget .form-submit{margin-top:1.6em;}.views-exposed-form .form-item,.views-exposed-form .form-submit{margin-top:0;margin-bottom:0;}.views-exposed-form label{font-weight:bold;}.views-exposed-widgets{margin-bottom:.5em;}html.js a.views-throbbing,html.js span.views-throbbing{background:url(/kvg/sites/all/modules/views/images/status-active.gif) no-repeat right center;padding-right:18px;}div.view div.views-admin-links{font-size:xx-small;margin-right:1em;margin-top:1em;}.block div.view div.views-admin-links{margin-top:0;}div.view div.views-admin-links ul{padding-left:0;}div.view div.views-admin-links li a{color:#ccc;}div.view div.views-admin-links li{padding-bottom:2px;z-index:201;}div.view div.views-admin-links-hover a,div.view div.views-admin-links:hover a{color:#000;}div.view div.views-admin-links-hover,div.view div.views-admin-links:hover{background:transparent;;}div.view div.views-admin-links a:before{content:"[";}div.view div.views-admin-links a:after{content:"]";}div.view div.views-hide{display:none;}div.view div.views-hide-hover,div.view:hover div.views-hide{display:block;position:absolute;z-index:200;}div.view:hover div.views-hide{margin-top:-1.5em;}.views-view-grid tbody{border-top:none;}
-
-
-.panel-3col{}.panel-3col .panel-col-first{float:left;width:25%;}.panel-3col .panel-col-first .inside{margin:0 .5em 1em 0;}.panel-3col .panel-col{float:left;width:50%;}.panel-3col .panel-col .inside{margin:0 .5em 1em .5em;}.panel-3col .panel-col-last{float:left;width:25%;}.panel-3col .panel-col-last .inside{margin:0 0 1em .5em;}.panel-3col .panel-separator{margin:0 0 1em 0;}
 
 
 
