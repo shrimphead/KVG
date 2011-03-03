@@ -7,9 +7,9 @@ function kvg_articles_fieldgroup_default_groups() {
   $groups = array();
 
   // Exported group: group_ad_relations
-  $groups['page-group_ad_relations'] = array(
+  $groups['article-group_ad_relations'] = array(
     'group_type' => 'standard',
-    'type_name' => 'page',
+    'type_name' => 'article',
     'group_name' => 'group_ad_relations',
     'label' => 'Related Nodes',
     'settings' => array(
@@ -58,9 +58,9 @@ function kvg_articles_fieldgroup_default_groups() {
   );
 
   // Exported group: group_images
-  $groups['page-group_images'] = array(
+  $groups['article-group_images'] = array(
     'group_type' => 'standard',
-    'type_name' => 'page',
+    'type_name' => 'article',
     'group_name' => 'group_images',
     'label' => 'Images',
     'settings' => array(

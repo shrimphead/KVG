@@ -10,7 +10,7 @@ function kvg_admin_menu_default_menu_links() {
   $menu_links['menu-edit-menu:articles/admin'] = array(
     'menu_name' => 'menu-edit-menu',
     'link_path' => 'articles/admin',
-    'router_path' => 'articles/admin',
+    'router_path' => 'articles',
     'link_title' => 'Edit Articles',
     'options' => array(
       'attributes' => array(
@@ -40,14 +40,14 @@ function kvg_admin_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-47',
+    'weight' => '-48',
   );
   // Exported menu link: menu-edit-menu:node/add/directory
   $menu_links['menu-edit-menu:node/add/directory'] = array(
     'menu_name' => 'menu-edit-menu',
     'link_path' => 'node/add/directory',
     'router_path' => 'node/add/directory',
-    'link_title' => 'Create Directory Item',
+    'link_title' => 'Add Directory Item',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -58,14 +58,14 @@ function kvg_admin_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-49',
+    'weight' => '-46',
   );
   // Exported menu link: menu-edit-menu:node/add/page
   $menu_links['menu-edit-menu:node/add/page'] = array(
     'menu_name' => 'menu-edit-menu',
     'link_path' => 'node/add/page',
     'router_path' => 'node/add',
-    'link_title' => 'Create Article Item',
+    'link_title' => 'Create Article',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -77,11 +77,12 @@ function kvg_admin_menu_default_menu_links() {
     'has_children' => '0',
     'expanded' => '0',
     'weight' => '-50',
+    'parent_path' => 'node/add',
   );
   // Translatables
   // Included for use with string extractors like potx.
-  t('Create Article Item');
-  t('Create Directory Item');
+  t('Add Directory Item');
+  t('Create Article');
   t('Edit Articles');
   t('Edit Content');
 

@@ -31,7 +31,7 @@
     <?php if ($main_menu_links || $secondary_menu_links): ?>
       <div id="site-menu" class="grid-12">
         <?php print $main_menu_links; ?>
-        <?php print $secondary_menu_links; ?>
+        <?php if ($logged_in) { print $secondary_menu_links; } ?>
         <?php if ($search_box): ?>
           <div id="search-box" class="grid-12 alpha omega"><?php print $search_box; ?></div>
         <?php endif; ?>
@@ -40,14 +40,12 @@
         <?php print $submit_menu_link; ?>
       </div>
     <?php endif; ?>
-
     </div>
 
 
     <div id="site-subheader" class="prefix-1 suffix-1 clear-block">
     <?php if ($mission): ?>
       <div id="mission" class="<?php print ns('grid-14', $header, 7); ?>">
-        <?php print $mission; ?>
       </div>
     <?php endif; ?>
 

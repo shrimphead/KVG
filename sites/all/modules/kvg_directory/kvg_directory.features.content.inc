@@ -331,12 +331,11 @@ function kvg_directory_content_default_fields() {
     'active' => '1',
     'text_processing' => '0',
     'max_length' => '',
-    'allowed_values' => 'art|Artists & Artisans
+    'allowed_values' => 'culture|Artists & Artisans
 events|Events & Recreation
 accommodations|Accommodations
-eateries|Restaurants
-shopping|Shopping
-services|Services',
+dining|Restaurants
+shopping|Shopping & Services',
     'allowed_values_php' => '',
     'widget' => array(
       'default_value' => array(

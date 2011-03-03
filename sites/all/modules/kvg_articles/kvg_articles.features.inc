@@ -13,8 +13,22 @@ function kvg_articles_imagecache_default_presets() {
           'module' => 'imagecache',
           'action' => 'imagecache_scale_and_crop',
           'data' => array(
-            'width' => '780',
-            'height' => '360',
+            'width' => '700',
+            'height' => '350',
+          ),
+        ),
+      ),
+    ),
+    'article_page_box' => array(
+      'presetname' => 'article_page_box',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale_and_crop',
+          'data' => array(
+            'width' => '220',
+            'height' => '140',
           ),
         ),
       ),
@@ -27,8 +41,8 @@ function kvg_articles_imagecache_default_presets() {
           'module' => 'imagecache',
           'action' => 'imagecache_scale_and_crop',
           'data' => array(
-            'width' => '350',
-            'height' => '850',
+            'width' => '340',
+            'height' => '800',
           ),
         ),
       ),
@@ -55,11 +69,31 @@ function kvg_articles_imagecache_default_presets() {
           'module' => 'imagecache',
           'action' => 'imagecache_scale_and_crop',
           'data' => array(
-            'width' => '300',
-            'height' => '120',
+            'width' => '280',
+            'height' => '160',
           ),
         ),
       ),
+    ),
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_node_info().
+ */
+function kvg_articles_node_info() {
+  $items = array(
+    'article' => array(
+      'name' => t('Article'),
+      'module' => 'features',
+      'description' => t('<em>Articles</em> are for creating static pages of editorial content. It allows all basic editing, bolding, linking, that you would expect from a basic text editor. '),
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'has_body' => '1',
+      'body_label' => t('Body'),
+      'min_word_count' => '0',
+      'help' => '',
     ),
   );
   return $items;

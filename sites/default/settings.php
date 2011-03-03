@@ -182,7 +182,7 @@ ini_set('url_rewriter.tags',        '');
  * theme. It is located inside 'modules/system/maintenance-page.tpl.php'.
  * Note: This setting does not apply to installation and update pages.
  */
-#   'maintenance_theme' => 'minnelli',
+#  'maintenance_theme' => 'minnelli',
 /**
  * reverse_proxy accepts a boolean value.
  *
@@ -226,3 +226,4 @@ ini_set('url_rewriter.tags',        '');
 #   'forum'      => 'Discussion board',
 #   '@count min' => '@count minutes',
 # );
+$conf['maintenance_theme'] = 'kvg';

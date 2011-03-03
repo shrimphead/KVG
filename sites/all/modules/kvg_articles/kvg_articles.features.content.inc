@@ -7,9 +7,9 @@ function kvg_articles_content_default_fields() {
   $fields = array();
 
   // Exported field: field_directory_reference
-  $fields['page-field_directory_reference'] = array(
+  $fields['article-field_directory_reference'] = array(
     'field_name' => 'field_directory_reference',
-    'type_name' => 'page',
+    'type_name' => 'article',
     'display_settings' => array(
       'weight' => '2',
       'parent' => 'group_ad_relations',
@@ -52,10 +52,10 @@ function kvg_articles_content_default_fields() {
     'module' => 'nodereference',
     'active' => '1',
     'referenceable_types' => array(
-      'page' => 'page',
       'directory' => 'directory',
       'visitor_guide_pages' => 0,
       'webform' => 0,
+      'article' => 'article',
     ),
     'advanced_view' => '--',
     'advanced_view_args' => '',
@@ -78,9 +78,9 @@ function kvg_articles_content_default_fields() {
   );
 
   // Exported field: field_image_horizontal
-  $fields['page-field_image_horizontal'] = array(
+  $fields['article-field_image_horizontal'] = array(
     'field_name' => 'field_image_horizontal',
-    'type_name' => 'page',
+    'type_name' => 'article',
     'display_settings' => array(
       'weight' => '15',
       'parent' => 'group_images',
@@ -154,9 +154,9 @@ function kvg_articles_content_default_fields() {
   );
 
   // Exported field: field_image_vertical
-  $fields['page-field_image_vertical'] = array(
+  $fields['article-field_image_vertical'] = array(
     'field_name' => 'field_image_vertical',
-    'type_name' => 'page',
+    'type_name' => 'article',
     'display_settings' => array(
       'weight' => '16',
       'parent' => 'group_images',

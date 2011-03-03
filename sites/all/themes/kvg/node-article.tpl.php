@@ -49,38 +49,46 @@
  */
 ?>
 <div id="node-<?php print $node->nid; ?>" class="node<?php if ($sticky) { print ' sticky'; } ?><?php if (!$status) { print ' node-unpublished'; } ?> clear-block">
-<h1>custom node-article</h1>
-<?php print $picture ?>
+<?php #print $picture ?>
 
 <?php if (!$page): ?>
   <h2><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
 <?php endif; ?>
 
-  <div class="meta">
-  <?php if ($submitted): ?>
-    <span class="submitted"><?php print $submitted ?></span>
-  <?php endif; ?>
-
-  <?php if ($terms): ?>
-    <div class="terms terms-inline"><?php print $terms ?></div>
-  <?php endif;?>
-  </div>
-
   <div class="content grid-12 alpha">
-    <?php if ($hor_image): ?>
-      <div class="image horizontal-image">
+    <?php if ($hor_image && !$vert_image): // if HORZ only?>
+      <div class="image horizontal-image alpha omega">
+        <?php print $hor_image; ?>
+      </div>
+      <div class="article-body grid-10 alpha ">
+        <?php print $body; ?>
+      </div>
+    <?php endif; ?>
+
+    <?php if ($hor_image && $vert_image): // if both VERT and HORZ ?>
+      <div class="image horizontal-image grid-12 alpha omega">
         <?php print $hor_image; ?>
       </div>
     <?php endif; ?>
-    <div class="article-body grid-6 alpha ">
-      <?php print $body; ?>
-    </div>
-    <?php if ($vert_image): ?>
-      <div class="image vertical-image grid-6 omega">
-        <?php print $vert_image; ?>
+
+    <?php if ($vert_image): // if HORZ?>
+        <div class="article-body grid-6 alpha ">
+          <?php print $body; ?>
+        </div>
+        <div class="image vertical-image grid-6 omega">
+          <?php print $vert_image; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($field_directory_reference_rendered) : ?>
+      <div class="grid-12 alpha omega referenced-header">
+        You might also like:
+      </div>
+
+      <div class="grid-12 articles-referenced">
+        <?php print $field_directory_reference_rendered; ?>
       </div>
     <?php endif; ?>
-    <?php #print $content ?>
   </div>
 
   <?php print $links; ?>

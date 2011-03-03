@@ -63,6 +63,10 @@ function kvg_preprocess_node_directory(&$vars) {
   if($vars['field_section'][1]['safe']) {
     $vars['field_sections_rendered'] .= " & " . l($vars['field_section'][1]['safe'], 'directory/' . ($vars['field_section']['1']['value']), array('attributes' => array('class' => 'link directory-section-link',)));  
   }
+  
+  /*REFERENCE LINK */
+  $vars['reference_link'] = l('Read More', $vars['path'], array('attributes' => array('class' => 'links reference-link')));
+  dsm($vars);
 }
 
 /**
@@ -75,8 +79,8 @@ function kvg_preprocess_node_article(&$vars) {
 
   $vars['vert_image'] = ($vars['field_image_vertical'][0]['filepath']) ?
     $vars['field_image_vertical'][0]['view'] : FALSE;
-    
-  dsm($vars);
+  
+  $vars['body'] = $vars['node']->content['body']['#value'];
 }
 
 /**
@@ -119,4 +123,57 @@ function _kvg_map_content($node = NULL) {
   // Output layout
   $map_content = $gnd_ad . $title . $address . $phone . $website . $email . $more_link;
   return $map_content;
+}
+
+/**
+* Implementation of custom search results
+*/
+function kvg_preprocess_search_result(&$vars) {
+  $result = $vars['result'];
+  
+//  foreach ($results as $result) {
+    $vars['search_link'] = l('More >>', $result['link']);
+    $vars['search_type'] = $result['type'];
+    $vars['search_title'] = $result['title'];
+    $vars['search_body'] =  $result['snippet'];
+    $vars['search_image'] = get_image($result); // custom image function
+    $vars['search_edit_link'] = l('<< Edit >>', $base_path . 'node/' . $result['node']->nid . '/edit');
+    
+//    $result = "<div class='search-results grid-12 alpha omega'>" 
+//      . "<div class='search-title grid-12 alpha omega'>" . $body . "</div>"
+//      . "<div class='search-image grid-4 alpha'>" . $image . "</div>"
+//      . "<div class='search-snippet grid-6'>" . $body . "</div>"
+//      . "<div class='search-link grid-2'>" . l('More >>', $link) . "</div>"
+//      . "<div class='search-edit grid-2'>" . l('<< Edit >>', $edit_link) . "</div>"      
+//      . "</div>";
+//  }
+  dsm($vars);
+}
+
+/*
+* custom image checker for search results 
+*/
+function get_image($result) {
+  $title = $result['title'];  
+  if ($result['node']->field_image_vertical[0]['filepath']) {
+    $image_path = $result['node']->field_image_vertical[0]['filepath'];
+  }
+  elseif ($result['node']->field_image_horizontal[0]['filepath']) {
+    $image_path = $result['node']->field_image_horizontal[0]['filepath'];
+  }
+  elseif ($result['node']->field_kvg_ad[0]['filepath']) {
+    $image_path = $result['node']->field_kvg_ad[0]['filepath'];
+  }
+  else {
+    $image_path = NULL;
+  }
+  
+  if($image_path) {
+    $image = theme('imagecache', 'article_page_box', $image_path, $title, $title);
+  }
+  else {
+    $image = '<div style="width:300px;">&nbsp;</div>';
+  }
+  
+  return ($image);  
 }

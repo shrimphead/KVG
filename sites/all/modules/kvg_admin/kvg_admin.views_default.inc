@@ -714,7 +714,7 @@ function kvg_admin_views_default_views() {
     'type' => array(
       'operator' => 'in',
       'value' => array(
-        'page' => 'page',
+        'article' => 'article',
       ),
       'group' => '0',
       'exposed' => FALSE,

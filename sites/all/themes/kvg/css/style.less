@@ -8,7 +8,8 @@
 @moss: #9AA644;
 @salmon: #D49693;
 @black: #20151C;
-@white: #EBF1F3;
+@white: #F5F5F5;
+ /*WAS #EBF1F3 */
 
 /* ACCENT COLOURS */
 @aqua: #325A66;
@@ -90,6 +91,39 @@
   box-shadow: @distance @distance @blur @colour;
 }
 
+.buttons-view-edit-template(@base_colour: @orange, @hover: @lake) {
+  float: left;
+  margin: 5px 10px;
+  a {
+    background-color: @base_colour;
+    color: @white;
+    padding: 4px 10px;
+    margin-top: 15px;
+    .rounded-corners(5px);
+    text-shadow: 2px 2px 4px @hover;
+    .box-drop-shadow(@sky, 2px, 8px);
+  }    
+  a:hover {
+    background: @wine;
+  }
+  a:viewed {
+    background-color: @lake;
+  }
+}
+.buttons-edit-overide {
+  a {
+    font-size: smaller;
+    background-color: @red;
+  }
+}
+
+.title-text (@size: 38px, @shadow: @sky) {
+  font-size: @size;
+  margin: 0px;
+  padding: 5px 10px;
+  color: @black;  
+  .text-drop-shadow(@shadow);
+}
 /************************** DRUPAL */
 .messages {
   padding: 20px;
@@ -120,7 +154,7 @@ h1 {
   line-height: 1.1em;
   padding-bottom: 8px;
 }
-#page {
+#page, #content {
   background-color: @white;
 }
 
@@ -135,11 +169,21 @@ a {
 a:hover {
   color: @red;
 }
+#site-header {
+  margin: 0px;
+}
+#site-subheader {
+  padding: 0px;
+  margin: 0px;
+}
+
 #logo {
   padding: 20px 0px;
 }
+
 #site-menu {
-  ul {
+  display: block;
+  ul.main-menu {
     background-color: @sky;
     .rounded-corners(10px);
     padding: 3px;
@@ -147,9 +191,9 @@ a:hover {
     margin: 4px 0px;
   }
   li {
-    color: @white;
+    color: @white;    
     width: 80px;
-    font-size: 80%;
+    font-size: 85%;
     border-left: 1pt solid @white;
     border-bottom: 2pt solid inherit;
     a {
@@ -165,12 +209,27 @@ a:hover {
     border: none;
   }
   .secondary-menu {
-    background-color: @lake;
+    font-size: 70%;
+    text-transform: uppercase;
+    background-color: none;
+    li { 
+      float: left;
+      text-align: center;
+      line-height: 1.4em;
+      background-color: @lake;
+      .rounded-corners(10px);
+      margin: 2px 5px 0 0;
+      padding: 2px;
+      width: 60px; 
+      display: block;
+    }
+
   }
   .active-trail a{
     color: @red;
     text-shadow: 0 0 5px @white;
   }
+  
 }
 #submit-block {
   ul {
@@ -208,16 +267,51 @@ a:hover {
     .image-curl-before;
   }
 }
-
+.lead-article-title {
+  .title-text(48px, @black);
+  text-align: left;
+  padding: 8px 0px 4px 80px;
+}
 .lead-article-body {
   width: 600px;
   .col;
+  display: inline;
 }
-#lead-article-extra-links {
-  width: 80px;
-  clear: none;
-  background-color: @orange;
-  color: @white;
+.lead-article-link, .lead-article-edit, .sub-article-link, .sub-article-edit {
+  .buttons-view-edit-template;
+  float: none;
+  display: inline-block;
+}
+.lead-article-link {
+  float: left;
+}
+.lead-article-edit, .sub-article-edit {
+  .buttons-edit-overide;
+  font-size: 75%;
+  padding: 2px 6px;
+  text-transform: uppercase;
+}
+.sub-article-link {
+  font-size: 70%;
+  padding: 2px 6px;
+}
+.sub-article-edit {
+  float: right;
+  clear: both;
+}
+.sub-article-header {
+  .title-text(20px);
+}
+.sub-article-body {
+  display: inline;
+  font-size: 90%;
+  line-height: 70%;
+}
+
+/* firefox fix */
+.view-id-front_page .attachment-after {
+  clear: both;
+  padding-top: 20px;
 }
 
 /***************************** DIRECTORY LISTING */
@@ -266,26 +360,10 @@ a:hover {
 /* links */
 .views-field-view-node-1,
 .views-field-edit-node {
-  float: left;
-  margin: 5px 10px;
-  a {
-    background-color: @orange;
-    color: @white;
-    padding: 4px 10px;
-    margin-top: 15px;
-    .rounded-corners(5px);
-    text-shadow: 2px 2px 4px @lake;
-    .box-drop-shadow(@sky, 2px, 8px);
-  }    
-  a:hover {
-    background: @wine;
-  }
+  .buttons-view-edit-template;
 }
 .views-field-edit-node {
-  a {
-    font-size: smaller;
-    background-color: @red;
-  }
+  .buttons-edit-overide;
 }
 .views-field-field-kvg-ad-fid img {  
   .image-curl; 
@@ -297,12 +375,8 @@ a:hover {
 
 /***************************** DIRECTORY PAGE */
 #directory-title {
-  font-size: 38px;
-  margin: 0px;
-  padding: 5px 20px;
+  .title-text;
   text-align: center;
-  color: @black;  
-  .text-drop-shadow(@forest);
 }
 .sections-inline {
   text-align: center;
@@ -338,7 +412,52 @@ a:hover {
 .node-directory-map {
   margin-top: 20px;
 }
-/************************* ARTICLE */
-.meta {
+/************************* ARTICLE PAGE */
+.articlepage-images img, .article-body .image img {
+  .image-curl;
+}
+.articlepage-images img:after, .article-body .image img:after {
+  .image-curl-after;
+}
+.articlepage-images img:before, .article-body .image img:before {
+  .image-curl-before;
+}
+.articlepage-title {
+  clear: both;
+  .title-text(18pt);
+  padding-top: 30px;
+}
+.articlepage-link, .articlepage-edit, .reference-link {
+  .buttons-view-edit-template;
+  margin: 10px 0 0 0;
+}
+.articlepage-edit {
+  .buttons-edit-overide;
+}
 
+/* referenced articles */
+.articles-referenced {
+  .node_read_more {
+    .buttons-view-edit-template;
+  }  
+}
+.reference {
+  background-color: rgba(106, 150, 166, .2);
+  .rounded-corners(25px);
+  padding: 15px;
+  font-size: 80%;
+  line-height: 1.4em;
+  border: 2pt solid @white;
+  p {
+    text-align: left;
+  }
+}
+.referenced-header {
+  .title-text(24px);
+  text-align: center;
+  padding: 10px;
+}
+.reference-title {
+  .title-text(26px);
+  text-align: center;
 }
