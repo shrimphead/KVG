@@ -135,6 +135,47 @@ function kvg_directory_views_default_views() {
         'button' => 'Override',
       ),
     ),
+    'field_section_value' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 1,
+        'path' => 'directory/[field_section_value]',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'label_type' => 'none',
+      'format' => 'default',
+      'multiple' => array(
+        'group' => 0,
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_reversed' => 0,
+      ),
+      'exclude' => 1,
+      'id' => 'field_section_value',
+      'table' => 'node_data_field_section',
+      'field' => 'field_section_value',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
     'body' => array(
       'label' => '',
       'alter' => array(
@@ -294,7 +335,7 @@ function kvg_directory_views_default_views() {
       'empty' => '',
       'hide_empty' => 0,
       'empty_zero' => 0,
-      'text' => '<< EDIT >>',
+      'text' => 'EDIT',
       'exclude' => 0,
       'id' => 'edit_node',
       'table' => 'node',
@@ -398,24 +439,48 @@ function kvg_directory_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('title', 'Directory of Kaslo Businesses');
+  $handler->override_option('header_format', '1');
+  $handler->override_option('header_empty', 0);
   $handler->override_option('items_per_page', 15);
   $handler->override_option('use_pager', '1');
   $handler->override_option('link_display', 'page_7');
   $handler->override_option('distinct', 1);
-  $handler->override_option('style_plugin', 'list');
+  $handler->override_option('style_plugin', 'semanticviews_default');
+  $handler->override_option('style_options', array(
+    'grouping' => '',
+    'group' => array(
+      'element_type' => 'h3',
+      'class' => 'title',
+    ),
+    'list' => array(
+      'element_type' => 'ul',
+      'class' => 'directory-listing grid-12 alpha omega',
+    ),
+    'row' => array(
+      'element_type' => 'li',
+      'class' => 'directory-item grid-11 alpha omega ',
+      'last_every_nth' => '0',
+      'first_class' => 'first',
+      'last_class' => 'last',
+      'striping_classes' => 'odd even',
+    ),
+  ));
   $handler->override_option('row_plugin', 'panels_fields');
   $handler->override_option('row_options', array(
-    'inline' => array(),
-    'separator' => '',
+    'inline' => array(
+      'field_section_value' => 'field_section_value',
+    ),
+    'separator' => '::',
     'hide_empty' => 1,
     'layout' => 'twocol',
     'change' => 'Change',
     'regions' => array(
       'field_kvg_ad_fid' => 'left',
       'title' => 'right',
+      'city' => 'right',
+      'field_section_value' => 'right',
       'body' => 'right',
       'field_phone_value' => 'right',
-      'city' => 'right',
       'street' => 'right',
       'view_node_1' => 'right',
       'edit_node' => 'right',
@@ -425,17 +490,17 @@ function kvg_directory_views_default_views() {
   $handler = $view->new_display('page', 'Directory', 'page_7');
   $handler->override_option('arguments', array(
     'field_section_value' => array(
-      'default_action' => 'default',
+      'default_action' => 'ignore',
       'style_plugin' => 'default_summary',
       'style_options' => array(),
       'wildcard' => 'all',
       'wildcard_substitution' => 'All',
-      'title' => '',
-      'breadcrumb' => '',
+      'title' => 'Kaslo %1 Directory',
+      'breadcrumb' => 'Directory',
       'default_argument_type' => 'fixed',
       'default_argument' => '',
       'validate_type' => 'none',
-      'validate_fail' => 'not found',
+      'validate_fail' => 'ignore',
       'add_table' => 0,
       'require_value' => 0,
       'reduce_duplicates' => 0,
@@ -453,14 +518,14 @@ function kvg_directory_views_default_views() {
       ),
       'relationship' => 'none',
       'default_options_div_prefix' => '',
-      'default_argument_fixed' => 'accommodations',
+      'default_argument_fixed' => 'all',
       'default_argument_user' => 0,
       'default_argument_php' => '',
       'validate_argument_node_type' => array(
         'webform' => 0,
+        'article' => 0,
         'directory' => 0,
         'visitor_guide_pages' => 0,
-        'article' => 0,
       ),
       'validate_argument_node_access' => 0,
       'validate_argument_nid_type' => 'nid',

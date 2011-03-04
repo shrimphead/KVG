@@ -71,7 +71,7 @@ function kvg_articles_views_default_views() {
       'empty' => '',
       'hide_empty' => 0,
       'empty_zero' => 0,
-      'link_to_node' => 0,
+      'link_to_node' => 1,
       'label_type' => 'none',
       'format' => 'article_page_box_default',
       'multiple' => array(
@@ -85,6 +85,9 @@ function kvg_articles_views_default_views() {
       'table' => 'node_data_field_image_horizontal',
       'field' => 'field_image_horizontal_fid',
       'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
     ),
     'field_image_vertical_fid' => array(
       'label' => '',
@@ -109,7 +112,7 @@ function kvg_articles_views_default_views() {
       'empty' => '',
       'hide_empty' => 0,
       'empty_zero' => 0,
-      'link_to_node' => 0,
+      'link_to_node' => 1,
       'label_type' => 'none',
       'format' => 'article_page_box_default',
       'multiple' => array(
@@ -123,6 +126,9 @@ function kvg_articles_views_default_views() {
       'table' => 'node_data_field_image_vertical',
       'field' => 'field_image_vertical_fid',
       'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
     ),
     'nothing' => array(
       'label' => '',
@@ -235,7 +241,7 @@ function kvg_articles_views_default_views() {
       'empty' => '',
       'hide_empty' => 0,
       'empty_zero' => 0,
-      'text' => '<< Edit >>',
+      'text' => 'EDIT',
       'exclude' => 0,
       'id' => 'edit_node',
       'table' => 'node',
@@ -290,7 +296,7 @@ function kvg_articles_views_default_views() {
   $handler->override_option('cache', array(
     'type' => 'none',
   ));
-  $handler->override_option('title', 'Articles');
+  $handler->override_option('title', 'All About Kaslo ');
   $handler->override_option('css_class', 'articles');
   $handler->override_option('use_pager', '1');
   $handler->override_option('style_plugin', 'semanticviews_default');
@@ -318,11 +324,11 @@ function kvg_articles_views_default_views() {
     'semantic_html' => array(
       'title' => array(
         'element_type' => 'div',
-        'class' => 'articlepage-title prefix-4 grid-8 omega',
+        'class' => 'articlepage-title grid-6 prefix-4 alpha omega',
       ),
       'nothing' => array(
         'element_type' => 'div',
-        'class' => 'articlepage-images grid-4 alpha article-page-images',
+        'class' => 'articlepage-images grid-4 alpha',
       ),
       'body' => array(
         'element_type' => 'div',
@@ -526,6 +532,44 @@ print $block[\'content\'];
       ),
       'relationship' => 'none',
     ),
+    'phpcode' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'value' => '<?php
+print l(\'Browse Kaslo Directory\', \'directory/all\', array(\'attributes\'=>array(\'id\' => \'embed-browse-directory\')));
+print l(\'See All Articles\', \'articles\', array(\'attributes\'=>array(\'id\' => \'embed-browse-articles\')));
+print l(\'Read The Kaslo Guide Online\', \'visitor-guide/1\', array(\'attributes\'=>array(\'id\' => \'embed-browse-guide\')));
+?>
+',
+      'exclude' => 0,
+      'id' => 'phpcode',
+      'table' => 'customfield',
+      'field' => 'phpcode',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
     'edit_node' => array(
       'label' => '',
       'alter' => array(
@@ -549,7 +593,7 @@ print $block[\'content\'];
       'empty' => '',
       'hide_empty' => 0,
       'empty_zero' => 0,
-      'text' => '<< EDIT >>',
+      'text' => 'EDIT',
       'exclude' => 0,
       'id' => 'edit_node',
       'table' => 'node',
@@ -587,44 +631,6 @@ print $block[\'content\'];
       'id' => 'view_node',
       'table' => 'node',
       'field' => 'view_node',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'phpcode' => array(
-      'label' => 'PHP code',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'value' => '<?php
-// $block =(object) module_invoke(\'directory\', \'block\', \'view\', 1);
-// print theme(\'block\', $block);
-print theme_blocks(\'right\');
-?>
-',
-      'exclude' => 0,
-      'id' => 'phpcode',
-      'table' => 'customfield',
-      'field' => 'phpcode',
       'override' => array(
         'button' => 'Override',
       ),
@@ -690,12 +696,16 @@ print theme_blocks(\'right\');
         'element_type' => 'div',
         'class' => 'lead-article-image-horz grid-16 alpha omega',
       ),
+      'phpcode' => array(
+        'element_type' => 'div',
+        'class' => 'grid-4 omega',
+      ),
       'title' => array(
         'element_type' => 'h2',
         'class' => 'lead-article-title grid-16 alpha omega',
       ),
       'body' => array(
-        'element_type' => 'div',
+        'element_type' => 'p',
         'class' => 'lead-article-body grid-12 alpha',
       ),
       'edit_node' => array(
@@ -833,39 +843,6 @@ print theme_blocks(\'right\');
       ),
       'relationship' => 'none',
     ),
-    'edit_node' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'text' => '<< Edit >>',
-      'exclude' => 0,
-      'id' => 'edit_node',
-      'table' => 'node',
-      'field' => 'edit_node',
-      'override' => array(
-        'button' => 'Use default',
-      ),
-      'relationship' => 'none',
-    ),
     'view_node' => array(
       'label' => '',
       'alter' => array(
@@ -894,6 +871,39 @@ print theme_blocks(\'right\');
       'id' => 'view_node',
       'table' => 'node',
       'field' => 'view_node',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+    'edit_node' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'text' => 'Edit',
+      'exclude' => 0,
+      'id' => 'edit_node',
+      'table' => 'node',
+      'field' => 'edit_node',
       'override' => array(
         'button' => 'Use default',
       ),

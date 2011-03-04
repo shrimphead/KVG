@@ -48,9 +48,6 @@
  * @see template_preprocess_node()
  */
 ?>
-<?php if ($title): ?>
-  <h1 class="title directory-title" id="directory-title"><?php print $title; ?></h1>
-<?php endif; ?>
 <div class="meta">
   <div class="section sections-inline">Filed under: <?php print $field_sections_rendered ?></div>
   <?php if ($terms): ?>

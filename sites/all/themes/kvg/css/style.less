@@ -36,7 +36,7 @@
 .image-curl-after {
   /*   for the object with ':after' */
   z-index: -1; 
-/*   position: absolute;  */
+  position: absolute; 
   background: transparent; 
   width: 70%; 
   height: 55%; 
@@ -53,7 +53,7 @@
 .image-curl-before {
   /*   for the object with ':before' */
   z-index: -2; 
-/*   position: absolute;  */
+  position: absolute; 
   background: transparent; 
   width: 70%; 
   height: 55%; 
@@ -68,7 +68,7 @@
   -moz-box-shadow: 0 8px 16px rgba(0, 0, 0, .6); 
 }
 
-.col(@cols: 2, @gap: 20px) {    
+.col(@cols: 2, @gap: 30px) {    
   -webkit-column-count : @cols;
   -webkit-column-gap : @gap;
   -moz-column-count : @cols;
@@ -124,6 +124,15 @@
   color: @black;  
   .text-drop-shadow(@shadow);
 }
+
+.box-corners(@top_left: 10px, @top_right: 10px, @bottom_right: 10px, @bottom_left: 10px) {
+  border-radius: @top_left @top_right @bottom_right @bottom_left;
+  -moz-border-radius: @top_left @top_right @bottom_right @bottom_left;
+  -webkit-border-bottom-right-radius: @bottom_right;
+  -webkit-border-bottom-left-radius: @bottom_left;
+  -webkit-border-top-right-radius: @top_right;
+}
+
 /************************** DRUPAL */
 .messages {
   padding: 20px;
@@ -134,9 +143,11 @@
 
 /************************** BASE */
 body {
+  background: url(../images/lines.png), url(../images/big-lines.png);
   background-color: @lake;
   font-size: 14pt;
-  font-family:"Trebuchet MS", Trebuchet, 'Lucida Sans Unicode', 'Lucida Grand', 'Lucida Sans', Arial, sans-serif;
+  font-family: "Arial", "Trebuchet", "Lucida Grand";
+  font-family: Trebuchet, Trebuchet MS, Lucida Sans Unicode, Lucida Grand, Lucida Sans, Arial, sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: normal;
@@ -185,10 +196,14 @@ a:hover {
   display: block;
   ul.main-menu {
     background-color: @sky;
-    .rounded-corners(10px);
-    padding: 3px;
+    .box-corners(0, 0, 10px, 10px);
+    padding: 4px;
     text-align: center;
-    margin: 4px 0px;
+    margin: 0 0 10px 0;
+    border-left: 2pt solid @white;
+    border-right: 2pt solid @white;
+    border-bottom: 2pt solid @white;
+    .box-drop-shadow(@black, 2px, 5px);
   }
   li {
     color: @white;    
@@ -209,21 +224,25 @@ a:hover {
     border: none;
   }
   .secondary-menu {
-    font-size: 70%;
+    font-size: 90%;
     text-transform: uppercase;
     background-color: none;
     li { 
       float: left;
       text-align: center;
       line-height: 1.4em;
-      background-color: @lake;
-      .rounded-corners(10px);
+      background-color: @orange;
+      .rounded-corners(5px);
       margin: 2px 5px 0 0;
-      padding: 2px;
-      width: 60px; 
+      padding: 4px;
+      width: 100px; 
       display: block;
+      font-weight: bold;
     }
-
+    a:hover {
+      text-decoration: none;
+      text-shadow: 0 0 5px @black, 1 1 2px @white;
+    }
   }
   .active-trail a{
     color: @red;
@@ -237,24 +256,97 @@ a:hover {
     margin: 0px;
     padding: 0px;
   }
+  border-left: 2pt solid @white;
+  border-right: 2pt solid @white;
+  border-bottom: 2pt solid @white;
+  .box-drop-shadow(@black, 2px, 5px);
   width: 80px;
   font-size: 80%;
   line-height: 1em;
   text-align: center;
   padding: 10px;
-  margin-top: 5px;
   color: @white;
   background-color: @red;
   text-shadow: 1px 1px 1px @black;
-  .rounded-corners(10px);
+  .box-corners(0, 0, 10px, 10px);
   a {
     text-transform: uppercase;
     vertical-align: middle;
   }
-  a:hover {
+  a:hover,  a.active {
     color: @yellow;
   }
+
 }
+
+.page-title {
+  .title-text; 
+  padding-bottom:20px;
+  text-align: center;
+  font-weight: bold; 
+}
+
+#sidebar-left {
+/*   background-color: rgba(109,150,166,0.4); */
+  padding: 10px 0 0 0;
+}
+.block-menu {
+  h2 {
+/*     background-color: @lake; */
+    color: @white;
+    margin: 0 6px 0px 15px;
+    text-align: center;
+    padding: 3px 0px;
+    background-color: @moss;
+    .box-drop-shadow;
+    width: 190px;
+    .box-corners(10px, 10px, 0, 0);
+    text-shadow: 2px 2px 4px @forest;
+  }
+  ul.menu {
+    margin: 0 6px 0 15px;
+    width: 177px;
+    padding: 0px;
+    .box-drop-shadow;
+    background-color: @white;
+    border-left: 10pt solid @moss;
+    .box-corners(0, 0, 10px, 0);
+    li {
+      list-style: none;
+      padding: 2px 10px;
+      list-style-position: inside;
+      a:hover {
+        text-shadow: 1px 1px 4px @yellow;
+      }
+    }
+    li.last {
+      .box-corners(0, 0, 10px, 10px);
+    }
+  }
+}
+#sidebar-left #block-menu-secondary-links {
+  h2 {
+    height: 0px;
+    padding: 0px;
+    margin: 0px;
+  }    
+  ul.menu {
+    border: 0px;
+    .rounded-corners(10px);
+    border: 6px solid @forest;
+    background-color: @forest;
+    color: @white;
+    font-weight: bold;
+    a {
+      color: @white;
+      text-shadow: 2px 2px 4px @black;
+    }
+    a:hover {
+      color: @yellow;
+    }
+  }
+}
+
 /************************* FRONT */
 .sub-article-image-horz, .lead-article-image-horz {
   img {
@@ -279,11 +371,11 @@ a:hover {
 }
 .lead-article-link, .lead-article-edit, .sub-article-link, .sub-article-edit {
   .buttons-view-edit-template;
-  float: none;
+/*   float: none; */
   display: inline-block;
 }
 .lead-article-link {
-  float: left;
+/*   float: left; */
 }
 .lead-article-edit, .sub-article-edit {
   .buttons-edit-overide;
@@ -295,7 +387,7 @@ a:hover {
   font-size: 70%;
   padding: 2px 6px;
 }
-.sub-article-edit {
+.sub-article-edit, .sub-article-link {
   float: right;
   clear: both;
 }
@@ -314,16 +406,40 @@ a:hover {
   padding-top: 20px;
 }
 
+/* embedded links */
+#embed-browse-directory,
+#embed-browse-articles,
+#embed-browse-guide {
+  text-shadow: 2px 2px 4px @black;
+  .box-drop-shadow(@forest, 2px, 8px);
+  float: left;
+  padding: 6px;
+  width: 180px;
+  margin: 5px;
+  .rounded-corners;
+  background-color: @moss;
+  color: @white;
+  text-align: center;
+}
+#embed-browse-directory:hover,
+#embed-browse-articles:hover,
+#embed-browse-guide:hover {
+  background-color: @orange;
+}
+#embed-browse-directory {
+  background-color: @lake;
+}
 /***************************** DIRECTORY LISTING */
-.item-list {
-  li.views-row-odd {
-    background-color: rgba(212,105,99,.2);
-  }
-  li.views-row{
-    padding: 15px;
+.directory-listing {
+  list-style: none;
+  .directory-item {
+    padding: 10px 15px;
     list-style-type: none;
     border-top: solid 1pt @salmon;
     margin: 0px;
+  }
+  .odd {
+    background-color: rgba(212,105,99,.1);
   }
 }
 .views-field-title {
@@ -345,11 +461,11 @@ a:hover {
 /* address */
 .views-field-field-phone-value, 
 .views-field-city,
-.views-field-street{
+.views-field-street,
+.views-field-field-section-value {
   font-size: small;
   color: @black;
   line-height: 1.1em;
-  display:inline-table;
   margin-right: 5px;
   br, p {display: inline;}
 }
@@ -424,8 +540,9 @@ a:hover {
 }
 .articlepage-title {
   clear: both;
-  .title-text(18pt);
+  .title-text(20pt, @salmon);
   padding-top: 30px;
+  font-weight: bold;
 }
 .articlepage-link, .articlepage-edit, .reference-link {
   .buttons-view-edit-template;
@@ -460,4 +577,65 @@ a:hover {
 .reference-title {
   .title-text(26px);
   text-align: center;
+}
+/*************************** Browser */
+.view-id-visitor_guide {
+  .views-field-title {
+    text-align: center;
+    font-size: small;
+    padding: 0px;
+    margin: 0px;
+    line-height: 1em;
+  }
+  .views-field-field-image-fid {
+    padding: 5px 10px;
+  }
+}
+.view-display-id-attachment_1 {
+  .views-field-tid {
+    font-size: 60%;
+    width: 300px;
+    line-height: 1.4em;
+  }
+  .views-label-tid {
+    font-weight: bold;
+    font-size: 110%;
+  }
+}
+
+/*************************** WEBFORM */
+.webform-component-fieldset {
+  .form-item {
+    margin-top: 8px 0px;
+  }
+  border: 1pt solid @forest;
+  .rounded-corners(25px);
+  legend {
+    font-size: larger;
+    font-weight: 700;
+    background-color: @forest;
+    color: @white;
+    padding: 3px 10px;
+    .rounded-corners(12px);
+  }
+}
+#webform-component-description__picture,
+#webform-component-links__location {
+  width: 320px;
+  overflow: hidden;
+}
+
+#webform-component-description__picture {
+  legend{
+    background-color: @forest;
+  }
+  float: left;
+  background-color: rgba(109,150,166,.2);
+}
+#webform-component-links__location {
+  legend{
+    background-color: @salmon;
+  }
+  float: right;
+  background-color: rgba(212,105,99,.2);
 }

@@ -13,6 +13,10 @@ function kvg_articles_content_default_fields() {
     'display_settings' => array(
       'weight' => '2',
       'parent' => 'group_ad_relations',
+      '5' => array(
+        'format' => 'default',
+        'exclude' => 1,
+      ),
       'label' => array(
         'format' => 'hidden',
       ),
@@ -33,10 +37,6 @@ function kvg_articles_content_default_fields() {
         'exclude' => 0,
       ),
       '3' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-      '5' => array(
         'format' => 'default',
         'exclude' => 0,
       ),
@@ -84,6 +84,10 @@ function kvg_articles_content_default_fields() {
     'display_settings' => array(
       'weight' => '15',
       'parent' => 'group_images',
+      '5' => array(
+        'format' => 'article_page_box_default',
+        'exclude' => 0,
+      ),
       'label' => array(
         'format' => 'hidden',
       ),
@@ -104,10 +108,6 @@ function kvg_articles_content_default_fields() {
         'exclude' => 0,
       ),
       '3' => array(
-        'format' => 'image_plain',
-        'exclude' => 0,
-      ),
-      '5' => array(
         'format' => 'image_plain',
         'exclude' => 0,
       ),
@@ -160,6 +160,10 @@ function kvg_articles_content_default_fields() {
     'display_settings' => array(
       'weight' => '16',
       'parent' => 'group_images',
+      '5' => array(
+        'format' => 'article_page_box_default',
+        'exclude' => 0,
+      ),
       'label' => array(
         'format' => 'hidden',
       ),
@@ -180,10 +184,6 @@ function kvg_articles_content_default_fields() {
         'exclude' => 0,
       ),
       '3' => array(
-        'format' => 'image_plain',
-        'exclude' => 0,
-      ),
-      '5' => array(
         'format' => 'image_plain',
         'exclude' => 0,
       ),

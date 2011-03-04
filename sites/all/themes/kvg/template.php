@@ -177,3 +177,13 @@ function get_image($result) {
   
   return ($image);  
 }
+
+/**
+* Implementation of template_preprocess_views_view
+*/
+//function kvg_preprocess_views_view(&$vars, $hook) {
+//
+//  dsm($hook);
+//  $vars['section'] = $vars['view']->args[0];
+//
+//}

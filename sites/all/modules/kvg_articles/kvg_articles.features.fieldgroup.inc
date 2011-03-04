@@ -19,6 +19,10 @@ function kvg_articles_fieldgroup_default_groups() {
       ),
       'display' => array(
         'weight' => '11',
+        '5' => array(
+          'format' => 'fieldset',
+          'exclude' => 1,
+        ),
         'label' => 'hidden',
         'teaser' => array(
           'format' => 'hidden',
@@ -38,10 +42,6 @@ function kvg_articles_fieldgroup_default_groups() {
           'exclude' => 0,
         ),
         '3' => array(
-          'format' => 'fieldset',
-          'exclude' => 0,
-        ),
-        '5' => array(
           'format' => 'fieldset',
           'exclude' => 0,
         ),
@@ -70,6 +70,10 @@ function kvg_articles_fieldgroup_default_groups() {
       ),
       'display' => array(
         'weight' => '-2',
+        '5' => array(
+          'format' => 'hidden',
+          'exclude' => 0,
+        ),
         'label' => 'hidden',
         'teaser' => array(
           'format' => 'hidden',
@@ -89,10 +93,6 @@ function kvg_articles_fieldgroup_default_groups() {
           'exclude' => 0,
         ),
         '3' => array(
-          'format' => 'fieldset',
-          'exclude' => 0,
-        ),
-        '5' => array(
           'format' => 'fieldset',
           'exclude' => 0,
         ),

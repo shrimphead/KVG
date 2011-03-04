@@ -70,6 +70,7 @@
       <?php print $help; ?>
 
       <div id="main-content" class="region clear-block">
+        <?php if($title): ?>  <div class="page-title"><?Php print $title; ?></div><?php endif; ?>
         <?php print $content; ?>
       </div>
 
