@@ -34,6 +34,10 @@
     </div>
   <?php endif; ?>
 
+  <?php if ($pager): ?>
+    <?php print $pager; ?>
+  <?php endif; ?>
+
   <div class="pane-content">
     <?php print $rows; ?>
   </div>
@@ -49,4 +53,9 @@
       <?php print $more; ?>
     </div>
   <?php endif; ?>
+  
+  <?php if ($pager): ?>
+    <?php print $pager; ?>
+  <?php endif; ?>
+
 </div>

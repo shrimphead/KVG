@@ -98,7 +98,7 @@ function kvg_preprocess_node_directory(&$vars) {
   /*REFERENCE LINK */
   $vars['reference_link'] = l('Read More', $vars['path'], array('attributes' => array('class' => 'links reference-link')));
 
-//  dsm($vars);
+  dsm($vars);
 
 }
 
