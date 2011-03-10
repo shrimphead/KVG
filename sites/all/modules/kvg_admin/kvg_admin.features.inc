@@ -34,21 +34,6 @@ function kvg_admin_imagecache_default_presets() {
         ),
       ),
     ),
-    'visitor_guide_thumbnail' => array(
-      'presetname' => 'visitor_guide_thumbnail',
-      'actions' => array(
-        '0' => array(
-          'weight' => '0',
-          'module' => 'imagecache',
-          'action' => 'imagecache_scale',
-          'data' => array(
-            'width' => '60',
-            'height' => '160',
-            'upscale' => 0,
-          ),
-        ),
-      ),
-    ),
   );
   return $items;
 }

@@ -13,10 +13,6 @@ function kvg_articles_content_default_fields() {
     'display_settings' => array(
       'weight' => '2',
       'parent' => 'group_ad_relations',
-      '5' => array(
-        'format' => 'default',
-        'exclude' => 1,
-      ),
       'label' => array(
         'format' => 'hidden',
       ),
@@ -26,6 +22,10 @@ function kvg_articles_content_default_fields() {
       ),
       'full' => array(
         'format' => 'teaser',
+        'exclude' => 0,
+      ),
+      '5' => array(
+        'format' => 'default',
         'exclude' => 0,
       ),
       '4' => array(
@@ -84,19 +84,19 @@ function kvg_articles_content_default_fields() {
     'display_settings' => array(
       'weight' => '15',
       'parent' => 'group_images',
-      '5' => array(
-        'format' => 'article_page_box_default',
-        'exclude' => 0,
-      ),
       'label' => array(
         'format' => 'hidden',
       ),
       'teaser' => array(
-        'format' => 'front_page_lead_article_linked',
+        'format' => 'admin_thumbnail_default',
         'exclude' => 0,
       ),
       'full' => array(
         'format' => 'imagefield__lightbox2__article_horizontal__original',
+        'exclude' => 0,
+      ),
+      '5' => array(
+        'format' => 'article_page_box_default',
         'exclude' => 0,
       ),
       '4' => array(
@@ -160,10 +160,6 @@ function kvg_articles_content_default_fields() {
     'display_settings' => array(
       'weight' => '16',
       'parent' => 'group_images',
-      '5' => array(
-        'format' => 'article_page_box_default',
-        'exclude' => 0,
-      ),
       'label' => array(
         'format' => 'hidden',
       ),
@@ -173,6 +169,10 @@ function kvg_articles_content_default_fields() {
       ),
       'full' => array(
         'format' => 'imagefield__lightbox2__article_vertical__original',
+        'exclude' => 0,
+      ),
+      '5' => array(
+        'format' => 'article_page_box_default',
         'exclude' => 0,
       ),
       '4' => array(

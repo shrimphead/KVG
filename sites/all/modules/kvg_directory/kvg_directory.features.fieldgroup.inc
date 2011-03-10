@@ -18,7 +18,7 @@ function kvg_directory_fieldgroup_default_groups() {
         'description' => '',
       ),
       'display' => array(
-        'weight' => '-5',
+        'weight' => '-6',
         'label' => 'hidden',
         'teaser' => array(
           'format' => 'hidden',
@@ -51,7 +51,7 @@ function kvg_directory_fieldgroup_default_groups() {
         ),
       ),
     ),
-    'weight' => '-5',
+    'weight' => '-6',
     'fields' => array(
       '0' => 'field_hours',
       '1' => 'field_phone',
@@ -72,7 +72,7 @@ function kvg_directory_fieldgroup_default_groups() {
         'description' => '',
       ),
       'display' => array(
-        'weight' => '-6',
+        'weight' => '-8',
         'label' => 'hidden',
         'teaser' => array(
           'format' => 'no_style',
@@ -105,7 +105,7 @@ function kvg_directory_fieldgroup_default_groups() {
         ),
       ),
     ),
-    'weight' => '-6',
+    'weight' => '-8',
     'fields' => array(
       '0' => 'field_section',
       '1' => 'field_year',
@@ -125,15 +125,17 @@ function kvg_directory_fieldgroup_default_groups() {
         'description' => '',
       ),
       'display' => array(
-        'description' => '',
+        'weight' => '-5',
+        'label' => 'hidden',
         'teaser' => array(
-          'format' => 'fieldset',
+          'format' => 'hidden',
           'exclude' => 0,
         ),
         'full' => array(
           'format' => 'fieldset',
           'exclude' => 0,
         ),
+        'description' => '',
         '4' => array(
           'format' => 'fieldset',
           'exclude' => 0,
@@ -154,10 +156,9 @@ function kvg_directory_fieldgroup_default_groups() {
           'format' => 'fieldset',
           'exclude' => 0,
         ),
-        'label' => 'above',
       ),
     ),
-    'weight' => '-4',
+    'weight' => '-5',
     'fields' => array(
       '0' => 'field_image',
     ),

@@ -366,7 +366,8 @@ function kvg_admin_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('title', 'Administer Directory');
-  $handler->override_option('items_per_page', 0);
+  $handler->override_option('items_per_page', 20);
+  $handler->override_option('use_pager', '1');
   $handler->override_option('style_plugin', 'bulk');
   $handler->override_option('style_options', array(
     'grouping' => '',

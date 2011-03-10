@@ -17,8 +17,8 @@ function visitor_guide_browser_taxonomy_default_vocabularies() {
       'module' => 'features_keywords',
       'weight' => '0',
       'nodes' => array(
-        'visitor_guide_pages' => 'visitor_guide_pages',
         'article' => 'article',
+        'visitor_guide_pages' => 'visitor_guide_pages',
       ),
     ),
   );

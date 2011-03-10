@@ -34,6 +34,21 @@ function kvg_directory_imagecache_default_presets() {
         ),
       ),
     ),
+    'directory_image' => array(
+      'presetname' => 'directory_image',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '250',
+            'height' => '250',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
   );
   return $items;
 }

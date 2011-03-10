@@ -68,7 +68,7 @@ function visitor_guide_browser_content_default_fields() {
         ),
       ),
       'default_value_php' => NULL,
-      'label' => 'Listings',
+      'label' => 'More',
       'weight' => '-3',
       'description' => 'Include all ads that appear on this page.',
       'type' => 'nodereference_autocomplete',
@@ -247,7 +247,7 @@ function visitor_guide_browser_content_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Image');
-  t('Listings');
+  t('More');
   t('Year');
 
   return $fields;

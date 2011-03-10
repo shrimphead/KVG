@@ -48,23 +48,17 @@
  * @see template_preprocess_node()
  */
 ?>
-<div id="node-<?php print $node->nid; ?>" class="reference grid-5 reference-<?php print $type; ?> node<?php if ($sticky) { print ' sticky'; } ?><?php if (!$status) { print ' node-unpublished'; } ?> clear-block">
+<div id="node-<?php print $node->nid; ?>" class="reference grid-10 reference-<?php print $type; ?> node<?php if ($sticky) { print ' sticky'; } ?><?php if (!$status) { print ' node-unpublished'; } ?> ">
 <?php print $picture ?>
 
 <?php if (!$page): ?>
-  <h2 class="reference-title grid-5 alpha omega"><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
+  <h2 class="reference-title grid-10 alpha omega"><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
 <?php endif; ?>
-
-  <div class="meta reference-meta">
-  <?php if ($submitted): ?>
-    <span class="submitted"><?php print $submitted ?></span>
-  <?php endif; ?>
 
   <div class="content reference-content">
     <?php print $content ?>
   </div>
 
-  </div>
 
   <?php print $links; ?>
   <?php if($reference_link): ?>

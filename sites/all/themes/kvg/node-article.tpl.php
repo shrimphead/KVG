@@ -61,6 +61,9 @@
         <?php print $hor_image; ?>
       </div>
       <div class="article-body grid-10 alpha ">
+        <?php if ($map): ?>
+          <div class="article-map"><?php print $map ?></div>
+        <?php endif; ?>
         <?php print $body; ?>
       </div>
     <?php endif; ?>
@@ -71,12 +74,13 @@
       </div>
     <?php endif; ?>
 
-    <?php if ($vert_image): // if HORZ?>
+    <?php if ($vert_image): // if VERT ?>
         <div class="article-body grid-6 alpha ">
           <?php print $body; ?>
         </div>
         <div class="image vertical-image grid-6 omega">
           <?php print $vert_image; ?>
+          <?php print $map ?>
         </div>
     <?php endif; ?>
 

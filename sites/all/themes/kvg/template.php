@@ -12,7 +12,7 @@ function kvg_preprocess_page(&$vars) {
     $preset = 'front_page_logo';
     $alt_text = $vars['site_slogan'];
     $title = $vars['head_title'];
-    $vars['logo_header'] = theme('imagecache', $preset, 'logo.gif', $alt_text, $title, $attributes);  
+    $vars['logo_header'] = theme('imagecache', $preset, $vars['logo'], $alt_text, $title, $attributes);  
   }
 
 //  $vars['submit_directory_link'] = l('Submit Free Listing', 'listing/submit-directory-listing', 
@@ -46,13 +46,44 @@ function kvg_preprocess_node(&$vars, $hook) {
 */
 function kvg_preprocess_node_directory(&$vars) {
   /*********  RENDER DIRECTORY NODE ELEMENTS */
+  
+  /* FIELD REFERRERS */
+  if(count($vars['field_referrers'][0]['items']) > 0 ) {
+    foreach($vars['field_referrers'][0]['items'] as $referrer) {
+      dsm($referrer['nid']);
+    }
+  }
+  
+  /* OPTIONAL IMAGE */
+  if($vars['field_image'][0]['filepath']) {
+    $optional_image = $vars['field_image'][0]['filepath'];
+    $vars['optional_image'] = theme('imagecache', 'directory_image', $optional_image);
+  }
 
   /* MAP */
-  if($vars['locations']) {
-    $latitude = $vars['locations'][0]['latitude'];
-    $longitude = $vars['locations'][0]['longitude'];
-    $map_content = _kvg_map_content($vars['node']);  
-    $vars['map'] = gmap_simple_map($latitude, $longitude, '', $map_content, '14', 'default', TRUE);
+  if($vars['location']['latitude']) {
+    $latitude = $vars['location']['latitude'];
+    $longitude = $vars['location']['longitude'];
+    $map_content = _kvg_map_content($vars['node']);
+    $height = 'default';
+    $width = 'default';
+    
+    $vars['map'] = gmap_simple_map($latitude, $longitude, '', $map_content, '14', $width, $height, FALSE);
+  }
+  else {
+    $vars['map'] = '';
+  }
+
+  /* ADDRESS */
+  if($vars['location']['street'] || $vars['location']['additional']) {
+    $street       = ($vars['location']['street'])       ? '<span class="address-street">'     . $vars['location']['street']      . '</span>' : '';
+    $additional   = ($vars['location']['additional'])   ? '<span class="address-additional">' . $vars['location']['additional']  . '</span>' : '';
+    $city         = ($vars['location']['city'])         ? '<span class="address-city">'       . $vars['location']['city']        . '</span>' : '';
+    $province     = ($vars['location']['province'])     ? '<span class="address-province">'   . $vars['location']['province']    . '</span>' : '';
+    $postal_code  = ($vars['location']['postal_code'])  ? '<span class="address-postal_code">'. $vars['location']['postal_code'] . '</span>' : '';
+    $country      = ($vars['location']['country'])      ? '<span class="address-country">'    . $vars['location']['country']     . '</span>' : '';
+
+    $vars['address'] = $street . $additional . $city . $province . $postal_code . $country;
   }
     
   /* BODY */
@@ -66,7 +97,9 @@ function kvg_preprocess_node_directory(&$vars) {
   
   /*REFERENCE LINK */
   $vars['reference_link'] = l('Read More', $vars['path'], array('attributes' => array('class' => 'links reference-link')));
-  dsm($vars);
+
+//  dsm($vars);
+
 }
 
 /**
@@ -81,6 +114,22 @@ function kvg_preprocess_node_article(&$vars) {
     $vars['field_image_vertical'][0]['view'] : FALSE;
   
   $vars['body'] = $vars['node']->content['body']['#value'];
+  
+  /* MAP */
+  if($vars['location']['latitude']) {
+    $latitude = $vars['location']['latitude'];
+    $longitude = $vars['location']['longitude'];
+    $map_content = _kvg_map_content($vars['node']);
+    $width = '280px';
+    $height = '380px';
+    $vars['map'] = gmap_simple_map($latitude, $longitude, '', $map_content, '14', $width, $height, FALSE);
+  }
+  else {
+    $vars['map'] = '';
+  }
+}
+function kvg_nodereference_formatter_full_teaser($element) {
+//  dsm($element);
 }
 
 /**
@@ -147,7 +196,7 @@ function kvg_preprocess_search_result(&$vars) {
 //      . "<div class='search-edit grid-2'>" . l('<< Edit >>', $edit_link) . "</div>"      
 //      . "</div>";
 //  }
-  dsm($vars);
+//  dsm($vars);
 }
 
 /*

@@ -107,8 +107,8 @@ function kvg_directory_content_default_fields() {
     'field_name' => 'field_image',
     'type_name' => 'directory',
     'display_settings' => array(
-      'weight' => '-2',
-      'parent' => 'group_info',
+      'weight' => '-3',
+      'parent' => 'group_optional',
       'label' => array(
         'format' => 'hidden',
       ),
@@ -189,7 +189,7 @@ function kvg_directory_content_default_fields() {
         'format' => 'hidden',
       ),
       'teaser' => array(
-        'format' => 'image_logo_linked',
+        'format' => 'front_page_small_articles_default',
         'exclude' => 0,
       ),
       'full' => array(
@@ -297,6 +297,72 @@ function kvg_directory_content_default_fields() {
       'description' => 'Phone number',
       'type' => 'phone_textfield',
       'module' => 'phone',
+    ),
+  );
+
+  // Exported field: field_referrers
+  $fields['directory-field_referrers'] = array(
+    'field_name' => 'field_referrers',
+    'type_name' => 'directory',
+    'display_settings' => array(
+      'weight' => '5',
+      'parent' => '',
+      'label' => array(
+        'format' => 'hidden',
+      ),
+      'teaser' => array(
+        'format' => 'hidden',
+        'exclude' => 0,
+      ),
+      'full' => array(
+        'format' => 'teaser',
+        'exclude' => 0,
+      ),
+      '4' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '5' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'token' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+    ),
+    'widget_active' => '1',
+    'type' => 'nodereferrer',
+    'required' => '0',
+    'multiple' => '0',
+    'module' => 'nodereferrer',
+    'active' => '1',
+    'referrer_types' => array(
+      'article' => 'article',
+      'directory' => 'directory',
+      'visitor_guide_pages' => 0,
+      'webform' => 0,
+    ),
+    'referrer_fields' => array(
+      'field_directory_reference' => 'field_directory_reference',
+    ),
+    'referrer_nodes_per_page' => '0',
+    'referrer_pager_element' => '0',
+    'referrer_order' => 'TITLE_ASC',
+    'widget' => array(
+      'label' => 'Referrers',
+      'weight' => '5',
+      'description' => '',
+      'type' => 'nodereferrer_list',
+      'module' => 'nodereferrer',
     ),
   );
 
@@ -484,6 +550,7 @@ shopping|Shopping & Services',
   t('KVG Ad');
   t('Optional Image');
   t('Phone');
+  t('Referrers');
   t('Section');
   t('Website');
   t('Year');

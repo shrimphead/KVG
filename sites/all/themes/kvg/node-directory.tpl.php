@@ -49,7 +49,7 @@
  */
 ?>
 <div class="meta">
-  <div class="section sections-inline">Filed under: <?php print $field_sections_rendered ?></div>
+  <div class="section sections-inline">View Similar: <?php print $field_sections_rendered ?></div>
   <?php if ($terms): ?>
     <div class="terms terms-inline"><?php print $terms ?></div>
   <?php endif;?>
@@ -62,7 +62,17 @@
   <div class="content grid-12 alpha omega">
 
     <div class="directory-image grid-5 alpha">
-      <?php print $field_kvg_ad_rendered; ?>
+      <?php if ($field_kvg_ad_rendered): ?>
+        <?php print $field_kvg_ad_rendered; ?>
+      <?php endif; ?>
+      <?php if ($optional_image): ?>
+        <div class="image-optional"><?php print $optional_image; ?></div>
+      <?php endif; ?>
+      <?php if($field_referrers_rendered): ?>
+        <div class="directory-referrers">
+          <h3 class="node-referrer-title">Related Articles</h3>
+          <?php print $field_referrers_rendered; ?></div>
+      <?php endif ?>
     </div>
 
     <div class="directory-body grid-7 omega">
@@ -73,6 +83,10 @@
         <?php print $field_phone_rendered; ?>
         <?php print $field_website_rendered; ?>
         <?php print $field_email_rendered; ?>
+        <?php if($address) : ?>
+          <div class="directory-address"><span class="address-title">Address:</span>
+          <?php print $address; ?></div>
+        <?php endif; ?>
       </div>
 
 

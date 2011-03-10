@@ -14,7 +14,8 @@
 
 <body class="<?php print $body_classes; ?> show-grid">
   <div id="offline-page" class="container-16 clear-block">
-  
+    <img src="http://visitkaslo.com/sites/all/themes/kvg/images/offline-page.jpg" alt="offline-page" width="960" height="480" 
+      style=" display:block; margin-left:auto; margin-top: 180px; margin-right: auto; -webkit-box-shadow: 4px 4px 8px #000; -moz-box-shadow: 4px 4px 8px #000; box-shadow: 4px 4px 8px #000;"/>
       <?php print $messages; ?>
   
 
