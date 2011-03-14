@@ -34,6 +34,21 @@ function kvg_admin_imagecache_default_presets() {
         ),
       ),
     ),
+    'result_image_scale' => array(
+      'presetname' => 'result_image_scale',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '220',
+            'height' => '220',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
   );
   return $items;
 }

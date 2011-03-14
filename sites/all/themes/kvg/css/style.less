@@ -585,7 +585,7 @@ a:hover {
   padding-top: 30px;
   font-weight: bold;
 }
-.articlepage-link, .articlepage-edit, .reference-link {
+.articlepage-link, .articlepage-edit, .reference-link, .node_read_more {
   .buttons-view-edit-template;
   margin: 10px 0 0 0;
 }
@@ -598,10 +598,26 @@ a:hover {
   position: relative;
 }
 /* referenced articles */
+.referenced-header {
+  background-color: rgba(74,112,141, .8);
+  .rounded-corners(25px);
+  padding: 10px;
+  color: @white;
+  margin-bottom: 10px;
+  text-align: center;
+  
+}
 .reference {
   .reference-content {
     display: inline;
     height: 70px;
+    ul, p {
+      overflow: hidden;
+      li{
+        list-style-position: inside;
+/*         list-style: circle; */
+      }
+    }
   }
   background-color: rgba(106, 150, 166, .2);
   .rounded-corners(25px);
@@ -636,7 +652,7 @@ a:hover {
     padding: 0 0 10px 0;
   }
 }
-/*************************** Browser */
+/*************************** BROWSER */
 .view-id-visitor_guide {
   .views-field-title {
     text-align: center;
@@ -696,4 +712,23 @@ a:hover {
   }
   float: right;
   background-color: rgba(212,105,99,.2);
+}
+
+/*************************** SEARCH RESULTS */
+.search-title {
+  h3{
+    margin: 10px 0 0 0;
+  }
+  .title-text(20px);
+}
+.search-results.grid-12 {
+  padding: 0 0 30px 0;
+  border-bottom: 1pt solid @sky;
+  .search-image { padding: 20px; }
+  .search-link, .search-edit {
+    .buttons-view-edit-template;  
+  }
+  .search-edit {
+    .buttons-edit-overide;
+  }
 }

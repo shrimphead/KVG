@@ -48,6 +48,20 @@
  * @see template_preprocess_node()
  */
 ?>
+<?php if($teaser): ////////////// TEASER  ?>
+  <h2><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
+  <?php print $teaser_body; ?>
+  <?php print $links; ?>
+
+
+
+
+
+
+
+<?php else: ////////// FUL NODE ?>
+
+
 <div class="meta">
   <div class="section sections-inline">View Similar: <?php print $field_sections_rendered ?></div>
   <?php if ($terms): ?>
@@ -101,3 +115,6 @@
 
 
 </div>
+
+
+<? endif; ?>

@@ -38,7 +38,8 @@ function kvg_preprocess_node(&$vars, $hook) {
   if (function_exists($function)) {
     $function($vars);
   }
-
+  
+  // dsm($vars);
 }
 
 /**
@@ -46,13 +47,6 @@ function kvg_preprocess_node(&$vars, $hook) {
 */
 function kvg_preprocess_node_directory(&$vars) {
   /*********  RENDER DIRECTORY NODE ELEMENTS */
-  
-  /* FIELD REFERRERS */
-  if(count($vars['field_referrers'][0]['items']) > 0 ) {
-    foreach($vars['field_referrers'][0]['items'] as $referrer) {
-      dsm($referrer['nid']);
-    }
-  }
   
   /* OPTIONAL IMAGE */
   if($vars['field_image'][0]['filepath']) {
@@ -95,10 +89,11 @@ function kvg_preprocess_node_directory(&$vars) {
     $vars['field_sections_rendered'] .= " & " . l($vars['field_section'][1]['safe'], 'directory/' . ($vars['field_section']['1']['value']), array('attributes' => array('class' => 'link directory-section-link',)));  
   }
   
-  /*REFERENCE LINK */
+  /*REFERENCE */
   $vars['reference_link'] = l('Read More', $vars['path'], array('attributes' => array('class' => 'links reference-link')));
+  $vars['teaser_body'] = word_trim(strip_tags($vars['body']), 12, TRUE);
 
-  dsm($vars);
+//  dsm($vars);
 
 }
 
@@ -127,9 +122,11 @@ function kvg_preprocess_node_article(&$vars) {
   else {
     $vars['map'] = '';
   }
-}
-function kvg_nodereference_formatter_full_teaser($element) {
-//  dsm($element);
+  
+  
+  /* TEASER DATA FOR NODE REFERENCE */
+  $vars['teaser_body'] = word_trim(strip_tags($vars['body']), 12, TRUE);
+  dsm($vars);
 }
 
 /**
@@ -188,15 +185,6 @@ function kvg_preprocess_search_result(&$vars) {
     $vars['search_image'] = get_image($result); // custom image function
     $vars['search_edit_link'] = l('<< Edit >>', $base_path . 'node/' . $result['node']->nid . '/edit');
     
-//    $result = "<div class='search-results grid-12 alpha omega'>" 
-//      . "<div class='search-title grid-12 alpha omega'>" . $body . "</div>"
-//      . "<div class='search-image grid-4 alpha'>" . $image . "</div>"
-//      . "<div class='search-snippet grid-6'>" . $body . "</div>"
-//      . "<div class='search-link grid-2'>" . l('More >>', $link) . "</div>"
-//      . "<div class='search-edit grid-2'>" . l('<< Edit >>', $edit_link) . "</div>"      
-//      . "</div>";
-//  }
-//  dsm($vars);
 }
 
 /*
@@ -217,8 +205,15 @@ function get_image($result) {
     $image_path = NULL;
   }
   
+  if( $result['node']->type == 'directory' ) {
+    $image_cache_style = 'result_image_scale';
+  }
+  else {
+    $image_cache_style = 'article_page_box';
+  }
+  
   if($image_path) {
-    $image = theme('imagecache', 'article_page_box', $image_path, $title, $title);
+    $image = theme('imagecache', $image_cache_style, $image_path, $title, $title);
   }
   else {
     $image = '<div style="width:300px;">&nbsp;</div>';
@@ -227,12 +222,68 @@ function get_image($result) {
   return ($image);  
 }
 
+
 /**
-* Implementation of template_preprocess_views_view
+* Implementation of kvg_nodereference_formatter_full_teaser
 */
-//function kvg_preprocess_views_view(&$vars, $hook) {
-//
-//  dsm($hook);
-//  $vars['section'] = $vars['view']->args[0];
-//
-//}
+// function kvg_nodereference_formatter_full_teaser($vars) {
+// dsm('test');
+//   static $recursion_queue = array();
+//   $output = '';
+//   if (!empty($element['#item']['safe']['nid'])) {
+//     $nid = $element['#item']['safe']['nid'];
+//     $node = $element['#node'];
+//     $field = content_fields($element['#field_name'], $element['#type_name']);
+//     // If no 'referencing node' is set, we are starting a new 'reference thread'
+//     if (!isset($node->referencing_node)) {
+//       $recursion_queue = array();
+//     }
+//     $recursion_queue[] = $node->nid;
+//     if (in_array($nid, $recursion_queue)) {
+//       // Prevent infinite recursion caused by reference cycles:
+//       // if the node has already been rendered earlier in this 'thread',
+//       // we fall back to 'default' (node title) formatter.
+//       return theme('nodereference_formatter_default', $element);
+//     }
+//     if ($referenced_node = node_load($nid)) {
+//       $referenced_node->referencing_node = $node;
+//       $referenced_node->referencing_field = $field;
+//       $output = node_view($referenced_node, $element['#formatter'] == 'teaser');
+//     }
+//   }
+//   return $output;
+// }
+
+
+/**
+* Trim a string to a given number of words
+*
+* From Lullabot: http://www.lullabot.com/articles/trim-a-string-to-a-given-word-count
+*
+* @param $string
+*   the original string
+* @param $count
+*   the word count
+* @param $ellipsis
+*   TRUE to add "..."
+*   or use a string to define other character
+* @param $node
+*   provide the node and we'll set the $node->
+*   
+* @return
+*   trimmed string with ellipsis added if it was truncated
+*/
+function word_trim($string, $count, $ellipsis = FALSE){
+  $words = explode(' ', $string);
+  if (count($words) > $count){
+    array_splice($words, $count);
+    $string = implode(' ', $words);
+    if (is_string($ellipsis)){
+      $string .= $ellipsis;
+    }
+    elseif ($ellipsis){
+      $string .= '&hellip;';
+    }
+  }
+  return $string;
+}

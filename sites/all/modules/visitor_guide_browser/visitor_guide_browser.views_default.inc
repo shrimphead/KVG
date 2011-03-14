@@ -541,7 +541,7 @@ function visitor_guide_browser_views_default_views() {
       ),
       'relationship' => 'none',
       'default_options_div_prefix' => '',
-      'default_argument_fixed' => '1',
+      'default_argument_fixed' => '01',
       'default_argument_user' => 0,
       'default_argument_php' => '',
       'validate_argument_node_type' => array(

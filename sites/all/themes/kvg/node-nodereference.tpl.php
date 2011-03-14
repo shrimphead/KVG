@@ -48,7 +48,7 @@
  * @see template_preprocess_node()
  */
 ?>
-<div id="node-<?php print $node->nid; ?>" class="reference grid-10 reference-<?php print $type; ?> node<?php if ($sticky) { print ' sticky'; } ?><?php if (!$status) { print ' node-unpublished'; } ?> ">
+<div id="node-<?php print $node->nid; ?>" class="reference grid-10 alpha omega reference-<?php print $type; ?> node<?php if ($sticky) { print ' sticky'; } ?><?php if (!$status) { print ' node-unpublished'; } ?> ">
 <?php print $picture ?>
 
 <?php if (!$page): ?>
@@ -59,8 +59,6 @@
     <?php print $content ?>
   </div>
 
-
-  <?php print $links; ?>
   <?php if($reference_link): ?>
     <div class="reference-link"><?php print $reference_link ?></div>
   <?php endif; ?>

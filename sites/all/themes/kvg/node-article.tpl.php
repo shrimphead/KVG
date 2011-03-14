@@ -48,6 +48,16 @@
  * @see template_preprocess_node()
  */
 ?>
+<?php if($teaser):  ///////////// TEASER ?>
+  <h2><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
+  <?php print $teaser_body; ?>
+  <div class="teaser-links">  <?php print $links; ?> </div>
+
+
+
+
+<?php else: ////////// FULL NODE ?>
+
 <div id="node-<?php print $node->nid; ?>" class="node<?php if ($sticky) { print ' sticky'; } ?><?php if (!$status) { print ' node-unpublished'; } ?> clear-block">
 <?php #print $picture ?>
 
@@ -85,11 +95,11 @@
     <?php endif; ?>
 
     <?php if ($field_directory_reference_rendered) : ?>
-      <div class="grid-12 alpha omega referenced-header">
+      <div class="grid-10 referenced-header alpha ">
         You might also like:
       </div>
 
-      <div class="grid-12 articles-referenced">
+      <div class="grid-12 articles-referenced alpha omega">
         <?php print $field_directory_reference_rendered; ?>
       </div>
     <?php endif; ?>
@@ -97,3 +107,4 @@
 
   <?php print $links; ?>
 </div>
+<?php endif; ?>
