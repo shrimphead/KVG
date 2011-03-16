@@ -13,6 +13,14 @@ function kvg_articles_content_default_fields() {
     'display_settings' => array(
       'weight' => '2',
       'parent' => 'group_ad_relations',
+      '2' => array(
+        'format' => 'hidden',
+        'exclude' => 1,
+      ),
+      '3' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
       'label' => array(
         'format' => 'hidden',
       ),
@@ -29,14 +37,6 @@ function kvg_articles_content_default_fields() {
         'exclude' => 0,
       ),
       '4' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-      '2' => array(
-        'format' => 'default',
-        'exclude' => 0,
-      ),
-      '3' => array(
         'format' => 'default',
         'exclude' => 0,
       ),
@@ -84,6 +84,14 @@ function kvg_articles_content_default_fields() {
     'display_settings' => array(
       'weight' => '15',
       'parent' => 'group_images',
+      '2' => array(
+        'format' => 'result_image_scale_default',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'result_image_scale_default',
+        'exclude' => 0,
+      ),
       'label' => array(
         'format' => 'hidden',
       ),
@@ -100,14 +108,6 @@ function kvg_articles_content_default_fields() {
         'exclude' => 0,
       ),
       '4' => array(
-        'format' => 'image_plain',
-        'exclude' => 0,
-      ),
-      '2' => array(
-        'format' => 'image_plain',
-        'exclude' => 0,
-      ),
-      '3' => array(
         'format' => 'image_plain',
         'exclude' => 0,
       ),
@@ -160,11 +160,19 @@ function kvg_articles_content_default_fields() {
     'display_settings' => array(
       'weight' => '16',
       'parent' => 'group_images',
+      '2' => array(
+        'format' => 'result_image_scale_default',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'result_image_scale_default',
+        'exclude' => 0,
+      ),
       'label' => array(
         'format' => 'hidden',
       ),
       'teaser' => array(
-        'format' => 'front_page_small_articles_linked',
+        'format' => 'admin_thumbnail_default',
         'exclude' => 0,
       ),
       'full' => array(
@@ -176,14 +184,6 @@ function kvg_articles_content_default_fields() {
         'exclude' => 0,
       ),
       '4' => array(
-        'format' => 'image_plain',
-        'exclude' => 0,
-      ),
-      '2' => array(
-        'format' => 'image_plain',
-        'exclude' => 0,
-      ),
-      '3' => array(
         'format' => 'image_plain',
         'exclude' => 0,
       ),

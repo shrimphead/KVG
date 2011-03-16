@@ -294,7 +294,9 @@ function kvg_articles_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('cache', array(
-    'type' => 'none',
+    'type' => 'time',
+    'results_lifespan' => '518400',
+    'output_lifespan' => '518400',
   ));
   $handler->override_option('title', 'All About Kaslo ');
   $handler->override_option('css_class', 'articles');
@@ -668,7 +670,9 @@ print l(\'Read The Kaslo Guide Online\', \'visitor-guide/1\', array(\'attributes
     'type' => 'none',
   ));
   $handler->override_option('cache', array(
-    'type' => 'none',
+    'type' => 'time',
+    'results_lifespan' => '21600',
+    'output_lifespan' => '21600',
   ));
   $handler->override_option('items_per_page', 1);
   $handler->override_option('distinct', 1);
@@ -765,7 +769,7 @@ print l(\'Read The Kaslo Guide Online\', \'visitor-guide/1\', array(\'attributes
       'empty_zero' => 0,
       'link_to_node' => 0,
       'label_type' => 'none',
-      'format' => 'front_page_small_articles_default',
+      'format' => 'front_page_small_articles_linked',
       'multiple' => array(
         'group' => TRUE,
         'multiple_number' => '',
@@ -776,6 +780,47 @@ print l(\'Read The Kaslo Guide Online\', \'visitor-guide/1\', array(\'attributes
       'id' => 'field_image_horizontal_fid',
       'table' => 'node_data_field_image_horizontal',
       'field' => 'field_image_horizontal_fid',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+    'field_image_fid' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'label_type' => 'none',
+      'format' => 'front_page_small_articles_linked',
+      'multiple' => array(
+        'group' => TRUE,
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_reversed' => FALSE,
+      ),
+      'exclude' => 0,
+      'id' => 'field_image_fid',
+      'table' => 'node_data_field_image',
+      'field' => 'field_image_fid',
       'override' => array(
         'button' => 'Use default',
       ),

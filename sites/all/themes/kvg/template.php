@@ -39,7 +39,47 @@ function kvg_preprocess_node(&$vars, $hook) {
     $function($vars);
   }
   
-  // dsm($vars);
+  /* TEASER DATA FOR NODE REFERENCE */
+  if($vars['teaser'] == TRUE) {
+//    if($vars['type'] == 'article' ) {
+//    }
+//    if($vars['type'] == 'directory' ) {
+//    }
+
+    /* TEASER BODY */
+    $teaser_body = word_trim(strip_tags($vars['node']->content['body']['#value']), 50, TRUE);
+    $vars['teaser_body'] = $teaser_body;
+    $vars['teaser_short_body'] = word_trim(strip_tags($vars['content']), 20, TRUE);
+    
+    /* TEASER IMAGE */
+    if($vars['field_image_horizontal'][0]['filepath'] == TRUE) {
+      $teaser_image = $vars['field_image_horizontal'][0]['filepath'];
+    }
+    elseif($vars['field_image_vertical'][0]['filepath'] == TRUE) {
+      $teaser_image = $vars['field_image_vertical'][0]['filepath'];
+    }
+    elseif($vars['field_kvg_ad'][0]['filepath'] == TRUE) {
+      $teaser_image = $vars['field_kvg_ad'][0]['filepath'];
+    }
+    elseif($vars['field_image'][0]['filepath'] == TRUE) {
+      $teaser_image = $vars['field_image'][0]['filepath'];
+    }
+
+    /* TEASER IMAGE */
+    if ($teaser_image) {      
+      $attributes = array('class' => 'teaser-image-reference',);
+      $title = $vars['title'];
+      $vars['teaser_image'] = theme('imagecache', 'image_logo', $teaser_image, $title, $title, $attributes);    
+    }
+    
+    /* TEASER LINK */
+    //if(!$vars['reference_link']) {
+    //  $vars['reference_link'] = $vars['links'];
+    //}
+    $attributes = array('attributes' => array('class' => 'links reference-links read-more-link'));
+    $vars['reference_link'] = l('Read more', $vars['path'], $attributes);
+  }
+//    dsm($vars);
 }
 
 /**
@@ -90,10 +130,9 @@ function kvg_preprocess_node_directory(&$vars) {
   }
   
   /*REFERENCE */
-  $vars['reference_link'] = l('Read More', $vars['path'], array('attributes' => array('class' => 'links reference-link')));
-  $vars['teaser_body'] = word_trim(strip_tags($vars['body']), 12, TRUE);
+  $vars['reference_link'] = l('Read more', $vars['path'], array('attributes' => array('class' => 'links reference-link')));
+//  $vars['teaser_body'] = $vars['body'] ; //word_trim(strip_tags($vars['body']), 12, TRUE);
 
-//  dsm($vars);
 
 }
 
@@ -123,10 +162,6 @@ function kvg_preprocess_node_article(&$vars) {
     $vars['map'] = '';
   }
   
-  
-  /* TEASER DATA FOR NODE REFERENCE */
-  $vars['teaser_body'] = word_trim(strip_tags($vars['body']), 12, TRUE);
-  dsm($vars);
 }
 
 /**
@@ -227,7 +262,6 @@ function get_image($result) {
 * Implementation of kvg_nodereference_formatter_full_teaser
 */
 // function kvg_nodereference_formatter_full_teaser($vars) {
-// dsm('test');
 //   static $recursion_queue = array();
 //   $output = '';
 //   if (!empty($element['#item']['safe']['nid'])) {

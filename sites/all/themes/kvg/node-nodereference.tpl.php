@@ -55,11 +55,17 @@
   <h2 class="reference-title grid-10 alpha omega"><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
 <?php endif; ?>
 
+  <?php //if ($teaser_image): ?>
+    <div class="reference-image">
+      <a href="<?php print $node_url ?>" title="<?php print $title ?>" class="reference-image-link">
+        <?php print $teaser_image ?>
+      </a>
+    </div>  
+  <?php// endif; ?>
   <div class="content reference-content">
-    <?php print $content ?>
+  <?php print $teaser_body; ?>
+    <?php if($reference_link): ?>
+      <div class="reference-link clear-block"><?php print $reference_link ?></div>
+    <?php endif; ?>
   </div>
-
-  <?php if($reference_link): ?>
-    <div class="reference-link"><?php print $reference_link ?></div>
-  <?php endif; ?>
 </div>

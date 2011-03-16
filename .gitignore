@@ -1,2 +1,6 @@
 .DS_Store
 *.cache
+sites/default/files/imagecache/*
+sites/default/files/imagefield_thumbs/*
+sites/default/files/css/*
+sites/default/files/js/*

@@ -50,16 +50,13 @@
 ?>
 <?php if($teaser): ////////////// TEASER  ?>
   <h2><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
-  <?php print $teaser_body; ?>
-  <?php print $links; ?>
+  <?php print $teaser_short_body; ?>
+  <span class="teaser-links clear-block"> 
+    <?php print $links; ?> 
+  </span>
 
 
-
-
-
-
-
-<?php else: ////////// FUL NODE ?>
+<?php else: ////////// FULL NODE ?>
 
 
 <div class="meta">

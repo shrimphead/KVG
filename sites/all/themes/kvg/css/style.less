@@ -463,6 +463,12 @@ a:hover {
     display: inline;
   }
 }
+
+.directory-body {
+  p {
+    padding: 2px 0px;
+  }
+}
 /* address */
 .directory-address {
   font-size: 90%;
@@ -556,18 +562,32 @@ a:hover {
   margin: 20px 40px 0 0;
   .node-referrer-title {
     text-align: center;
-    padding: 5px;
+    padding: 0;
+    margin: 0;
     text-transform: uppercase;
-    }
-  h2 { margin: 0px; }
+  }
+  h2{ 
+    margin:4px 0 0 10px; 
+    padding: 10px 2px 4px 2px;
+  }
   ul li { 
     list-style: none; 
     margin: 0px; 
-    padding: 0px; 
+    padding: 0px;
+    clear: both; 
+    font-size: 80%;
+    line-height: 1.2em;
     }
   .node_read_more {
     text-align: right;
-    }
+    font-size: 80%;
+    margin: 4px;
+  }
+  .teaser-links {
+    display: inline;
+    clear: left;
+    float: right;
+  }
 }
 /************************* ARTICLE PAGE */
 .articlepage-images img, .article-body .image img {
@@ -585,11 +605,17 @@ a:hover {
   padding-top: 30px;
   font-weight: bold;
 }
-.articlepage-link, .articlepage-edit, .reference-link, .node_read_more {
+.article-body {
+  a { 
+    color: @wine;
+    font-weight: bold;
+  }
+}
+.articlepage-link, .articlepage-edit, .reference-link, .node_read_more, .nodequeue-ajax-toggle {
   .buttons-view-edit-template;
   margin: 10px 0 0 0;
 }
-.articlepage-edit {
+.articlepage-edit, .nodequeue-ajax-toggle {
   .buttons-edit-overide;
 }
 .article-map {
@@ -610,20 +636,19 @@ a:hover {
 .reference {
   .reference-content {
     display: inline;
-    height: 70px;
+    overflow: hidden;    
     ul, p {
       overflow: hidden;
       li{
         list-style-position: inside;
-/*         list-style: circle; */
+        clear: both;
       }
     }
+    h2 a { clear: both; }
   }
   background-color: rgba(106, 150, 166, .2);
   .rounded-corners(25px);
   padding: 15px;
-  font-size: 70%;
-  line-height: 1.4em;
   p {
     text-align: left;
     padding: 0 10px 0 0;
@@ -650,6 +675,13 @@ a:hover {
     .title-text(26px);
     text-align: center;
     padding: 0 0 10px 0;
+  }
+  .reference-image {
+    padding-right: 15px;
+    float: left;
+    .teaser-image-reference {.image-curl; }
+    .teaser-image-reference:after {.image-curl-after; }
+    .teaser-image-reference:before {.image-curl-before; }
   }
 }
 /*************************** BROWSER */

@@ -324,7 +324,9 @@ function visitor_guide_browser_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('cache', array(
-    'type' => 'none',
+    'type' => 'time',
+    'results_lifespan' => '518400',
+    'output_lifespan' => '518400',
   ));
   $handler->override_option('title', 'Visitor Guide');
   $handler->override_option('use_ajax', TRUE);
