@@ -116,3 +116,12 @@ a:hover{color:#a32b26;}
 .search-results.grid-12 .search-link a:hover,.search-results.grid-12 .search-edit a:hover{background:#590d0b;}
 .search-results.grid-12 .search-link a:viewed,.search-results.grid-12 .search-edit a:viewed{background-color:#4a708d;}
 .search-results.grid-12 .search-edit a{font-size:smaller;background-color:#a32b26;}
+.view-directory-map{}.view-directory-map .map-section-listing-title{margin:20px 0 0 0;}
+.view-directory-map .map-section-title,.view-directory-map .map-section-listing-list-item{margin:0px;padding:0px;}
+.view-directory-map .map-section-listing-list{-webkit-column-count:4;-webkit-column-gap:20px;-moz-column-count:4;-moz-column-gap:20px;line-height:1em;}.view-directory-map .map-section-listing-list li{margin:0px;padding:0px;list-style:none;padding-bottom:4px;}.view-directory-map .map-section-listing-list li .map-section-listing-list-item{font-size:60%;color:#6d96a6;}
+.view-directory-map .map-section-listing-list li p{padding:0;margin:0;}
+.view-directory-map .map-section-listing-list li a{font-size:small;font-weight:200;line-height:.8 em;margin-bottom:10px;padding:2px;}
+.view-directory-map .map-section-listing-list li a:hover{background-color:#fff8b2;color:#a32b26;}
+.view-directory-map .gmap-popup .views-field-teaser{font-size:small;display:inline;}
+.view-directory-map .gmap-popup .views-field-view-node{display:inline;}
+.view-directory-map .map-highlight{border-radius:15px;-moz-border-radius:15px;-webkit-border-radius:15px;background-color:rgba(154, 166, 68, 0.2);padding:10px 20px 5px 10px;margin-top:10px;}

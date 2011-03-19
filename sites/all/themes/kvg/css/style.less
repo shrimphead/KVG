@@ -764,3 +764,70 @@ a:hover {
     .buttons-edit-overide;
   }
 }
+
+/************************* MAP & DAYTRIPPER */
+.view-directory-map {
+  .map-section-listing-title { margin: 20px 0 0 0; }
+  .map-section-title, .map-section-listing-list-item { margin: 0px; padding: 0px; }
+  .map-section-listing-list { 
+    .col(4, 20px); 
+    line-height: 1em;
+    li {
+      .map-section-listing-list-item {
+        font-size: 60%;
+        color: @sky;
+      }
+      p { padding: 0; margin: 0; }
+      margin: 0px; padding: 0px;
+      list-style: none;
+      padding-bottom: 4px;
+      a {
+        font-size: small;
+        font-weight: 200;
+        line-height: .8 em;
+        margin-bottom: 10px;
+        padding: 2px;
+      }
+      a:hover {
+        background-color: @yellow;
+        color: @red;
+      }
+    }
+  }
+  .gmap-popup {
+    .views-field-teaser {
+      font-size: small;
+      display: inline;
+    }
+    .views-field-view-node {
+      display: inline;
+    }
+  }
+  .map-highlight {
+    .rounded-corners;
+    background-color: rgba(154,166,68,.2);
+    padding: 10px 20px 5px 10px;
+    margin-top: 10px;
+  }
+/*
+  td { 
+    padding: 0px; 
+    margin: 0px; 
+    line-height: 1em; 
+    border-bottom: 1pt solid rgba(109,150,166,02);
+    }
+  .field-content {
+    a {
+      font-size: small;
+      font-weight: 200;
+      line-height: .8 em;
+      margin-bottom: 10px;
+      padding: 2px;
+    }
+    a:hover {
+      background-color: @yellow;
+      color: @red;
+    }
+  }
+*/
+}

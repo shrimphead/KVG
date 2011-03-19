@@ -54,7 +54,7 @@ function kvg_articles_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-20',
+    'weight' => '-44',
   );
   // Translatables
   // Included for use with string extractors like potx.

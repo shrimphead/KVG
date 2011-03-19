@@ -18,7 +18,7 @@ function visitor_guide_browser_views_default_views() {
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->override_option('fields', array(
-    'field_year_value' => array(
+    'nid' => array(
       'label' => '',
       'alter' => array(
         'alter_text' => 0,
@@ -42,18 +42,13 @@ function visitor_guide_browser_views_default_views() {
       'hide_empty' => 0,
       'empty_zero' => 0,
       'link_to_node' => 0,
-      'label_type' => 'none',
-      'format' => 'default',
-      'multiple' => array(
-        'group' => TRUE,
-        'multiple_number' => '',
-        'multiple_from' => '',
-        'multiple_reversed' => FALSE,
-      ),
       'exclude' => 1,
-      'id' => 'field_year_value',
-      'table' => 'node_data_field_year',
-      'field' => 'field_year_value',
+      'id' => 'nid',
+      'table' => 'node',
+      'field' => 'nid',
+      'override' => array(
+        'button' => 'Override',
+      ),
       'relationship' => 'none',
     ),
     'title' => array(
@@ -62,7 +57,7 @@ function visitor_guide_browser_views_default_views() {
         'alter_text' => 0,
         'text' => '',
         'make_link' => 1,
-        'path' => 'visitor-guide/[field_year_value]/[title]',
+        'path' => 'visitor-guide/[nid]',
         'link_class' => '',
         'alt' => '',
         'prefix' => '',
@@ -85,6 +80,9 @@ function visitor_guide_browser_views_default_views() {
       'table' => 'node',
       'field' => 'title',
       'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
     ),
     'field_image_fid' => array(
       'label' => '',
@@ -92,7 +90,7 @@ function visitor_guide_browser_views_default_views() {
         'alter_text' => 0,
         'text' => '',
         'make_link' => 1,
-        'path' => 'visitor-guide/[title]',
+        'path' => 'visitor-guide/[nid]',
         'link_class' => '',
         'alt' => '',
         'prefix' => '',
@@ -324,9 +322,7 @@ function visitor_guide_browser_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('cache', array(
-    'type' => 'time',
-    'results_lifespan' => '518400',
-    'output_lifespan' => '518400',
+    'type' => 'none',
   ));
   $handler->override_option('title', 'Visitor Guide');
   $handler->override_option('use_ajax', TRUE);
@@ -358,6 +354,39 @@ function visitor_guide_browser_views_default_views() {
   ));
   $handler = $view->new_display('attachment', 'Attachment', 'attachment_1');
   $handler->override_option('fields', array(
+    'nid' => array(
+      'label' => 'Nid',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'exclude' => 1,
+      'id' => 'nid',
+      'table' => 'node',
+      'field' => 'nid',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
     'field_image_fid' => array(
       'label' => '',
       'alter' => array(
@@ -438,12 +467,12 @@ function visitor_guide_browser_views_default_views() {
       'relationship' => 'none',
     ),
     'title' => array(
-      'label' => 'Page',
+      'label' => '',
       'alter' => array(
         'alter_text' => 0,
         'text' => '',
         'make_link' => 1,
-        'path' => 'visitor-guide/[field_year_value]/[title]',
+        'path' => 'visitor-guide/[title]',
         'link_class' => '',
         'alt' => '',
         'prefix' => '',
@@ -512,7 +541,7 @@ function visitor_guide_browser_views_default_views() {
     ),
   ));
   $handler->override_option('arguments', array(
-    'title' => array(
+    'nid' => array(
       'default_action' => 'default',
       'style_plugin' => 'default_summary',
       'style_options' => array(),
@@ -522,19 +551,17 @@ function visitor_guide_browser_views_default_views() {
       'breadcrumb' => '',
       'default_argument_type' => 'fixed',
       'default_argument' => '',
-      'validate_type' => 'none',
+      'validate_type' => 'node',
       'validate_fail' => 'not found',
-      'glossary' => 0,
-      'limit' => '0',
-      'case' => 'none',
-      'path_case' => 'none',
-      'transform_dash' => 0,
-      'id' => 'title',
+      'break_phrase' => 0,
+      'not' => 0,
+      'id' => 'nid',
       'table' => 'node',
-      'field' => 'title',
+      'field' => 'nid',
       'validate_user_argument_type' => 'uid',
       'validate_user_roles' => array(
         '2' => 0,
+        '9' => 0,
         '8' => 0,
         '4' => 0,
       ),
@@ -543,14 +570,14 @@ function visitor_guide_browser_views_default_views() {
       ),
       'relationship' => 'none',
       'default_options_div_prefix' => '',
-      'default_argument_fixed' => '01',
+      'default_argument_fixed' => '160',
       'default_argument_user' => 0,
       'default_argument_php' => '',
       'validate_argument_node_type' => array(
+        'visitor_guide_pages' => 'visitor_guide_pages',
         'webform' => 0,
         'article' => 0,
         'directory' => 0,
-        'visitor_guide_pages' => 0,
       ),
       'validate_argument_node_access' => 0,
       'validate_argument_nid_type' => 'nid',

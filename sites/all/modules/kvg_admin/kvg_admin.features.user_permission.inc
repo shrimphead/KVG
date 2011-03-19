@@ -858,7 +858,8 @@ function kvg_admin_user_default_permissions() {
       '0' => 'admin',
       '1' => 'anonymous user',
       '2' => 'authenticated user',
-      '3' => 'editor',
+      '3' => 'authenticated user plus',
+      '4' => 'editor',
     ),
   );
 
