@@ -105,6 +105,8 @@
     <?php if ($map): ?>
       <div class="map node-directory-map grid-12 alpha omega"><?php print $map; ?></div>
     <?php endif; ?>
+    
+    <?php if ($feedback): ?><span class="feedback"><?php print $feedback; ?></span><? endif; ?>
 
   </div>
 

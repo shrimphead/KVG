@@ -351,6 +351,20 @@ a:hover {
   }
 }
 
+.feedback{
+  text-align: center;
+  a {
+    background-color: @forest;
+    color: @white;
+    padding: 5px 15px;
+    .rounded-corners;
+    margin: 0 0 20px 0px;
+  }
+  a:hover {
+    color: @yellow;
+    background-color: @moss;
+  }
+}
 
 /************************* FRONT */
 .sub-article-image-horz, .lead-article-image-horz {
@@ -569,6 +583,7 @@ a:hover {
   h2{ 
     margin:4px 0 0 10px; 
     padding: 10px 2px 4px 2px;
+    line-height: 1.3em;
   }
   ul li { 
     list-style: none; 
@@ -684,6 +699,55 @@ a:hover {
     .teaser-image-reference:before {.image-curl-before; }
   }
 }
+
+  /* tables */
+  .schedule-ferry {
+    font-size: 80%;
+    text-align: center;
+    border: 0;
+    td, tr {
+      margin: 0;
+      padding: 0;
+    }
+    th {
+     text-transform: uppercase;
+     color: @white;
+      text-align: center;
+      line-height: 1 em;
+      vertical-align: middle;
+      padding: 4px;
+    }
+    .schedule-ferry-header {
+      background-color: @black;
+    }
+    .schedule-header-summer {
+      background-color: @forest;
+    }
+    .schedule-header-winter {
+      background-color: @lake;
+    }
+    .schedule-summer {
+      background-color: rgba(154,166,68,.2);
+    }
+    .schedule-winter {
+      background-color: rgba(109,150,166,.2);
+    }
+    .even {
+      background-color: rgba(235,241,243,.2);
+    }
+    .schedule-vessel {
+      font-weight: 400;
+      font-size: 90%;
+      width: 120px;
+      line-height: 1.2em;
+      text-transform: uppercase;
+    }
+    .schedule-vessel.odd {
+      background-color: rgba(254,248,178,.2);
+      font-weight: 700;
+    }
+
+  }
 /*************************** BROWSER */
 .view-id-visitor_guide {
   .views-field-title {

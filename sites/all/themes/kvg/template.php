@@ -80,6 +80,8 @@ function kvg_preprocess_node(&$vars, $hook) {
     $vars['reference_link'] = l('Read more', $vars['path'], $attributes);
   }
 //    dsm($vars);
+    $attributes = array('attributes' => array('class' => 'links feedback-link'));  
+    $vars['feedback'] = l('Have a comment or correction? Fill out our feedback form here.', 'feedback', $attributes);
 }
 
 /**

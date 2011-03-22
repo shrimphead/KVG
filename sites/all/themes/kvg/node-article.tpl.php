@@ -93,7 +93,7 @@
           <?php print $map ?>
         </div>
     <?php endif; ?>
-
+    
     <?php if ($field_directory_reference_rendered) : ?>
       <div class="grid-10 referenced-header alpha ">
         You might also like:
@@ -104,7 +104,7 @@
       </div>
     <?php endif; ?>
   </div>
-
+  <?php if ($feedback): ?><div class="feedback"><?php print $feedback; ?></div><? endif; ?>
   <?php print $links; ?>
 </div>
 <?php endif; ?>
