@@ -223,7 +223,7 @@ function kvg_directory_content_default_fields() {
     'list_default' => 1,
     'description_field' => '0',
     'widget' => array(
-      'file_extensions' => 'pdf jpg gif png',
+      'file_extensions' => 'jpg gif png',
       'file_path' => 'kvg_pdf',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '2MB',
@@ -246,7 +246,7 @@ function kvg_directory_content_default_fields() {
       'insert_width' => '',
       'label' => 'KVG Ad',
       'weight' => '-3',
-      'description' => 'Upload rasterized Kaslo Visitor Guide ad.',
+      'description' => 'Upload Kaslo Visitor Guide ad as JPG or GIF image. Please remove all spaces, ampersands (&), and quotation marks, from file name to ensure proper file handling.',
       'type' => 'filefield_widget',
       'module' => 'filefield',
     ),

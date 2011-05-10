@@ -395,6 +395,16 @@ function webform_theme() {
     'webform_results_table' => array(
       'arguments' => array('node' => NULL, 'components' => NULL, 'submissions' => NULL, 'node' => NULL, 'total_count' => NULL, 'pager_count' => NULL),
     ),
+    'value' => array(
+      'label' => t('Value'),
+      'description' => t('A field which is not visible to the user, but is recorded with the submission.'),
+      'file' => 'components/value.inc',
+      'features' => array(
+        'required' => FALSE,
+        'email_address' => TRUE,
+        'email_name' => TRUE,
+      ),
+    ),
   );
   // Theme functions in all components.
   $components = webform_load_components(TRUE);

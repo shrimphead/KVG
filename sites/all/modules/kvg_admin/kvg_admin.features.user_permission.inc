@@ -359,7 +359,6 @@ function kvg_admin_user_default_permissions() {
     'name' => 'create visitor_guide_pages content',
     'roles' => array(
       '0' => 'admin',
-      '1' => 'editor',
     ),
   );
 

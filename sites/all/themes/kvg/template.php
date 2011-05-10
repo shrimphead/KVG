@@ -15,15 +15,10 @@ function kvg_preprocess_page(&$vars) {
     $vars['logo_header'] = theme('imagecache', $preset, $vars['logo'], $alt_text, $title, $attributes);  
   }
 
-//  $vars['submit_directory_link'] = l('Submit Free Listing', 'listing/submit-directory-listing', 
-//    array('attributes' => 
-//        array('class' => 'submit submit-directory-link',),
-//    )    
-//  );
   $menu = menu_navigation_links('menu-submit-links');
   $menu_attributes = array('class' => 'submit-links');
-  $vars['submit_menu_link'] = theme_links($menu, $menu_attributes); 
-
+  $vars['submit_menu_link'] = theme_links($menu, $menu_attributes);
+  
 }
 
 
@@ -73,15 +68,12 @@ function kvg_preprocess_node(&$vars, $hook) {
     }
     
     /* TEASER LINK */
-    //if(!$vars['reference_link']) {
-    //  $vars['reference_link'] = $vars['links'];
-    //}
     $attributes = array('attributes' => array('class' => 'links reference-links read-more-link'));
     $vars['reference_link'] = l('Read more', $vars['path'], $attributes);
   }
-//    dsm($vars);
-    $attributes = array('attributes' => array('class' => 'links feedback-link'));  
-    $vars['feedback'] = l('Have a comment or correction? Fill out our feedback form here.', 'feedback', $attributes);
+
+  $attributes = array('attributes' => array('class' => 'links feedback-link'));  
+  $vars['feedback'] = l('Have a comment or correction? Fill out our feedback form here.', 'feedback', $attributes);
 }
 
 /**
@@ -194,7 +186,6 @@ function _kvg_map_content($node = NULL) {
 //  }
 //
 //  // CONTENT
-//  $description = "<div class=\"map-bubble-description\">" . $node->body . "</div>";
   $address  = ($node->locations[0]['street']) ? '<div class="map-bubble-address"><strong>Address:</strong> ' . $node->locations[0]['street'] . ', ' . $node->locations[0]['city'] . "</div>" : '';
   $phone    = ($node->field_phone[0]['view']) ? '<div class="map-bubble-phone"><strong>Phone</strong>: ' . $node->field_phone[0]['view'] . "</div>" : '';
   $website  = ($node->field_website[0]['view']) ? '<div class="map-bubble-website">' . $node->field_website[0]['view'] . "</div>" : '';
@@ -259,36 +250,6 @@ function get_image($result) {
   return ($image);  
 }
 
-
-/**
-* Implementation of kvg_nodereference_formatter_full_teaser
-*/
-// function kvg_nodereference_formatter_full_teaser($vars) {
-//   static $recursion_queue = array();
-//   $output = '';
-//   if (!empty($element['#item']['safe']['nid'])) {
-//     $nid = $element['#item']['safe']['nid'];
-//     $node = $element['#node'];
-//     $field = content_fields($element['#field_name'], $element['#type_name']);
-//     // If no 'referencing node' is set, we are starting a new 'reference thread'
-//     if (!isset($node->referencing_node)) {
-//       $recursion_queue = array();
-//     }
-//     $recursion_queue[] = $node->nid;
-//     if (in_array($nid, $recursion_queue)) {
-//       // Prevent infinite recursion caused by reference cycles:
-//       // if the node has already been rendered earlier in this 'thread',
-//       // we fall back to 'default' (node title) formatter.
-//       return theme('nodereference_formatter_default', $element);
-//     }
-//     if ($referenced_node = node_load($nid)) {
-//       $referenced_node->referencing_node = $node;
-//       $referenced_node->referencing_field = $field;
-//       $output = node_view($referenced_node, $element['#formatter'] == 'teaser');
-//     }
-//   }
-//   return $output;
-// }
 
 
 /**

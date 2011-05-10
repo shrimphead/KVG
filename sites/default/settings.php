@@ -91,7 +91,7 @@
  */
 //$db_url = 'mysqli://u70725457:2d2200@MYSQLHOST/d60657704';
 $db_url = 'mysql://root:root@localhost/kvg';
-$db_prefix = 'drupal_';
+$db_prefix = '';
 
 /**
  * Access control for update.php script
