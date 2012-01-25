@@ -81,15 +81,6 @@ function kvg_admin_user_default_permissions() {
     ),
   );
 
-  // Exported permission: access webform results
-  $permissions['access webform results'] = array(
-    'name' => 'access webform results',
-    'roles' => array(
-      '0' => 'admin',
-      '1' => 'editor',
-    ),
-  );
-
   // Exported permission: administer CAPTCHA settings
   $permissions['administer CAPTCHA settings'] = array(
     'name' => 'administer CAPTCHA settings',
@@ -317,15 +308,6 @@ function kvg_admin_user_default_permissions() {
     ),
   );
 
-  // Exported permission: clear webform results
-  $permissions['clear webform results'] = array(
-    'name' => 'clear webform results',
-    'roles' => array(
-      '0' => 'admin',
-      '1' => 'editor',
-    ),
-  );
-
   // Exported permission: create article content
   $permissions['create article content'] = array(
     'name' => 'create article content',
@@ -357,14 +339,6 @@ function kvg_admin_user_default_permissions() {
   // Exported permission: create visitor_guide_pages content
   $permissions['create visitor_guide_pages content'] = array(
     'name' => 'create visitor_guide_pages content',
-    'roles' => array(
-      '0' => 'admin',
-    ),
-  );
-
-  // Exported permission: create webforms
-  $permissions['create webforms'] = array(
-    'name' => 'create webforms',
     'roles' => array(
       '0' => 'admin',
     ),
@@ -494,14 +468,6 @@ function kvg_admin_user_default_permissions() {
     ),
   );
 
-  // Exported permission: edit location meta tags
-  $permissions['edit location meta tags'] = array(
-    'name' => 'edit location meta tags',
-    'roles' => array(
-      '0' => 'admin',
-    ),
-  );
-
   // Exported permission: edit meta tag ABSTRACT
   $permissions['edit meta tag ABSTRACT'] = array(
     'name' => 'edit meta tag ABSTRACT',
@@ -582,14 +548,6 @@ function kvg_admin_user_default_permissions() {
     ),
   );
 
-  // Exported permission: edit meta tag PICS-LABEL
-  $permissions['edit meta tag PICS-LABEL'] = array(
-    'name' => 'edit meta tag PICS-LABEL',
-    'roles' => array(
-      '0' => 'admin',
-    ),
-  );
-
   // Exported permission: edit meta tag REVISIT-AFTER
   $permissions['edit meta tag REVISIT-AFTER'] = array(
     'name' => 'edit meta tag REVISIT-AFTER',
@@ -637,30 +595,6 @@ function kvg_admin_user_default_permissions() {
   // Exported permission: edit own webform submissions
   $permissions['edit own webform submissions'] = array(
     'name' => 'edit own webform submissions',
-    'roles' => array(
-      '0' => 'admin',
-    ),
-  );
-
-  // Exported permission: edit own webforms
-  $permissions['edit own webforms'] = array(
-    'name' => 'edit own webforms',
-    'roles' => array(
-      '0' => 'admin',
-    ),
-  );
-
-  // Exported permission: edit webform submissions
-  $permissions['edit webform submissions'] = array(
-    'name' => 'edit webform submissions',
-    'roles' => array(
-      '0' => 'admin',
-    ),
-  );
-
-  // Exported permission: edit webforms
-  $permissions['edit webforms'] = array(
-    'name' => 'edit webforms',
     'roles' => array(
       '0' => 'admin',
     ),
@@ -789,14 +723,6 @@ function kvg_admin_user_default_permissions() {
       '0' => 'admin',
       '1' => 'authenticated user plus',
       '2' => 'editor',
-    ),
-  );
-
-  // Exported permission: use PHP for additional processing
-  $permissions['use PHP for additional processing'] = array(
-    'name' => 'use PHP for additional processing',
-    'roles' => array(
-      '0' => 'admin',
     ),
   );
 

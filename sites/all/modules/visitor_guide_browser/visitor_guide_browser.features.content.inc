@@ -237,7 +237,8 @@ function visitor_guide_browser_content_default_fields() {
 2011
 2012
 2013
-2014',
+2014
+2015',
     'allowed_values_php' => '',
     'widget' => array(
       'default_value' => array(

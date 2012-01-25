@@ -94,6 +94,9 @@
         </div>
     <?php endif; ?>
     
+    <?php if ($large_image_optionals) : ?>
+      <?php print $large_image_optionals; ?>
+    <?php endif; ?>
     <?php if ($field_directory_reference_rendered) : ?>
       <div class="grid-10 referenced-header alpha ">
         You might also like:

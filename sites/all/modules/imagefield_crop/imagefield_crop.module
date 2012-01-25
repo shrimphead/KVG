@@ -1,6 +1,5 @@
 <?php
 
-// $Id: imagefield_crop.module,v 1.1.2.11.2.5 2009/11/11 08:12:53 yhager Exp $
 
 // remove this for Drupal 7. see http://drupal.org/node/305645
 defined('REQUEST_TIME') or define ('REQUEST_TIME', $_SERVER['REQUEST_TIME']);
@@ -45,6 +44,8 @@ function imagefield_crop_widget_info() {
  * Delegated to filefield.
  */
 function imagefield_crop_widget_settings($op, $widget) {
+  // make sure we have the functions as this may be called from update.php
+  module_load_include('inc', 'imagefield_crop', 'imagefield_crop_widget');
   switch ($op) {
     case 'form':
       return imagefield_crop_widget_settings_form($widget);

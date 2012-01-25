@@ -75,6 +75,21 @@ function kvg_articles_imagecache_default_presets() {
         ),
       ),
     ),
+    'large_scaled_page' => array(
+      'presetname' => 'large_scaled_page',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '750',
+            'height' => '900',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
   );
   return $items;
 }

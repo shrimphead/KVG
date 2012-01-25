@@ -49,6 +49,21 @@ function kvg_admin_imagecache_default_presets() {
         ),
       ),
     ),
+    'site_logo' => array(
+      'presetname' => 'site_logo',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '110',
+            'height' => '110',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
   );
   return $items;
 }

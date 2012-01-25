@@ -11,7 +11,7 @@ function kvg_admin_menu_default_menu_links() {
     'menu_name' => 'menu-edit-menu',
     'link_path' => 'admin/kvg/',
     'router_path' => 'admin/kvg',
-    'link_title' => 'Edit',
+    'link_title' => 'Edit All Entries',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -21,7 +21,7 @@ function kvg_admin_menu_default_menu_links() {
     'hidden' => '0',
     'external' => '0',
     'has_children' => '1',
-    'expanded' => '0',
+    'expanded' => '1',
     'weight' => '0',
   );
   // Exported menu link: menu-edit-menu:admin/kvg/articles
@@ -104,7 +104,7 @@ function kvg_admin_menu_default_menu_links() {
     'menu_name' => 'menu-edit-menu',
     'link_path' => 'node/add/',
     'router_path' => 'node/add',
-    'link_title' => 'Create',
+    'link_title' => 'Create New Entry',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -114,7 +114,7 @@ function kvg_admin_menu_default_menu_links() {
     'hidden' => '0',
     'external' => '0',
     'has_children' => '1',
-    'expanded' => '0',
+    'expanded' => '1',
     'weight' => '-50',
   );
   // Exported menu link: menu-edit-menu:node/add/article
@@ -194,12 +194,12 @@ function kvg_admin_menu_default_menu_links() {
   );
   // Translatables
   // Included for use with string extractors like potx.
-  t('Create');
   t('Create Article');
   t('Create Browser Page');
   t('Create Content');
   t('Create Directory Item');
-  t('Edit');
+  t('Create New Entry');
+  t('Edit All Entries');
   t('Edit Articles');
   t('Edit Directory');
   t('Logout');

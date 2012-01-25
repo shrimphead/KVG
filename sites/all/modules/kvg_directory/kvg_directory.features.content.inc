@@ -141,7 +141,7 @@ function kvg_directory_content_default_fields() {
       'max_filesize_per_file' => '2M',
       'max_filesize_per_node' => '5MB',
       'max_resolution' => '2000x2000',
-      'min_resolution' => '640x480',
+      'min_resolution' => '400x400',
       'alt' => '',
       'custom_alt' => 1,
       'title' => '',
@@ -170,6 +170,16 @@ function kvg_directory_content_default_fields() {
         'image_horizontal' => 0,
         'image_vertical' => 0,
       ),
+      'filefield_sources' => array(
+        'imce' => 0,
+        'remote' => 0,
+        'reference' => 0,
+        'attach' => 0,
+      ),
+      'filefield_source_autocomplete' => '0',
+      'filefield_source_attach_path' => 'file_attach',
+      'filefield_source_attach_absolute' => '0',
+      'filefield_source_attach_mode' => 'move',
       'label' => 'Optional Image',
       'weight' => '-3',
       'description' => 'Upload image',
@@ -392,7 +402,7 @@ function kvg_directory_content_default_fields() {
     'widget_active' => '1',
     'type' => 'text',
     'required' => '1',
-    'multiple' => '2',
+    'multiple' => '3',
     'module' => 'text',
     'active' => '1',
     'text_processing' => '0',
@@ -526,12 +536,13 @@ shopping|Shopping & Services',
 2011
 2012
 2013
-2014',
+2014
+2015',
     'allowed_values_php' => '',
     'widget' => array(
       'default_value' => array(
         '0' => array(
-          'value' => '',
+          'value' => '2012',
         ),
       ),
       'default_value_php' => NULL,

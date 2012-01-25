@@ -74,16 +74,8 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
   /**
    * Get the form for the backup settings for this destination.
    */
-  function backup_settings_form(&$form, $settings) {
-    $form['files'] = array(
-      "#type" => "fieldset",
-      "#title" => t("File Backup Options"),
-      "#collapsible" => TRUE,
-      "#collapsed" => TRUE,
-      "#tree" => FALSE,
-      '#weight' => 6,
-    );
-    $form['files']['exclude_filepaths'] = array(
+  function backup_settings_form($settings) {
+    $form['exclude_filepaths'] = array(
       "#type" => "textarea",
       "#multiple" => TRUE,
       "#title" => t("Exclude the following files or directories"),
@@ -103,7 +95,7 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
       if ($files) {
         $file->push_type('tar');
         $gz = new Archive_Tar($file->filepath(), false);
-        $gz->addModify($files, $file->name .'/files', $this->get_location());
+        $gz->addModify($files, $file->name . '/files', $this->get_location());
         return $file;
       }
       backup_migrate_backup_fail('No files available.', array(), $settings);
@@ -119,7 +111,7 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
     if ($this->check_libs()) {
       $from = $file->pop_type();
       $tar = new Archive_Tar($from->filepath());
-      $tar->extractModify($this->get_location(), $file->name .'/files');
+      $tar->extractModify($this->get_location(), $file->name . '/files');
       return $file;
     }
     return FALSE;
@@ -137,25 +129,30 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
     if ($handle = @opendir($dir)) {
       while (($file = readdir($handle)) !== FALSE) {
         if ($file != '.' && $file != '..' && !in_array($file, $exclude)) {
-           $file = realpath($dir. '/'. $file);
-           if (is_dir($file)) {
-              $subdir = $this->get_files_to_backup($file, $settings, $exclude, $base_dir);
-              // If there was an error reading the subdirectory then abort the backup.
-              if ($subdir === FALSE) {
-                closedir($handle);
-                return FALSE;
-              }
-              $out = array_merge($out, $subdir);
-           } else {
-              if (is_readable($file)) {
-                $out[] = str_replace($base_dir, '', $file);
-              }
-              else {
-                backup_migrate_backup_fail('The directory cannot be backed up because the file %file cannot be read by the web server.', array('%file' => str_replace($base_dir, '', $file)), $settings);
-                closedir($handle);
-                return FALSE;
-              }
-           }
+          $file = realpath($dir . '/' . $file);
+          if (is_dir($file)) {
+            $subdir = $this->get_files_to_backup($file, $settings, $exclude, $base_dir);
+            // If there was an error reading the subdirectory then abort the backup.
+            if ($subdir === FALSE) {
+              closedir($handle);
+              return FALSE;
+            }
+            // If the directory is empty, add an empty directory.
+            if (count($subdir) == 0) {
+              $out[] = str_replace($base_dir, '', $file);
+            }
+            $out = array_merge($out, $subdir);
+          }
+          else {
+            if (is_readable($file)) {
+              $out[] = str_replace($base_dir, '', $file);
+            }
+            else {
+              backup_migrate_backup_fail('The directory cannot be backed up because the file %file cannot be read by the web server.', array('%file' => str_replace($base_dir, '', $file)), $settings);
+              closedir($handle);
+              return FALSE;
+            }
+          }
         }
       }
       closedir($handle);

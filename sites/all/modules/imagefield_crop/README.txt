@@ -1,4 +1,3 @@
-$Id: README.txt,v 1.1.4.7 2010/04/15 06:20:51 yhager Exp $
 
 = Overview =
 imagefield_crop provides a widget for cropping an image after upload.

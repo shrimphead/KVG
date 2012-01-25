@@ -1,5 +1,4 @@
 <?php
-// $Id: imagefield_crop.install,v 1.1.2.2 2009/09/13 11:33:22 yhager Exp $
 
 /**
  * Upgrade to Drupal 6.

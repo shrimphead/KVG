@@ -1,6 +1,5 @@
 <?php
 
-// $Id: imagefield_crop_widget.inc,v 1.1.2.20 2010/05/30 15:01:10 yhager Exp $
 
 // load imagefield widget, so we can extend it, and not fully replace it
 module_load_include('inc','imagefield', 'imagefield_widget');
@@ -182,7 +181,7 @@ function imagefield_crop_widget_process($element, $edit, &$form_state, $form) {
   }
   $element['data']['cropbox'] = array(
     '#type' => 'markup',
-    '#value' => theme('imagefield_crop_cropbox', $crop_display, $crop_display['alt'], $crop_display['title'], NULL, FALSE, $element['#id'] .'-cropbox'),
+    '#value' => theme('imagefield_crop_cropbox', $crop_display, isset($crop_display['alt']) ? $crop_display['alt'] : '', isset($crop_display['title']) ? $crop_display['title'] : '', NULL, FALSE, $element['#id'] .'-cropbox'),
   );
   
   $element['data']['crop'] = array(
@@ -278,8 +277,8 @@ function theme_imagefield_crop_dynamic_preview($file, $resolution) {
   
   $image_attributes = array();
   if (list($orig_width, $orig_height, $type, $image_attributes) = @getimagesize($file['filepath'])) {
-    $alt = $file['alt'] ? $alt : 'jcrop preview';
-    $title = $file['title'] ? $title : '';
+    $alt = isset($file['alt']) ? $file['alt'] : 'jcrop preview';
+    $title = isset($file['title']) ? $file['title'] : '';
     $url = file_create_url($file['filepath']);
     $settings = array(
       'orig_width' => $orig_width,

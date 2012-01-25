@@ -11,10 +11,9 @@ function visitor_guide_browser_views_default_views() {
   $view->name = 'visitor_guide';
   $view->description = 'Visitor guide attachment view';
   $view->tag = '';
-  $view->view_php = '';
   $view->base_table = 'node';
-  $view->is_cacheable = FALSE;
-  $view->api_version = 2;
+  $view->core = 0;
+  $view->api_version = '2';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->override_option('fields', array(
@@ -189,9 +188,9 @@ function visitor_guide_browser_views_default_views() {
       'field' => 'field_year_value',
       'validate_user_argument_type' => 'uid',
       'validate_user_roles' => array(
-        '2' => 0,
-        '8' => 0,
-        '4' => 0,
+        2 => 0,
+        8 => 0,
+        4 => 0,
       ),
       'relationship' => 'none',
       'default_options_div_prefix' => '',
@@ -208,8 +207,8 @@ function visitor_guide_browser_views_default_views() {
       'validate_argument_node_access' => 0,
       'validate_argument_nid_type' => 'nid',
       'validate_argument_vocabulary' => array(
-        '2' => 0,
-        '1' => 0,
+        2 => 0,
+        1 => 0,
       ),
       'validate_argument_type' => 'tid',
       'validate_argument_transform' => 0,
@@ -238,9 +237,9 @@ function visitor_guide_browser_views_default_views() {
       'field' => 'title',
       'validate_user_argument_type' => 'uid',
       'validate_user_roles' => array(
-        '2' => 0,
-        '8' => 0,
-        '4' => 0,
+        2 => 0,
+        8 => 0,
+        4 => 0,
       ),
       'relationship' => 'none',
       'default_options_div_prefix' => '',
@@ -257,8 +256,8 @@ function visitor_guide_browser_views_default_views() {
       'validate_argument_node_access' => 0,
       'validate_argument_nid_type' => 'nid',
       'validate_argument_vocabulary' => array(
-        '2' => 0,
-        '1' => 0,
+        2 => 0,
+        1 => 0,
       ),
       'validate_argument_type' => 'tid',
       'validate_argument_transform' => 0,
@@ -527,8 +526,8 @@ function visitor_guide_browser_views_default_views() {
       'link_to_taxonomy' => 1,
       'limit' => 1,
       'vids' => array(
-        '2' => 2,
-        '1' => 0,
+        2 => 2,
+        1 => 0,
       ),
       'exclude' => 0,
       'id' => 'tid',
@@ -560,10 +559,10 @@ function visitor_guide_browser_views_default_views() {
       'field' => 'nid',
       'validate_user_argument_type' => 'uid',
       'validate_user_roles' => array(
-        '2' => 0,
-        '9' => 0,
-        '8' => 0,
-        '4' => 0,
+        2 => 0,
+        9 => 0,
+        8 => 0,
+        4 => 0,
       ),
       'override' => array(
         'button' => 'Use default',
@@ -582,8 +581,8 @@ function visitor_guide_browser_views_default_views() {
       'validate_argument_node_access' => 0,
       'validate_argument_nid_type' => 'nid',
       'validate_argument_vocabulary' => array(
-        '2' => 0,
-        '1' => 0,
+        2 => 0,
+        1 => 0,
       ),
       'validate_argument_type' => 'tid',
       'validate_argument_transform' => 0,

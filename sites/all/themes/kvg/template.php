@@ -9,10 +9,12 @@ function kvg_preprocess_page(&$vars) {
   * rejigger front page logo
   */
   if($vars['logo']) {
-    $preset = 'front_page_logo';
+    $logo_file = array_pop(explode('/', $vars['logo']));
+    
+    $preset = 'site_logo';
     $alt_text = $vars['site_slogan'];
     $title = $vars['head_title'];
-    $vars['logo_header'] = theme('imagecache', $preset, $vars['logo'], $alt_text, $title, $attributes);  
+    $vars['logo_header'] = theme('imagecache', $preset, $logo_file, $alt_text, $title, $attributes);  
   }
 
   $menu = menu_navigation_links('menu-submit-links');
@@ -156,6 +158,14 @@ function kvg_preprocess_node_article(&$vars) {
     $vars['map'] = '';
   }
   
+  $large_image_count = count($vars['field_additional_images_large']);
+  if($large_image_count > 0) {
+    for($a = 0; $a < $large_image_count; $a++) {
+      if($vars['field_additional_images_large'][$a]['filepath']) {
+        $vars['large_image_optionals'] .= $vars['field_additional_images_large'][$a]['view'] . '<br>';
+      }
+    }  
+  }
 }
 
 /**

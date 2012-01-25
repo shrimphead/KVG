@@ -11,10 +11,9 @@ function kvg_articles_views_default_views() {
   $view->name = 'articles_listing';
   $view->description = 'Articles Listing';
   $view->tag = '';
-  $view->view_php = '';
   $view->base_table = 'node';
-  $view->is_cacheable = FALSE;
-  $view->api_version = 2;
+  $view->core = 0;
+  $view->api_version = '2';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->override_option('fields', array(
@@ -371,10 +370,9 @@ function kvg_articles_views_default_views() {
   $view->name = 'front_page';
   $view->description = 'Front Page';
   $view->tag = 'front page';
-  $view->view_php = '';
   $view->base_table = 'node';
-  $view->is_cacheable = FALSE;
-  $view->api_version = 2;
+  $view->core = 0;
+  $view->api_version = '2';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->override_option('relationships', array(
@@ -383,7 +381,7 @@ function kvg_articles_views_default_views() {
       'required' => 1,
       'limit' => 1,
       'qids' => array(
-        '1' => 1,
+        1 => 1,
       ),
       'id' => 'nodequeue_rel',
       'table' => 'node',

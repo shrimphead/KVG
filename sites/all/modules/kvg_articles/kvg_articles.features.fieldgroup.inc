@@ -19,14 +19,6 @@ function kvg_articles_fieldgroup_default_groups() {
       ),
       'display' => array(
         'weight' => '11',
-        '2' => array(
-          'format' => 'fieldset',
-          'exclude' => 1,
-        ),
-        '3' => array(
-          'format' => 'fieldset',
-          'exclude' => 0,
-        ),
         'label' => 'hidden',
         'teaser' => array(
           'format' => 'hidden',
@@ -34,6 +26,14 @@ function kvg_articles_fieldgroup_default_groups() {
         ),
         'full' => array(
           'format' => 'simple',
+          'exclude' => 0,
+        ),
+        '2' => array(
+          'format' => 'fieldset',
+          'exclude' => 1,
+        ),
+        '3' => array(
+          'format' => 'fieldset',
           'exclude' => 0,
         ),
         '5' => array(
@@ -70,14 +70,6 @@ function kvg_articles_fieldgroup_default_groups() {
       ),
       'display' => array(
         'weight' => '-2',
-        '2' => array(
-          'format' => 'fieldset',
-          'exclude' => 0,
-        ),
-        '3' => array(
-          'format' => 'fieldset',
-          'exclude' => 0,
-        ),
         'label' => 'hidden',
         'teaser' => array(
           'format' => 'hidden',
@@ -85,6 +77,14 @@ function kvg_articles_fieldgroup_default_groups() {
         ),
         'full' => array(
           'format' => 'no_style',
+          'exclude' => 0,
+        ),
+        '2' => array(
+          'format' => 'fieldset',
+          'exclude' => 0,
+        ),
+        '3' => array(
+          'format' => 'fieldset',
           'exclude' => 0,
         ),
         '5' => array(
@@ -106,6 +106,7 @@ function kvg_articles_fieldgroup_default_groups() {
     'fields' => array(
       '0' => 'field_image_horizontal',
       '1' => 'field_image_vertical',
+      '2' => 'field_additional_images_large',
     ),
   );
 

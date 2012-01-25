@@ -1,4 +1,4 @@
-// $Id: README.txt,v 1.1.2.3 2009/12/08 22:16:13 coltrane Exp $
+Security Review module for Drupal
 
 -- ABOUT --
 
@@ -63,19 +63,26 @@ A: Some checks purposefully return neither Pass or Fail when it is no longer
 relevant (such as when a module is disabled) so a previously failing or passing
 check that is now not applicable is recorded.
 
+-- KNOWN ISSUES --
+
+If you have several hundred thousand pieces of content or comments you are
+likely to experience a fault in the review process. If you are experiencing time
+outs and batch halts you should consider running the checklist by its drush
+command or skipping the Content and Comments checks on via the skip form at
+admin/reports/security-review/settings.
+
 -- SUPPORT --
 
 Please use the issue queue at http://drupal.org/project/security_review for all
 module support. You can read more about securely configuring your site at
-http://drupal.org/security/secure-configuration and http://crackingdrupal.org
+http://drupal.org/security/secure-configuration and http://drupalscout.com
 
-Growing Venture Solutions, the provider of this module, offers detailed,
+Acquia, the provider of this module, offers detailed,
 targetted security review and support for Drupal websites and can be contacted
-at http://growingventuresolutions.com or via email at 
-contact@growingventuresolutions.com
+at http://wwww.acquia.com or via email at sales@acquia.com.
 
 You can read more about our Drupal security review service at 
-http://growingventuresolutions.com/services/security-review-service-drupal-sites
+http://www.acquia.com/products-services/acquia-professional-services/service-offerings
 
 -- CREDIT --
 
