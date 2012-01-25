@@ -1,0 +1,19 @@
+/* $Id: cck_wordcount.css,v 1.2 2009/08/30 22:07:23 batje Exp $ */ 
+.cck_wordcount {
+  padding-bottom: 8px; 
+  padding-left: 8px; 
+  border-radius: 8px; 
+  -moz-border-radius: 8px; 
+  -webkit-border-radius: 8px; 
+  height: 10px; 
+  line-height: 15px; 
+  margin-bottom: 3px;
+}
+
+.cck_wordcount_warning {
+  background-color: #F89509;
+}
+
+.cck_wordcount_error {
+  background-color: #F00903;
+}

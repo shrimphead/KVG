@@ -1,0 +1,91 @@
+<?php
+
+/**
+ * Implementation of hook_menu().
+ */
+define('CSS_WATCH_MIN_INTERVAL', 500);
+define('CSS_WATCH_MAX_INTERVAL', 30000);
+define('CSS_WATCH_DEFAULT_INTERVAL', 3000);
+
+function css_watch_menu() {
+    $items['admin/settings/css-watch'] = array(
+    'title' => 'CSS Watch',
+    'description' => 'Administer CSS Watch Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('css_watch_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'css_watch.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_help().
+ */
+
+function css_watch_help($section) {
+  switch ($section) {
+    case 'admin/settings#css-watch':
+      return t('<p>Administer CSS Watch settings.</p>');
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_theme_registry_alter().
+ */
+function css_watch_theme_registry_alter(&$theme_registry) {
+  // Remove any existing instances of our pre page preprocessor.
+  $position = array_search('css_watch_preprocess_pre_page', $theme_registry['page']['preprocess functions']);
+  if ($position !== FALSE) {
+    unset($theme_registry['page']['preprocess functions'][$position]);
+  }
+  // Add an additional page preprocess function prior to template_preprocess_page()
+  // so that our blocks can include JS files as needed.
+  $position = array_search('template_preprocess_page', $theme_registry['page']['preprocess functions']);
+  if ($position !== FALSE) {
+    array_splice($theme_registry['page']['preprocess functions'], $position, 0, 'css_watch_preprocess_pre_page');
+  }
+}
+
+/**
+ * Preprocessor that runs *before* template_preprocess_page().
+ */
+function css_watch_preprocess_pre_page(&$vars) {
+  global $theme_path, $theme;
+  //support for sites using admin_theme module
+  if (variable_get('admin_theme', FALSE) == $theme) {
+    drupal_set_message(t('CSS watching is disabled for admin theme'));
+  }
+  else {
+    $css = drupal_add_css();
+    $sheets = array();
+    foreach ($css as $media => $styles) {
+      foreach ($styles as $type => $style) {
+        foreach ($style as $path => $enabled) {
+          if (file_exists($path) && strncmp($path, $theme_path, strlen($theme_path)) == 0) {
+            $sheets[] = base_path() . $path;
+            //pull theme style sheets out of aggregation
+            drupal_add_css($path, $type, $media, FALSE );
+          }
+        }
+      }
+    };
+    $jquery_settings = array(
+      'cssWatch' => array(
+        'paths' => $sheets,
+        'pollInterval' => variable_get('css_watch_poll_interval', CSS_WATCH_DEFAULT_INTERVAL)
+      )
+    );
+    drupal_add_js($jquery_settings, 'setting');
+    drupal_add_js(drupal_get_path('module', 'css_watch') . '/js/css_watch.js');
+    drupal_set_message(t('CSS watching is enabled; polling at %interval ms' , array('%interval' => variable_get('css_watch_poll_interval', CSS_WATCH_DEFAULT_INTERVAL))));
+  }
+}
+
+/**
+ * Implementation of hook_enable().
+ */
+function css_watch_enable() {
+  drupal_rebuild_theme_registry();
+}

@@ -1,0 +1,3 @@
+<?php
+
+include_once('kvg_map.features.inc');

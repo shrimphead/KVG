@@ -1,0 +1,109 @@
+<?php
+// $Id: parser_csv.test,v 1.1.2.1 2009/02/22 16:29:19 alexb Exp $
+
+/**
+ * Test parsing zipped files.
+ */
+class ParserCSVTestZIP extends DrupalWebTestCase {
+
+  /**
+   * Basic test info.
+   */
+  function getInfo() {
+    return array(
+      'name' => 'Parse zipped file', 
+      'description' => 'Test CSV Parser against several test feeds.' , 
+      'group' => 'CSV Parser');
+  }
+
+  /**
+   * Enable modules.
+   */
+  function setUp() {
+    parent::setUp(array('parser_csv'));
+  }
+
+  /**
+   * Test function.
+   */
+  function testParserCSVZip() {
+    // Parse zipped feed.
+    $feed = parser_csv_test('test01.csv.ziptest');
+
+    // Test total count.
+    $this->assertEqual(count($feed->items), 9, 'Correct number of lines.');
+
+    // Test some results.
+    $line = $feed->items[0]->options->raw;
+    $this->assertEqual($line['NID'], '100008941', 'Line 1: correct NID');
+    $this->assertEqual($line['NARRATIVE'], 'NO NARRATIVE IS AVAILABLE.', 'Line 1: correct NARRATIVE');
+    $this->assertEqual($line['LONGITUDE'], '-77.03', 'Line 1: correct LONGITUDE');
+
+    $line = $feed->items[2]->options->raw;
+    $this->assertEqual($line['BLOCKSITEADDRESS'], '4500 B/O GEORGIA AVE NW', 'Line 3: correct BLOCKSITEADDRESS');
+    $this->assertEqual($line['LATITUDE'], '38.95', 'Line 3: correct LATITUDE');
+    $this->assertEqual($line['CITY'], 'WASHINGTON', 'Line 3: correct CITY');
+
+    $line = $feed->items[8]->options->raw;
+    $this->assertEqual($line['REPORTDATETIME'], '02/29/08 12:00 AM', 'Line 9: correct REPORTDATETIME');
+    $this->assertEqual($line['DISTRICT'], 'SIXTH', 'Line 9: correct DISTRICT');
+    $this->assertEqual($line['HOTSPOT2004NAME'], 'NONE', 'Line 9: correct HOTSPOT2004NAME');
+
+  }
+}
+
+
+/**
+ * Test quotes.
+ * @todo: add more quote tests.
+ */
+class ParserCSVTestQuotes extends DrupalWebTestCase {
+
+  /**
+   * Basic test info.
+   */
+  function getInfo() {
+    return array(
+      'name' => 'Test quotes',
+      'description' => 'Test double quotes and line breaks within double quoted strings.', 
+      'group' => 'CSV Parser');
+  }
+
+  /**
+   * Enable modules.
+   */
+  function setUp() {
+    parent::setUp(array('parser_csv'));
+  }
+
+  /**
+   * Test function.
+   */
+  function testDoubleQuotes() {
+    // Parse double quote feed.
+    $feed = parser_csv_test('test02.csv');
+ 
+    // Test total count.
+    $this->assertEqual(count($feed->items), 3, 'Correct number of lines.');
+
+    // Test each row. There mustn't be "double quotes" in the array values.
+    foreach ($feed->items as $i => $item) {
+      $this->assertEqual($item->options->raw['FIELD1'], 'Row'. ($i + 1) .',F1', 'Correct value in line '. ($i + 1) .'/FIELD1');
+      $this->assertEqual($item->options->raw['FIELD2'], 'Row'. ($i + 1) .',F2', 'Correct value in line '. ($i + 1) .'/FIELD2');
+      $this->assertEqual($item->options->raw['FIELD3'], 'Row'. ($i + 1) .',F3', 'Correct value in line '. ($i + 1) .'/FIELD3');
+    }
+
+    // Test double quote feed with line breaks.
+    $feed = parser_csv_test('test03.csv');
+ 
+    // Test total count.
+    $this->assertEqual(count($feed->items), 3, 'Correct number of lines.');
+
+    // Test each row. There mustn't be "double quotes" in the array values.
+    foreach ($feed->items as $i => $item) {
+      $this->assertEqual($item->options->raw['FIELD1'], "Row". ($i + 1) .",\nF1", 'Correct value in line '. ($i + 1) .'/FIELD1');
+      $this->assertEqual($item->options->raw['FIELD2'], "Row". ($i + 1) .",F2", 'Correct value in line '. ($i + 1) .'/FIELD2');
+      $this->assertEqual($item->options->raw['FIELD3'], "\nRow". ($i + 1) .",F3", 'Correct value in line '. ($i + 1) .'/FIELD3');
+    }
+  }
+}

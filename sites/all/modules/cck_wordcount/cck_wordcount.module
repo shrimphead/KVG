@@ -1,0 +1,77 @@
+<?php
+// $Id: cck_wordcount.module,v 1.1 2009/08/30 22:02:36 batje Exp $
+
+/**
+* @file
+* Implements some simple wordcount functionality
+*/
+
+function cck_wordcount_form_alter(&$form, &$form_state, $form_id) {
+	
+	switch ($form_id) {
+    case 'content_field_edit_form':
+    	if ($form['#field']['type'] == 'text'){
+        $form['submit']['#weight'] = '10';
+
+        $form['max_length'] = array(
+          '#weight' => '1',
+          '#type' => 'textfield',
+          '#title' => t('Maximum number of Words'),
+          '#default_value' => is_numeric($field['max_length']) ? $field['max_length'] : '',
+          '#required' => FALSE,
+          '#element_validate' => array('_element_validate_integer_positive'),
+          '#description' => t('The maximum length of the field in words. Leave blank for an unlimited size.'),
+        );
+        $form['#submit'][] = 'cck_wordcount_field_edit_form_submit';
+    	}
+      break;  
+  }
+  
+  if (strrpos($form_id, "node_form") === (strlen($form_id) - 9)) {
+  	  if (!isset($form_state['post']['title'])) {
+        $sql = "SELECT field_name, wordcount from {cck_wordcount} where node_type = '%s'";
+        if ($result = db_query(db_rewrite_sql($sql), $form['type']['#value'])){
+          $fields = Array();
+          while ($field = db_fetch_object($result)){
+          	if ($field->wordcount > 0) {
+          	  $fields[$field->field_name] = $field->wordcount;
+          	}
+  	      }
+          _cck_wordcount_injectjavascript($fields);
+  	    }
+  	  }
+   }
+}
+
+function cck_wordcount_field_edit_form_submit($form, &$form_state) {
+	
+	$node_type = $form['#field']['type_name'];
+	$field_name = $form['#field']['field_name'];
+	 
+	$table = "cck_wordcount";
+	$record->field_name = $field_name;
+	$record->node_type = $node_type;
+	$record->wordcount = $form_state['values']['max_length'];
+  $pkey = Array("node_type", "field_name");
+	
+	$sql = "SELECT count(field_name) from {cck_wordcount} where node_type = '%s' AND field_name = '%s'";
+  if (db_result(db_query(db_rewrite_sql($sql), $node_type, $field_name)) == 0){
+  	drupal_write_record($table, $record);
+  } else {
+		drupal_write_record($table, $record, $pkey);
+	}
+}
+
+function _cck_wordcount_injectjavascript($fields) {
+  $path = drupal_get_path('module', 'cck_wordcount');
+  drupal_add_js($path .'/cck_wordcount.js');
+  drupal_add_css($path .'/cck_wordcount.css');
+  
+  foreach ($fields as $fieldname => $maxwords) {
+    $fieldname = 'edit-'. str_replace ('_', '-', $fieldname) .'-0-value';
+    $code .= '          wordcount_help("'. $fieldname . '", '. $maxwords . ' );';
+  }
+  drupal_add_js( '$(document).ready(function(){ 
+    '. $code . '                 
+    });', 'inline');
+}

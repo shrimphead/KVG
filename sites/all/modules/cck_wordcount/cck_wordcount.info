@@ -1,0 +1,13 @@
+name = CCK Word Count
+description = Counts the words in a CCK field client-side 
+
+package = CCK 
+core = 6.x
+
+; $Id: cck_wordcount.info,v 1.2 2009/08/30 22:07:23 batje Exp $ 
+; Information added by drupal.org packaging script on 2009-08-30
+version = "6.x-1.0-beta1"
+core = "6.x"
+project = "cck_wordcount"
+datestamp = "1251670813"
+

@@ -1,0 +1,173 @@
+# $Id: es.po,v 1.1.2.1 2010/10/20 01:45:01 shannonlucas Exp $
+#
+# Spanish translation of Drupal (general)
+# Copyright 2010 Josué Valencia <jvm@barriolinux.es>
+# Generated from files:
+#  node.tpl.php,v 1.8 2008/12/31 22:23:01 shannonlucas
+#  template.php,v 1.18 2008/12/31 22:23:01 shannonlucas
+#  theme-settings.php,v 1.9 2008/11/23 22:16:19 shannonlucas
+#  nitobe.info,v 1.8 2008/12/18 21:04:07 shannonlucas
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Nitobe Spanish Translation\n"
+"POT-Creation-Date: 2010-04-06 18:02+0100\n"
+"PO-Revision-Date: 2010-04-06 18:02+0100\n"
+"Last-Translator: Josué <jvm@barriolinux.es>\n"
+"Language-Team:  <jvm@barriolinux.es>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: spanish\n"
+"X-Poedit-Country: spain\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: template.php:113
+msgid "not verified"
+msgstr "no verificado"
+
+#: template.php:130
+msgid "Anonymous"
+msgstr "Anónimo"
+
+#: template.php:131
+msgid "@user's picture"
+msgstr "imagen de @user"
+
+#: template.php:140
+msgid "View user profile."
+msgstr "Ver el perfil del usuario."
+
+#: template.php:210
+msgid "Tags: "
+msgstr "Etiquetas: "
+
+#: template.php:211
+msgid ", "
+msgstr ", "
+
+#: template.php:229
+msgid " | "
+msgstr " | "
+
+#: template.php:313
+msgid "Permanent Link to !title"
+msgstr "Enlace permanente a !title"
+
+#: template.php:319
+msgid "Posted by !author"
+msgstr "Publicado por !author"
+
+#: template.php:326;451
+msgid "d M Y"
+msgstr "d M Y"
+
+#: template.php:479
+msgid "Permanent link to this comment."
+msgstr "Enlace permanente a éste comentario"
+
+#: template.php:488
+msgid "M jS, Y"
+msgstr "jS M, Y"
+
+#: template.php:489
+msgid "g:i a"
+msgstr "g:i a"
+
+#: template.php:493
+msgid "Posted by !author on @date at @time."
+msgstr "Publicado por !author el @date a las @time."
+
+#: theme-settings.php:26
+msgid "Where should the sidebars be placed?"
+msgstr "¿Dónde deben ubicarse las columnas laterales?"
+
+#: theme-settings.php:35
+msgid "Sidebar placement"
+msgstr "Ubicación de las columnas laterales"
+
+#: theme-settings.php:57
+msgid "Header image"
+msgstr "Imagen de cabecera"
+
+#: theme-settings.php:66
+msgid "By default, if there is block content in the masthead region, the header image will not be displayed. Check this box to cause the header image to be displayed as the region's background image."
+msgstr "Por defecto, si hay un contenido de bloque en la region 'Cabecera', la imagen de cabecera no se mostrará. Marca ésta opción para que se muestre la imagen como imagen de fondo de la región."
+
+#: theme-settings.php:69
+msgid "Force header image"
+msgstr "Forzar imagen de cabecera"
+
+#: theme-settings.php:78
+msgid "Should the title be adjusted to apply an alternate color to every other word and remove inter-word spacing?"
+msgstr "¿Se debe ajustar el título para aplicar un color alterno a cada palabra y eliminar el espacio entre palabras?"
+
+#: theme-settings.php:81
+msgid "Apply title effect"
+msgstr "Aplicar efecto de título"
+
+#: theme-settings.php:90
+msgid "Normally, when an anonymous visitors posts a comment, their name is suffixed with '%verified'. Checking this will prevent that text from being added."
+msgstr "Normalmente, cuando un usuario anónimo publica un comentario, su nombre va precedido de '%verified'. Marcando ésta opción evitas que se añada éste texto."
+
+#: theme-settings.php:94
+msgid "Strip '(not verified)' from usernames"
+msgstr "Eliminar '(no verificado)' de los nombres de usuario"
+
+#: theme-settings.php:104
+msgid "The number of default pages to include in pager controls. If you are using a three column layout, a lower number here will work better."
+msgstr "El número de páginas por defecto a incluir en los controles del paginador. Si estás usando tres columnas, un número menor funcionará mejor."
+
+#: theme-settings.php:108
+msgid "Pager item count"
+msgstr "Contador del paginador"
+
+#: nitobe.info:0
+msgid "Nitobe"
+msgstr "Nitobe"
+
+#: nitobe.info:0
+msgid "Fixed width theme"
+msgstr "Tema de ancho fijo"
+
+#: nitobe.info:0
+msgid "Header"
+msgstr "Encabezado"
+
+#: nitobe.info:0
+msgid "Masthead"
+msgstr "Cabecera"
+
+#: nitobe.info:0
+msgid "Content"
+msgstr "Contenido"
+
+#: nitobe.info:0
+msgid "Left Sidebar"
+msgstr "Columna lateral izquierda"
+
+#: nitobe.info:0
+msgid "Right Sidebar"
+msgstr "Columna lateral derecha"
+
+#: nitobe.info:0
+msgid "Bottom Left"
+msgstr "Abajo a la izquierda"
+
+#: nitobe.info:0
+msgid "Bottom Center Left"
+msgstr "Abajo centrado a la izquierda"
+
+#: nitobe.info:0
+msgid "Bottom Center Right"
+msgstr "Abajo centrado a la derecha"
+
+#: nitobe.info:0
+msgid "Bottom Right"
+msgstr "Abajo a la derecha"
+
+#: nitobe.info:0
+msgid "Footer"
+msgstr "Pie"
+

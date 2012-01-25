@@ -1,0 +1,31 @@
+<?php
+// $Id: 
+
+/**
+ * @file
+ * A very simple module that forces to use Full HTML filter as the default filter 
+ * for admin user
+ */
+
+/**
+ * Implementation of hook_nodeapi().
+ */
+function admin_default_filter_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
+  global $user;
+
+  // Do not proceed if there isn't a user
+  if (!$user->uid) return;
+
+  // Do not proceed if the user is not admin
+  if ($user->uid != 1) return;
+
+  switch ($op) {
+    case 'prepare':
+      // Only operate on new nodes
+      if (!isset($node->nid)) {
+        $node->format = 2;	// Full HTML
+      }
+      break;
+  }
+}
+?>

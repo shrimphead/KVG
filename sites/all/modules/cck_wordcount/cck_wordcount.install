@@ -1,0 +1,51 @@
+<?php 
+// $Id: cck_wordcount.install,v 1.2 2009/08/30 22:07:23 batje Exp $ 
+
+/**
+ * Implementation of hook_install().
+ */
+function cck_wordcount_install() {
+  drupal_install_schema('cck_wordcount');
+}
+
+
+/**
+ * Implementation of hook_uninstall
+ */
+function cck_wordcount_uninstall() {
+  drupal_uninstall_schema('cck_wordcount');
+  //db_query("DELETE FROM {variable} WHERE name LIKE 'cck_wordcount%'");
+}
+
+
+/**
+ * Schema definition for cck_wordcount
+ */
+function cck_wordcount_schema() {
+  $schema['cck_wordcount'] = array(
+    'description' => t('Stores maximum wordcount per field.'),
+    'fields' => array(
+      'node_type' => array(
+        'description' => t('nodetype for this wordcount.'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'field_name' => array(
+        'description' => t('name of the field for this wordcount.'),
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+      ),
+      'wordcount' => array(
+        'description' => t('maximum amount of words.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('node_type', 'field_name'),
+  );
+  return $schema;
+}
+
