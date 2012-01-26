@@ -113,4 +113,8 @@ DirectoryIndex index.php
   RewriteRule ^(.*)$ index.php?q=$1 [L,QSA]
 </IfModule>
 
+<<<<<<< HEAD
 # $Id$
+=======
+# $Id: .htaccess,v 1.90.2.5 2010/02/02 07:25:22 dries Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5

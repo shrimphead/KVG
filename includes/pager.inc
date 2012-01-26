@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: pager.inc,v 1.63.2.1 2009/07/01 20:51:55 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -215,11 +219,18 @@ function theme_pager($tags = array(), $limit = 10, $element = 0, $parameters = a
 
 
 /**
+<<<<<<< HEAD
  * @defgroup pagerpieces Pager pieces
  * @{
  * Theme functions for customizing pager elements.
  *
  * Note that you should NOT modify this file to customize your pager.
+=======
+ * @name Pager pieces
+ * @{
+ * Use these pieces to construct your own custom pagers in your theme. Note that
+ * you should NOT modify this file to customize your pager.
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 
 /**

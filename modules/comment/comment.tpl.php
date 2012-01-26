@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: comment.tpl.php,v 1.4.2.1 2008/03/21 21:58:28 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file comment.tpl.php

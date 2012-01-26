@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: image.gd.inc,v 1.4 2008/01/15 10:17:42 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file

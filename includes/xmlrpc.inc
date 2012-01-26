@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: xmlrpc.inc,v 1.47.2.6 2010/06/02 12:22:02 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file

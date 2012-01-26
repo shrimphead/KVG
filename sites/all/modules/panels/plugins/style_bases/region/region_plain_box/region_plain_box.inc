@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: region_plain_box.inc,v 1.1.2.1 2010/07/13 23:55:58 merlinofchaos Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file

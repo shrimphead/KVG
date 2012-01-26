@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: panels-threecol-33-34-33.tpl.php,v 1.1.2.2 2009/04/30 20:41:45 merlinofchaos Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 /**
  * @file
  * Template for a 3 column panel layout.

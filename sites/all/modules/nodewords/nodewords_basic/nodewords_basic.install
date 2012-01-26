@@ -1,9 +1,17 @@
 <?php
+<<<<<<< HEAD
 // $Id$
 
 /**
  * @file
  * Installation file for nodewords_basic.module.
+=======
+// $Id: nodewords_basic.install,v 1.1.2.9 2009/12/25 03:09:07 kiam Exp $
+
+/**
+ * @file
+ * Installation file for Nodewords - basic meta tags.
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 
 /**
@@ -14,6 +22,13 @@ function nodewords_basic_install() {
 }
 
 /**
+<<<<<<< HEAD
+=======
+ * Next update ID: 6105.
+ */
+
+/**
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * Implements hook_uninstall().
  */
 function nodewords_basic_uninstall() {
@@ -31,6 +46,7 @@ function nodewords_basic_uninstall() {
     db_query("DELETE FROM {nodewords} WHERE name IN (" . db_placeholders($metatags, 'varchar') . ")", $metatags);
   }
 }
+<<<<<<< HEAD
 
 /**
  * Implementations of hook_update_N().
@@ -44,3 +60,5 @@ function nodewords_basic_uninstall() {
 function nodewords_basic_update_6113() {
   return array();
 }
+=======
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5

@@ -71,9 +71,12 @@ function xmlsitemap_menu_xmlsitemap_process_menu_links(array $mlids, array $xmls
 
   foreach ($mlids as $mlid) {
     $menu_item = menu_link_load($mlid);
+<<<<<<< HEAD
     if (empty($menu_item)) {
       continue;
     }
+=======
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     if (!empty($xmlsitemap)) {
       $menu_item['xmlsitemap'] = $xmlsitemap;
     }

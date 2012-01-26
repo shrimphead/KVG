@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: book-node-export-html.tpl.php,v 1.1 2007/11/04 14:29:09 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file book-node-export-html.tpl.php

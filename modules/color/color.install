@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+/* $Id: color.install,v 1.2 2006/12/05 05:49:50 dries Exp $ */
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 function color_requirements($phase) {
   $requirements = array();
@@ -32,6 +36,7 @@ function color_requirements($phase) {
 
   return $requirements;
 }
+<<<<<<< HEAD
 
 /**
  * Warn site administrator if unsafe CSS color codes are found in the database.
@@ -49,3 +54,5 @@ function color_update_6001() {
   }
   return $ret;
 }
+=======
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5

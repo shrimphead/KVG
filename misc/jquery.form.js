@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// $Id: jquery.form.js,v 1.2 2007/11/19 10:05:48 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /*
  * jQuery Form Plugin

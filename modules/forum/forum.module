@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: forum.module,v 1.448.2.9 2010/12/15 12:37:01 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -494,6 +498,7 @@ function forum_get_forums($tid = 0) {
   $_forums = taxonomy_get_tree($vid, $tid);
 
   if (count($_forums)) {
+<<<<<<< HEAD
   $counts = array();
     $sql = "
       SELECT r.tid AS tid, n.nid AS nid, l.comment_count AS nid_comment_count
@@ -519,6 +524,13 @@ function forum_get_forums($tid = 0) {
           FROM ($sql_rewritten) AS forum_content_list
           GROUP BY tid";
     }
+=======
+
+    $counts = array();
+
+    $sql = "SELECT r.tid, COUNT(n.nid) AS topic_count, SUM(l.comment_count) AS comment_count FROM {node} n INNER JOIN {node_comment_statistics} l ON n.nid = l.nid INNER JOIN {term_node} r ON n.vid = r.vid WHERE n.status = 1 GROUP BY r.tid";
+    $sql = db_rewrite_sql($sql);
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     $_counts = db_query($sql);
     while ($count = db_fetch_object($_counts)) {
       $counts[$count->tid] = $count;
@@ -565,7 +577,11 @@ function forum_get_forums($tid = 0) {
  * than NODE_NEW_LIMIT.
  */
 function _forum_topics_unread($term, $uid) {
+<<<<<<< HEAD
   $sql = "SELECT COUNT(DISTINCT n.nid) FROM {node} n INNER JOIN {term_node} tn ON n.vid = tn.vid AND tn.tid = %d LEFT JOIN {history} h ON n.nid = h.nid AND h.uid = %d WHERE n.status = 1 AND n.created > %d AND h.nid IS NULL";
+=======
+  $sql = "SELECT COUNT(n.nid) FROM {node} n INNER JOIN {term_node} tn ON n.vid = tn.vid AND tn.tid = %d LEFT JOIN {history} h ON n.nid = h.nid AND h.uid = %d WHERE n.status = 1 AND n.created > %d AND h.nid IS NULL";
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   $sql = db_rewrite_sql($sql);
   return db_result(db_query($sql, $term, $uid, NODE_NEW_LIMIT));
 }
@@ -594,7 +610,11 @@ function forum_get_topics($tid, $sortby, $forum_per_page) {
   $sql .= tablesort_sql($forum_topic_list_header, 'n.sticky DESC,');
   $sql .= ', n.created DESC';  // Always add a secondary sort order so that the news forum topics are on top.
 
+<<<<<<< HEAD
   $sql_count = db_rewrite_sql("SELECT COUNT(DISTINCT n.nid) FROM {node} n INNER JOIN {term_node} r ON n.vid = r.vid AND r.tid = %d WHERE n.status = 1");
+=======
+  $sql_count = db_rewrite_sql("SELECT COUNT(n.nid) FROM {node} n INNER JOIN {term_node} r ON n.vid = r.vid AND r.tid = %d WHERE n.status = 1");
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
   $result = pager_query($sql, $forum_per_page, 0, $sql_count, $tid);
   $topics = array();

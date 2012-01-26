@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// $Id: display_editor.js,v 1.4.4.9 2010/08/20 16:20:44 merlinofchaos Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 /**
  * @file display_editor.js
  *

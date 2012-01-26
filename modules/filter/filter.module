@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: filter.module,v 1.204.2.17 2010/11/03 14:11:43 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -396,9 +400,16 @@ function filter_list_format($format) {
 }
 
 /**
+<<<<<<< HEAD
  * @defgroup filtering_functions Filtering functions
  * @{
  * Functions for interacting with the content filtering system.
+=======
+ * @name Filtering functions
+ * @{
+ * Modules which need to have content filtered can use these functions to
+ * interact with the filter system.
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  *
  * For more info, see the hook_filter() documentation.
  *
@@ -602,12 +613,17 @@ function theme_filter_tips_more_info() {
 }
 
 /**
+<<<<<<< HEAD
  * @defgroup standard_filters Standard filters
+=======
+ * @name Standard filters
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * @{
  * Filters implemented by the filter.module.
  */
 
 /**
+<<<<<<< HEAD
  * Implementation of hook_filter().
  *
  * Sets up a basic set of essential filters.
@@ -616,6 +632,15 @@ function theme_filter_tips_more_info() {
  * - Line break converter: Converts newlines into paragraph and break tags.
  * - URL filter: Converts URLs and e-mail addresses into links.
  * - HTML corrector: Fixes faulty HTML.
+=======
+ * Implementation of hook_filter(). Contains a basic set of essential filters.
+ * - HTML filter:
+ *     Validates user-supplied HTML, transforming it as necessary.
+ * - Line break converter:
+ *     Converts newlines into paragraph and break tags.
+ * - URL and e-mail address filter:
+ *     Converts newlines into paragraph and break tags.
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 function filter_filter($op, $delta = 0, $format = -1, $text = '') {
   switch ($op) {

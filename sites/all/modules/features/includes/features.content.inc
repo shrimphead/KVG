@@ -60,7 +60,11 @@ function content_features_export($data, &$export, $module_name = '') {
       $field_name = $split[1];
       $field = content_fields($field_name, $type_name);
 
+<<<<<<< HEAD
       if (!empty($field)) {
+=======
+      if ($field) {
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         // Add field item instance for later export.
         $export['features']['content'][$instance] = $instance;
 
@@ -152,12 +156,21 @@ function content_features_rebuild($module) {
       // fields too. We can't just pass $field to it as the fnc will add every
       // item of the array to the WHERE clause.
       $param = array('field_name' => $field['field_name'], 'type_name' => $field['type_name']);
+<<<<<<< HEAD
       $existing_instance = array_shift(content_field_instance_read($param, TRUE));
 
       if (!empty($existing_instance)) {
         // If this existing instance is inactive, we need to activate it before
         // running content_field_instance_update().
         if (empty($existing_instance['widget_active'])) {
+=======
+      $existing_instance = content_field_instance_read($param, TRUE);
+
+      if ($existing_instance) {
+        // If this existing instance is inactive, we need to activate it before
+        // running content_field_instance_update().
+        if (!$existing_instance['widget_active']) {
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
           db_query("UPDATE {". content_instance_tablename() ."} SET widget_active = 1 WHERE field_name = '%s' AND type_name = '%s'", $field['field_name'], $field['type_name']);
           // We need to clear the type cache again, unfortunately.
           content_clear_type_cache(TRUE);

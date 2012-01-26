@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// $Id: tableheader.js,v 1.16.2.2 2009/03/30 12:48:09 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 Drupal.tableHeaderDoScroll = function() {
   if (typeof(Drupal.tableHeaderOnScroll)=='function') {

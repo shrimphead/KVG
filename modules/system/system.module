@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: system.module,v 1.585.2.59 2010/12/15 21:11:23 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -8,7 +12,11 @@
 /**
  * The current system version.
  */
+<<<<<<< HEAD
 define('VERSION', '6.22');
+=======
+define('VERSION', '6.20');
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Core API compatibility.
@@ -919,6 +927,7 @@ function _system_theme_data() {
     $themes_info = $themes;
   }
 
+<<<<<<< HEAD
   // To avoid side effects, we don't return the original objects.
   $themes_info_cloned = array();
   foreach ($themes_info as $key => $theme) {
@@ -926,6 +935,9 @@ function _system_theme_data() {
   }
 
   return $themes_info_cloned;
+=======
+  return $themes_info;
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 }
 
 /**

@@ -290,6 +290,7 @@ function webform_validate_date($element, $form_state) {
     $timestamp = strtotime($element['year']['#value'] . '-' . $element['month']['#value'] . '-' . $element['day']['#value']);
     $format = webform_date_format('short');
 
+<<<<<<< HEAD
     // Flip start and end if needed.
     $date1 = strtotime($element['#start_date']);
     $date2 = strtotime($element['#end_date']);
@@ -304,13 +305,21 @@ function webform_validate_date($element, $form_state) {
 
     // Check that the date is after the start date.
     if ($start_date !== FALSE) {
+=======
+    // Check that the date is after the start date.
+    if ($element['#start_date'] !== '' && (($start_date = strtotime($element['#start_date'])) || $start_date !== FALSE)) {
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       if ($timestamp < $start_date) {
         form_error($element, t('The entered date must be @start_date or later.', array('@start_date' => date($format, $start_date))));
       }
     }
 
     // Check that the date is before the end date.
+<<<<<<< HEAD
     if ($end_date !== FALSE) {
+=======
+    if ($element['#end_date'] !== '' && (($end_date = strtotime($element['#end_date'])) || $end_date !== FALSE)) {
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       if ($timestamp > $end_date) {
         form_error($element, t('The entered date must be @end_date or earlier.', array('@end_date' => date($format, $end_date))));
       }

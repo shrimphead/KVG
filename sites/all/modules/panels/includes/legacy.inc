@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: legacy.inc,v 1.1.2.1 2010/06/07 20:25:04 sdboyer Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Legacy state manager for Panels.
@@ -45,7 +49,11 @@ class PanelsLegacyState {
    */
   function checkStylesIPE1() {
     $legacy_info = array(
+<<<<<<< HEAD
       'explanation' => $this->t('Panels 3.6 made changes to the rendering order in a way that affects certain style plugins. The above modules implement style plugins, but have not indicated their compatibility with this new system. See !link for information on how to update style plugins to the new system.', array('!link' => url('http://drupal.org/node/865840', array('external' => TRUE)))),
+=======
+      'explanation' => $this->t('Panels 3.6 made changes to the rendering order in a way that affects certain style plugins. The above modules implement style plugins, but have not indicated their compatibility with this new system. See !link for information on how to update style plugins to the new system.', array('!link' => url('http://drupal.org/node/###FIXME', array('external' => TRUE)))),
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       'modules' => array(),
     );
 

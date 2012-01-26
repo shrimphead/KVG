@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: block.module,v 1.299.2.4 2009/10/06 12:13:01 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -223,6 +227,7 @@ function block_block($op = 'list', $delta = 0, $edit = array()) {
 /**
  * Update the 'blocks' DB table with the blocks currently exported by modules.
  *
+<<<<<<< HEAD
  * @param $theme
  *   The theme to rehash blocks for. If not provided, defaults to the currently
  *   used theme.
@@ -239,6 +244,17 @@ function _block_rehash($theme = NULL) {
   }
 
   $result = db_query("SELECT * FROM {blocks} WHERE theme = '%s'", $theme);
+=======
+ * @return
+ *   Blocks currently exported by modules.
+ */
+function _block_rehash() {
+  global $theme_key;
+
+  init_theme();
+
+  $result = db_query("SELECT * FROM {blocks} WHERE theme = '%s'", $theme_key);
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   $old_blocks = array();
   while ($old_block = db_fetch_array($result)) {
     $old_blocks[$old_block['module']][$old_block['delta']] = $old_block;
@@ -246,7 +262,11 @@ function _block_rehash($theme = NULL) {
 
   $blocks = array();
   // Valid region names for the theme.
+<<<<<<< HEAD
   $regions = system_region_list($theme);
+=======
+  $regions = system_region_list($theme_key);
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
   foreach (module_list() as $module) {
     $module_blocks = module_invoke($module, 'block', 'list');
@@ -256,7 +276,11 @@ function _block_rehash($theme = NULL) {
           // If it's a new block, add identifiers.
           $block['module'] = $module;
           $block['delta']  = $delta;
+<<<<<<< HEAD
           $block['theme']  = $theme;
+=======
+          $block['theme']  = $theme_key;
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
           if (!isset($block['pages'])) {
             // {block}.pages is type 'text', so it cannot have a
             // default value, and not null, so we need to provide
@@ -272,6 +296,7 @@ function _block_rehash($theme = NULL) {
         }
         else {
           // If it's an existing block, database settings should overwrite
+<<<<<<< HEAD
           // the code. The only exceptions are 'cache' which is only definable
           // and updatable in the code, and 'info' which is not stored in
           // the database.
@@ -279,6 +304,11 @@ function _block_rehash($theme = NULL) {
           if (isset($block['cache']) && $block['cache'] != $old_blocks[$module][$delta]['cache']) {
             db_query("UPDATE {blocks} SET cache = %d WHERE bid = %d", $block['cache'], $old_blocks[$module][$delta]['bid']);
           }
+=======
+          // the code. But aside from 'info' everything that's definable in
+          // code is stored in the database and we do not store 'info', so we
+          // do not need to update the database here.
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
           // Add 'info' to this block.
           $old_blocks[$module][$delta]['info'] = $block['info'];
           // If the region name does not exist, disable the block and assign it to none.
@@ -302,13 +332,18 @@ function _block_rehash($theme = NULL) {
   // Remove blocks that are no longer defined by the code from the database.
   foreach ($old_blocks as $module => $old_module_blocks) {
     foreach ($old_module_blocks as $delta => $block) {
+<<<<<<< HEAD
       db_query("DELETE FROM {blocks} WHERE module = '%s' AND delta = '%s' AND theme = '%s'", $module, $delta, $theme);
+=======
+      db_query("DELETE FROM {blocks} WHERE module = '%s' AND delta = '%s' AND theme = '%s'", $module, $delta, $theme_key);
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     }
   }
   return $blocks;
 }
 
 /**
+<<<<<<< HEAD
  * Implementation of hook_flush_caches().
  */
 function block_flush_caches() {
@@ -322,6 +357,8 @@ function block_flush_caches() {
 }
 
 /**
+=======
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * Returns information from database about a user-created (custom) block.
  *
  * @param $bid

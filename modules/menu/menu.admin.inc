@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: menu.admin.inc,v 1.26.2.7 2010/06/02 12:56:20 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -409,7 +413,11 @@ function menu_edit_menu(&$form_state, $type, $menu = array()) {
     $form['menu_name'] = array(
       '#type' => 'textfield',
       '#title' => t('Menu name'),
+<<<<<<< HEAD
       '#maxlength' => MENU_MAX_MENU_NAME_LENGTH_UI,
+=======
+      '#maxsize' => MENU_MAX_MENU_NAME_LENGTH_UI,
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       '#description' => t('The machine-readable name of this menu. This text will be used for constructing the URL of the <em>menu overview</em> page for this menu. This name must contain only lowercase letters, numbers, and hyphens, and must be unique.'),
       '#required' => TRUE,
     );
@@ -509,6 +517,12 @@ function menu_edit_menu_validate($form, &$form_state) {
   if (preg_match('/[^a-z0-9-]/', $item['menu_name'])) {
     form_set_error('menu_name', t('The menu name may only consist of lowercase letters, numbers, and hyphens.'));
   }
+<<<<<<< HEAD
+=======
+  if (strlen($item['menu_name']) > MENU_MAX_MENU_NAME_LENGTH_UI) {
+    form_set_error('menu_name', format_plural(MENU_MAX_MENU_NAME_LENGTH_UI, "The menu name can't be longer than 1 character.", "The menu name can't be longer than @count characters."));
+  }
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   if ($form['#insert']) {
     // We will add 'menu-' to the menu name to help avoid name-space conflicts.
     $item['menu_name'] = 'menu-'. $item['menu_name'];

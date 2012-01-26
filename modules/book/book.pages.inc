@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: book.pages.inc,v 1.5.2.2 2010/08/06 11:00:49 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -77,11 +81,16 @@ function book_export_html($nid) {
     if (isset($node->book)) {
       $tree = book_menu_subtree_data($node->book);
       $contents = book_export_traverse($tree, 'book_node_export');
+<<<<<<< HEAD
       return theme('book_export_html', $node->title, $contents, $node->book['depth']);
     }
     else {
       drupal_not_found();
     }
+=======
+    }
+    return theme('book_export_html', $node->title, $contents, $node->book['depth']);
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   }
   else {
     drupal_access_denied();

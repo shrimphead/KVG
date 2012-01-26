@@ -80,6 +80,7 @@ function webform_configure_form(&$form_state, $node) {
     '#maxlength' => 255,
   );
 
+<<<<<<< HEAD
   // Submission limit settings for all submissions.
   $form['submission']['total_submit_limit'] = array(
     '#type' => 'item',
@@ -116,12 +117,22 @@ function webform_configure_form(&$form_state, $node) {
   $form['submission']['submit_limit'] = array(
     '#type' => 'item',
     '#title' => t('Per user submission limit'),
+=======
+  // Submission limit settings.
+  $form['submission']['submit_limit'] = array(
+    '#type' => 'item',
+    '#title' => t('Submission limit'),
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     '#theme' => 'webform_advanced_submit_limit_form',
     '#description' => t('Limit the number of submissions <em>per user</em>. A user is identified by their user login if logged-in, or by their IP Address and Cookie if anonymous. Use of cookies may be modified in the global <a href="!url">Webform settings</a>.', array('!url' => url('admin/settings/webform'))),
   );
   $form['submission']['submit_limit']['enforce_limit'] = array(
     '#type' => 'radios',
+<<<<<<< HEAD
     '#options' => array('no' => t('Unlimited'), 'yes' => 'Limit each user to !count submission(s) !timespan'),
+=======
+    '#options' => array('no' => t('Unlimited'), 'yes' => 'Limit to !count submission(s) !timespan'),
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     '#default_value' => $node->webform['submit_limit'] == -1 ? 'no' : 'yes',
     '#parents' => array('enforce_limit'),
   );
@@ -313,6 +324,7 @@ function webform_configure_form_submit($form, &$form_state) {
     $node->webform['submit_interval'] = $form_state['values']['submit_interval'];
   }
 
+<<<<<<< HEAD
   // Set the total submit limit to -1 if set to unlimited.
   if ($form_state['values']['enforce_total_limit'] == 'no') {
     $node->webform['total_submit_limit'] = -1;
@@ -323,6 +335,8 @@ function webform_configure_form_submit($form, &$form_state) {
     $node->webform['total_submit_interval'] = $form_state['values']['total_submit_interval'];
   }
 
+=======
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   // Set submit notice.
   $node->webform['submit_notice'] = $form_state['values']['submit_notice'];
 
@@ -345,6 +359,7 @@ function theme_webform_advanced_submit_limit_form($form) {
     '!count' => preg_replace('/(<div[^>]*>)(.*?)(<\/div>)/s', '$2', drupal_render($form['submit_limit'])),
     '!timespan' =>  preg_replace('/(<div[^>]*>)(.*?)(<\/div>)/s', '$2', drupal_render($form['submit_interval'])),
   );
+<<<<<<< HEAD
   $form['enforce_limit']['yes']['#title'] = t('Limit each user to !count submission(s) !timespan', $replacements);
   return drupal_render($form);
 }
@@ -361,6 +376,9 @@ function theme_webform_advanced_total_submit_limit_form($form) {
     '!timespan' =>  preg_replace('/(<div[^>]*>)(.*?)(<\/div>)/s', '$2', drupal_render($form['total_submit_interval'])),
   );
   $form['enforce_total_limit']['yes']['#title'] = t('Limit to !count total submission(s) !timespan', $replacements);
+=======
+  $form['enforce_limit']['yes']['#title'] = t('Limit to !count submission(s) !timespan', $replacements);
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   return drupal_render($form);
 }
 

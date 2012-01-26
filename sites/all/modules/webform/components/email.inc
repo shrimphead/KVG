@@ -162,7 +162,11 @@ function _webform_render_email($component, $value = NULL, $filter = TRUE) {
 function _webform_validate_email($form_element, &$form_state) {
   $component = $form_element['#webform_component'];
   $value = trim($form_element['#value']);
+<<<<<<< HEAD
   if ($value !== '' && !valid_email_address($value)) {
+=======
+  if (!empty($value) && !valid_email_address($value)) {
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     form_error($form_element, t('%value is not a valid email address.', array('%value' => $value)));
   }
   else {

@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: panels.install,v 1.4.2.40 2010/10/19 20:42:32 merlinofchaos Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Test requirements for installation and running.
@@ -251,7 +255,11 @@ function panels_schema_1() {
       ),
       'layout' => array(
         'type' => 'varchar',
+<<<<<<< HEAD
         'length' => '255',
+=======
+        'length' => '32',
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         'default' => '',
       ),
       'layout_settings' => array(
@@ -1513,6 +1521,7 @@ function panels_update_6310() {
   drupal_install_modules(array('stylizer'));
   return $ret;
 }
+<<<<<<< HEAD
 
 /**
  * Change panels_display.layout to match the size of panels_layout.name.
@@ -1536,3 +1545,5 @@ function panels_update_6311() {
 
   return $ret;
 }
+=======
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5

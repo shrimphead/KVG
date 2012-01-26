@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: update.php,v 1.252.2.4 2010/11/03 12:29:24 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -345,8 +349,13 @@ function update_results_page() {
           if (!count($queries)) {
             $output .= '<li class="none">No queries</li>';
           }
+<<<<<<< HEAD
           $output .= '</ul>';
         }
+=======
+        }
+        $output .= '</ul>';
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       }
     }
     $output .= '</div>';

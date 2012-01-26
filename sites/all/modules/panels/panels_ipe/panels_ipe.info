@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+; $Id: panels_ipe.info,v 1.1.2.3 2010/06/07 20:20:55 sdboyer Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 name = Panels In-Place Editor
 description = Provide a UI for managing some Panels directly on the frontend, instead of having to use the backend.
 package = "Panels"
@@ -5,9 +9,17 @@ dependencies[] = panels
 dependencies[] = jquery_ui
 core = 6.x
 
+<<<<<<< HEAD
 ; Information added by drupal.org packaging script on 2012-01-18
 version = "6.x-3.10"
 core = "6.x"
 project = "panels"
 datestamp = "1326917148"
+=======
+; Information added by drupal.org packaging script on 2011-01-12
+version = "6.x-3.9"
+core = "6.x"
+project = "panels"
+datestamp = "1294876603"
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 

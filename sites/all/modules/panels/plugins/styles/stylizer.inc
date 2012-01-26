@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: stylizer.inc,v 1.1.2.6 2010/08/22 00:42:52 merlinofchaos Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -89,6 +93,7 @@ function _panels_stylizer_get_style($plugin, $style_settings) {
   if (!empty($plugin['style'])) {
     return $plugin['style']->settings;
   }
+<<<<<<< HEAD
 
   if (empty($style_settings)) {
     return array();
@@ -102,6 +107,17 @@ function _panels_stylizer_get_style($plugin, $style_settings) {
   $style = ctools_export_crud_load('stylizer', $style_settings['style']);
   if ($style) {
     return $style->settings;
+=======
+  else if ($style_settings['style'] == '$') {
+    return $style_settings['settings'];
+  }
+  else {
+    ctools_include('export');
+    $style = ctools_export_crud_load('stylizer', $style_settings['style']);
+    if ($style) {
+      return $style->settings;
+    }
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   }
 }
 

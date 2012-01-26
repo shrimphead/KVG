@@ -1,12 +1,24 @@
+<<<<<<< HEAD
+=======
+; $Id: panels.info,v 1.5.4.4 2009/08/04 21:45:42 merlinofchaos Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 name = Panels
 description = Core Panels display functions; provides no external UI, at least one other Panels module should be enabled.
 core = 6.x
 package = "Panels"
 dependencies[] = ctools
 
+<<<<<<< HEAD
 ; Information added by drupal.org packaging script on 2012-01-18
 version = "6.x-3.10"
 core = "6.x"
 project = "panels"
 datestamp = "1326917148"
+=======
+; Information added by drupal.org packaging script on 2011-01-12
+version = "6.x-3.9"
+core = "6.x"
+project = "panels"
+datestamp = "1294876603"
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// $Id: flexible-admin.js,v 1.1.2.5 2010/06/23 00:35:40 merlinofchaos Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 Drupal.flexible = Drupal.flexible || {};
 

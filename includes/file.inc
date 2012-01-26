@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: file.inc,v 1.121.2.14 2010/12/13 19:02:09 goba Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -82,6 +86,7 @@ function file_create_path($dest = 0) {
 }
 
 /**
+<<<<<<< HEAD
  * Checks whether a directory exists and is writable.
  *
  * Furthermore, the directory can optionally be created if it does not exist,
@@ -104,6 +109,19 @@ function file_create_path($dest = 0) {
  * @return
  *   FALSE if the directory does not exist or is not writable, even after
  *   any optional actions have been carried out. Otherwise, TRUE is returned.
+=======
+ * Check that the directory exists and is writable. Directories need to
+ * have execute permissions to be considered a directory by FTP servers, etc.
+ *
+ * @param $directory A string containing the name of a directory path.
+ * @param $mode A Boolean value to indicate if the directory should be created
+ *   if it does not exist or made writable if it is read-only.
+ * @param $form_item An optional string containing the name of a form item that
+ *   any errors will be attached to. This is useful for settings forms that
+ *   require the user to specify a writable directory. If it can't be made to
+ *   work, a form error will be set preventing them from saving the settings.
+ * @return FALSE when directory not found, or TRUE when directory exists.
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 function file_check_directory(&$directory, $mode = 0, $form_item = NULL) {
   $directory = rtrim($directory, '/\\');
@@ -668,12 +686,18 @@ function file_validate_name_length($file) {
  * @param $file
  *   A Drupal file object.
  * @param $extensions
+<<<<<<< HEAD
  *   A string with a space separated list of allowed file extensions, not
  *   including the period. For example, 'bmp jpg gif png'.
  *
  * @return
  *   An array. If the file extension is not allowed, it will contain an error
  *   message.
+=======
+ *   A string with a space separated
+ * @return
+ *   An array. If the file extension is not allowed, it will contain an error message.
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 function file_validate_extensions($file, $extensions) {
   global $user;
@@ -854,6 +878,7 @@ function file_transfer($source, $headers) {
   if (ob_get_level()) {
     ob_end_clean();
   }
+<<<<<<< HEAD
   
   // IE cannot download private files because it cannot store files downloaded
   // over https in the browser cache. The problem can be solved by sending
@@ -862,6 +887,8 @@ function file_transfer($source, $headers) {
     drupal_set_header('Cache-Control: private');
     drupal_set_header('Pragma: private');
   }
+=======
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
   foreach ($headers as $header) {
     // To prevent HTTP header injection, we delete new lines that are

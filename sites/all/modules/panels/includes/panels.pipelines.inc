@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+// $Id: panels.pipelines.inc,v 1.1.2.1 2010/07/06 23:59:00 merlinofchaos Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -6,7 +10,11 @@
  */
 
 /**
+<<<<<<< HEAD
  * Implementation of hook_default_panels_renderer_pipeline().
+=======
+ * Implementation of hook_default_panels_layout()
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 function panels_default_panels_renderer_pipeline() {
   $pipelines = array();

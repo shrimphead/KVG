@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+# $Id: KNOWN_ISSUES.txt,v 1.2 2008/07/15 23:59:36 merlinofchaos Exp $
+>>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 Known Issue http://drupal.org/node/191771
   'Node' panes can have two titles or have two title areas.
