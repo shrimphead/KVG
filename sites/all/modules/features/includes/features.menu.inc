@@ -106,22 +106,14 @@ function menu_custom_features_export_render($module, $data) {
 }
 
 /**
-<<<<<<< HEAD
  * Implementation of hook_features_revert().
-=======
- * Implementation of hook_features_export_revert().
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 function menu_custom_features_revert($module) {
   menu_custom_features_rebuild($module);
 }
 
 /**
-<<<<<<< HEAD
  * Implementation of hook_features_rebuild().
-=======
- * Implementation of hook_features_export_rebuild().
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 function menu_custom_features_rebuild($module) {
   if ($defaults = features_get_default('menu_custom', $module)) {
@@ -136,7 +128,6 @@ function menu_custom_features_rebuild($module) {
  * Implementation of hook_features_export_options().
  */
 function menu_links_features_export_options() {
-<<<<<<< HEAD
   // We can't use the menu_tree_all_data function as it statically caches it's menu items
   // so if something calls the function before now without $menu_admin set to true we 
   // won't see all the links. Instead we reproduce the essential parts of the
@@ -198,19 +189,6 @@ function _menu_links_features_export_options_recurse($tree, $menu_name, $indent,
       }
     }
   } 
-=======
-  $menu_links = menu_parent_options(array_reverse(menu_get_menus()), NULL);
-  $options = array();
-  foreach ($menu_links as $key => $name) {
-    list($menu_name, $mlid) = explode(':', $key, 2);
-    if ($mlid != 0) {
-      $link = menu_link_load($mlid);
-      $identifier = menu_links_features_identifier($link);
-      $options[$identifier] = "{$menu_name}: {$name}";
-    }
-  }
-  return $options;
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 }
 
 /**
@@ -286,22 +264,14 @@ function menu_links_features_export_render($module, $data) {
 }
 
 /**
-<<<<<<< HEAD
  * Implementation of hook_features_revert().
-=======
- * Implementation of hook_features_export_revert().
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 function menu_links_features_revert($module) {
   menu_links_features_rebuild($module);
 }
 
 /**
-<<<<<<< HEAD
  * Implementation of hook_features_rebuild().
-=======
- * Implementation of hook_features_export_rebuild().
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 function menu_links_features_rebuild($module) {
   if ($menu_links = features_get_default('menu_links', $module)) {
@@ -326,11 +296,7 @@ function menu_links_features_rebuild_ordered($menu_links, $reset = FALSE) {
         foreach ($unordered as $key => $link) {
           $identifier = menu_links_features_identifier($link);
           $parent = isset($link['parent_path']) ? "{$link['menu_name']}:{$link['parent_path']}" : '';
-<<<<<<< HEAD
           if (empty($parent) || (!empty($parent) && !isset($unordered[$parent]) && !isset($ordered[$parent]))) {
-=======
-          if (empty($parent)) {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
             $ordered[$identifier] = 0;
             $all_links[$identifier] = $link;
             unset($unordered[$key]);

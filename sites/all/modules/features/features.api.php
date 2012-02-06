@@ -171,11 +171,7 @@ function hook_features_export_render($module_name, $data, $export = NULL) {
  * @return boolean
  *   TRUE or FALSE for whether the components were successfully reverted.
  */
-<<<<<<< HEAD
 function hook_features_revert($module_name) {
-=======
-function hook_features_export_revert($module_name) {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   $mycomponents = module_invoke_all($module_name, 'mycomponent_defaults');
   if (!empty($$mycomponents)) {
     foreach ($mycomponents as $mycomponent) {
@@ -222,13 +218,8 @@ function hook_features_export_rebuild($module_name) {
  */
 function hook_features_export_alter(&$export, $module_name) {
   // Example: do not allow the page content type to be exported, ever.
-<<<<<<< HEAD
   if (!empty($export['features']['node']['page'])) {
     unset($export['features']['node']['page']);
-=======
-  if (!empty($export['node']['page'])) {
-    unset($export['node']['page']);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   }
 }
 

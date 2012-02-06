@@ -208,7 +208,6 @@ function _ctools_features_get_info($identifier = NULL, $reset = FALSE) {
           $api_module = isset($schema['export']['api']['owner']) ? $schema['export']['api']['owner'] : $module;
           $components[$table] = array(
             'name' => isset($modules[$api_module]->info['name']) ? $modules[$api_module]->info['name'] : $api_module,
-<<<<<<< HEAD
             'default_hook' => $schema['export']['default hook'],
             'default_file' => FEATURES_DEFAULTS_CUSTOM,
             'module' => $api_module,
@@ -221,16 +220,6 @@ function _ctools_features_get_info($identifier = NULL, $reset = FALSE) {
               'current_version' => $schema['export']['api']['current_version'],
             );
           }
-=======
-            'api' => $schema['export']['api']['api'],
-            'default_hook' => $schema['export']['default hook'],
-            'default_file' => FEATURES_DEFAULTS_CUSTOM,
-            'default_filename' => $schema['export']['api']['api'],
-            'current_version' => $schema['export']['api']['current_version'],
-            'module' => $api_module,
-            'feature_source' => TRUE,
-          );
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         }
       }
     }
@@ -317,7 +306,6 @@ function page_manager_pages_features_export_render($module, $data) {
   page_manager_get_tasks();
   return ctools_component_features_export_render('page_manager_pages', $module, $data);
 }
-<<<<<<< HEAD
 
 /**
  * Implementation of hook_features_revert() for page_manager.
@@ -330,5 +318,3 @@ function page_manager_pages_features_revert($module) {
     }
   }
 }
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5

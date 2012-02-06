@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: content_types.inc,v 1.50.2.3 2009/09/14 11:51:23 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file

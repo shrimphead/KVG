@@ -507,11 +507,7 @@ function webform_theme() {
       'arguments' => array('node' => NULL, 'teaser' => NULL, 'page' => NULL, 'form' => NULL, 'enabled' => NULL),
     ),
     'webform_view_messages' => array(
-<<<<<<< HEAD
       'arguments' => array('node' => NULL, 'teaser' => NULL, 'page' => NULL, 'submission_count' => NULL, 'user_limit_exceeded' => NULL, 'total_limit_exceeded' => NULL, 'allowed_roles' => NULL, 'closed' => NULL, 'cached' => FALSE),
-=======
-      'arguments' => array('node' => NULL, 'teaser' => NULL, 'page' => NULL, 'submission_count' => NULL, 'limit_exceeded' => NULL, 'allowed_roles' => NULL, 'closed' => NULL, 'cached' => FALSE),
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     ),
     'webform_form' => array(
       'arguments' => array('form' => NULL),
@@ -588,13 +584,10 @@ function webform_theme() {
       'arguments' => array('form' => NULL),
       'file' => 'includes/webform.pages.inc',
     ),
-<<<<<<< HEAD
     'webform_advanced_total_submit_limit_form' => array(
       'arguments' => array('form' => NULL),
       'file' => 'includes/webform.pages.inc',
     ),
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     // webform.report.inc.
     'webform_results_per_page' => array(
       'arguments' => array('total_count' => NULL, 'pager_count' => NULL),
@@ -617,13 +610,8 @@ function webform_theme() {
       'arguments' => array('node' => NULL, 'components' => NULL, 'submissions' => NULL, 'node' => NULL, 'total_count' => NULL, 'pager_count' => NULL),
       'file' => 'includes/webform.report.inc',
     ),
-<<<<<<< HEAD
     'webform_results_download_range' => array(
       'arguments' => array('element' => NULL),
-=======
-    'webform_results_download_form' => array(
-      'arguments' => array('form' => NULL),
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       'file' => 'includes/webform.report.inc',
     ),
     'webform_results_download_select_format' => array(
@@ -1112,11 +1100,8 @@ function webform_node_defaults() {
     'submit_text' => '',
     'submit_limit' => '-1',
     'submit_interval' => '-1',
-<<<<<<< HEAD
     'total_submit_limit' => '-1',
     'total_submit_interval' => '-1',
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     'status' => '1',
     'record_exists' => FALSE,
     'roles' => array('1', '2'),
@@ -1280,12 +1265,8 @@ function webform_node_view(&$node, $teaser, $page) {
   $submission_count = 0;
   $enabled = TRUE;
   $logging_in = FALSE;
-<<<<<<< HEAD
   $total_limit_exceeded = FALSE;
   $user_limit_exceeded = FALSE;
-=======
-  $limit_exceeded = FALSE;
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   $closed = FALSE;
   $allowed_roles = array();
 
@@ -1332,7 +1313,6 @@ function webform_node_view(&$node, $teaser, $page) {
     module_load_include('inc', 'webform', 'includes/webform.submissions');
 
     // Disable the form if the limit is exceeded and page cache is not active.
-<<<<<<< HEAD
     if (($user_limit_exceeded = _webform_submission_user_limit_check($node)) && !$cached) {
       $enabled = FALSE;
     }
@@ -1345,9 +1325,6 @@ function webform_node_view(&$node, $teaser, $page) {
 
     // Disable the form if the limit is exceeded and page cache is not active.
     if (($total_limit_exceeded = _webform_submission_total_limit_check($node)) && !$cached) {
-=======
-    if (($limit_exceeded = _webform_submission_limit_check($node)) && !$cached) {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       $enabled = FALSE;
     }
   }
@@ -1375,11 +1352,7 @@ function webform_node_view(&$node, $teaser, $page) {
 
   // Print out messages for the webform.
   if ($node->build_mode != NODE_BUILD_PREVIEW && !isset($node->webform_block) && !$logging_in) {
-<<<<<<< HEAD
     theme('webform_view_messages', $node, $teaser, $page, $submission_count, $user_limit_exceeded, $total_limit_exceeded, $allowed_roles, $closed, $cached);
-=======
-    theme('webform_view_messages', $node, $teaser, $page, $submission_count, $limit_exceeded, $allowed_roles, $closed, $cached);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   }
 
   if (isset($output)) {
@@ -1423,15 +1396,10 @@ function theme_webform_view($node, $teaser, $page, $form, $enabled) {
  * @param $submission_count
  *   The number of submissions this user has already submitted. Not calculated
  *   for anonymous users.
-<<<<<<< HEAD
  * @param $user_limit_exceeded
  *   Boolean value if the submission limit for this user has been exceeded.
  * @param $total_limit_exceeded
  *   Boolean value if the total submission limit has been exceeded.
-=======
- * @param $limit_exceeded
- *   Boolean value if the submission limit for this user has been exceeded.
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * @param $allowed_roles
  *   A list of user roles that are allowed to submit this webform.
  * @param $closed
@@ -1443,11 +1411,7 @@ function theme_webform_view($node, $teaser, $page, $form, $enabled) {
  *   is cached, such as "Submissions for this form are closed", because they
  *   apply to all users equally.
  */
-<<<<<<< HEAD
 function theme_webform_view_messages($node, $teaser, $page, $submission_count, $user_limit_exceeded, $total_limit_exceeded, $allowed_roles, $closed, $cached) {
-=======
-function theme_webform_view_messages($node, $teaser, $page, $submission_count, $limit_exceeded, $allowed_roles, $closed, $cached) {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   global $user;
 
   $type = 'status';
@@ -1479,11 +1443,7 @@ function theme_webform_view_messages($node, $teaser, $page, $submission_count, $
   }
 
   // If the user has exceeded the limit of submissions, explain the limit.
-<<<<<<< HEAD
   elseif ($user_limit_exceeded && !$cached) {
-=======
-  elseif ($limit_exceeded && !$cached) {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     if ($node->webform['submit_interval'] == -1 && $node->webform['submit_limit'] > 1) {
       $message = t('You have submitted this form the maximum number of times (@count).', array('@count' => $node->webform['submit_limit']));
     }
@@ -1495,7 +1455,6 @@ function theme_webform_view_messages($node, $teaser, $page, $submission_count, $
     }
     $type = 'error';
   }
-<<<<<<< HEAD
   elseif ($total_limit_exceeded && !$cached) {
     if ($node->webform['total_submit_interval'] == -1 && $node->webform['total_submit_limit'] > 1) {
       $message = t('This form has received the maximum number of entries.');
@@ -1504,8 +1463,6 @@ function theme_webform_view_messages($node, $teaser, $page, $submission_count, $
       $message = t('You may not submit another entry at this time.');
     }
   }
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
   // If the user has submitted before, give them a link to their submissions.
   if ($submission_count > 0 && $node->webform['submit_notice'] == 1 && !$cached) {
@@ -2028,7 +1985,6 @@ function webform_client_form_validate($form, &$form_state) {
   $node = node_load($form_state['values']['details']['nid']);
   $finished = $form_state['values']['details']['finished'];
 
-<<<<<<< HEAD
   // Check that the submissions have not exceeded the total submission limit.
   if ($node->webform['total_submit_limit'] != -1) {
     module_load_include('inc', 'webform', 'includes/webform.submissions');
@@ -2042,25 +1998,16 @@ function webform_client_form_validate($form, &$form_state) {
     }
   }
 
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   // Check that the user has not exceeded the submission limit.
   // This usually will only apply to anonymous users when the page cache is
   // enabled, because they may submit the form even if they do not have access.
   if ($node->webform['submit_limit'] != -1) { // -1: Submissions are never throttled.
     module_load_include('inc', 'webform', 'includes/webform.submissions');
 
-<<<<<<< HEAD
     if (!$finished && $user_limit_exceeded = _webform_submission_user_limit_check($node)) {
       // Assume that webform_view_messages will print out the necessary message,
       // then stop the processing of the form with an empty form error.
       theme('webform_view_messages', $node, 0, 1, 0, $user_limit_exceeded, NULL, array_keys(user_roles()), FALSE, FALSE);
-=======
-    if (!$finished && $limit_exceeded = _webform_submission_limit_check($node)) {
-      // Assume that webform_view_messages will print out the necessary message,
-      // then stop the processing of the form with an empty form error.
-      theme('webform_view_messages', $node, 0, 1, 0, $limit_exceeded, array_keys(user_roles()), FALSE, FALSE);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       form_set_error('', NULL);
       return;
     }
@@ -2800,14 +2747,10 @@ function _webform_filter_values($string, $node = NULL, $submission = NULL, $emai
             $replacement = webform_strtodate(webform_date_format(), $value['month'] . '/' . $value['day'] . '/' . $value['year'], 'UTC');
           }
           else {
-<<<<<<< HEAD
             // Checking for complex types (arrays and objects) fails here with
             // incomplete objects (see http://php.net/is_object), so we check
             // for simple types instead.
             $replacement = (is_string($value) || is_bool($value) || is_numeric($value)) ? $value : '';
-=======
-            $replacement = (!is_array($value) && !is_object($value)) ? $value : '';
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
           }
           $replacements[$safe_state][$token . '[' . $key . ']'] = $replacement;
         }

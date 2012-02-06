@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: taxonomy.admin.inc,v 1.22.2.4 2010/05/28 16:16:45 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file

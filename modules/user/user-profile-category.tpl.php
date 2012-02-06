@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: user-profile-category.tpl.php,v 1.2 2007/08/07 08:39:36 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file user-profile-category.tpl.php

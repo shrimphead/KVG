@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: update.install,v 1.4.2.3 2010/05/19 15:03:58 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Implementation of hook_install().

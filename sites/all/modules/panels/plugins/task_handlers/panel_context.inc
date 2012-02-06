@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: panel_context.inc,v 1.1.2.60 2010/08/10 19:31:38 merlinofchaos Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -111,10 +107,7 @@ $plugin = array(
       'ajax' => FALSE,
       'silent' => TRUE,
       'form info' => array('finish text' => t('Preview')),
-<<<<<<< HEAD
       'no update and save' => TRUE,
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     ),
   ),
 

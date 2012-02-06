@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: common.inc,v 1.756.2.106 2010/12/15 21:11:22 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -204,11 +200,7 @@ function drupal_get_feeds($delimiter = "\n") {
 }
 
 /**
-<<<<<<< HEAD
  * @defgroup http_handling HTTP handling
-=======
- * @name HTTP handling
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * @{
  * Functions to properly handle HTTP responses.
  */
@@ -660,11 +652,7 @@ function drupal_error_handler($errno, $message, $filename, $line, $context) {
       }
     }
 
-<<<<<<< HEAD
     $entry = check_plain($types[$errno]) .': '. filter_xss($message) .' in '. check_plain($filename) .' on line '. check_plain($line) .'.';
-=======
-    $entry = $types[$errno] .': '. $message .' in '. $filename .' on line '. $line .'.';
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
     // Force display of error messages in update.php.
     if (variable_get('error_level', 1) == 1 || strstr($_SERVER['SCRIPT_NAME'], 'update.php')) {
@@ -1650,12 +1638,8 @@ function drupal_page_footer() {
  *   A linear array.
  * @param $function
  *   A name of a function to apply to all values before output.
-<<<<<<< HEAD
  *
  * @return
-=======
- * @result
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  *   An associative array.
  */
 function drupal_map_assoc($array, $function = NULL) {

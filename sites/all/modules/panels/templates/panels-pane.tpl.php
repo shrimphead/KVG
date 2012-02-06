@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: panels-pane.tpl.php,v 1.1.2.1 2009/10/13 21:38:52 merlinofchaos Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 /**
  * @file panels-pane.tpl.php
  * Main panel pane template

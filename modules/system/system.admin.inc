@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: system.admin.inc,v 1.63.2.16 2010/09/06 10:49:14 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -65,10 +61,7 @@ function system_main_admin_page($arg = NULL) {
 
 /**
  * Provide a single block from the administration menu as a page.
-<<<<<<< HEAD
  *
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * This function is often a destination for these blocks.
  * For example, 'admin/content/types' needs to have a destination to be valid
  * in the Drupal menu system, but too much information there might be

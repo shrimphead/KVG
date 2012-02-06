@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: install.php,v 1.113.2.13 2010/12/06 06:50:56 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 require_once './includes/install.inc';
 

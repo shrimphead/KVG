@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: display-edit.inc,v 1.7.2.42 2010/07/26 19:44:29 merlinofchaos Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /*
  * @file

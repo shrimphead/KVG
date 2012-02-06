@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: display-layout.inc,v 1.4.2.8 2010/07/20 20:26:18 merlinofchaos Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -52,11 +48,7 @@ function _panels_edit_layout($display, $finish, $destination, $allowed_layouts) 
     $output = ctools_build_form('panels_change_layout', $change_form_state);
     if (empty($output)) {
       if (isset($change_form_state['back'])) {
-<<<<<<< HEAD
         $_POST = array();
-=======
-        unset($_POST);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         return _panels_edit_layout($display, $finish, $destination, $allowed_layouts);
       }
 

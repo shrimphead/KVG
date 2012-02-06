@@ -592,7 +592,6 @@ function xmlsitemap_link_save(array $link) {
     _xmlsitemap_check_changed_link($link, $existing, TRUE);
   }
 
-<<<<<<< HEAD
   // Save the link and allow other modules to respond to the link being saved.
   if ($existing) {
     xmlsitemap_write_record('xmlsitemap', $link, array('type', 'id'));
@@ -603,18 +602,6 @@ function xmlsitemap_link_save(array $link) {
     module_invoke_all('xmlsitemap_link_insert', $link);
   }
 
-=======
-  if ($existing) {
-    xmlsitemap_write_record('xmlsitemap', $link, array('type', 'id'));
-  }
-  else {
-    xmlsitemap_write_record('xmlsitemap', $link);
-  }
-
-  // Allow other modules to respond after saving the link.
-  //module_invoke_all('xmlsitemap_save_link', $link);
-
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   return $link;
 }
 
@@ -692,11 +679,8 @@ function xmlsitemap_link_delete_multiple(array $conditions) {
     _xmlsitemap_check_changed_links($conditions, array(), TRUE);
   }
 
-<<<<<<< HEAD
   // @todo Add a hook_xmlsitemap_link_delete() hook invoked here.
 
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   module_load_include('inc', 'xmlsitemap');
   $args = _xmlsitemap_build_conditions($conditions);
   db_query("DELETE FROM {xmlsitemap} WHERE " . implode(' AND ', $conditions), $args);

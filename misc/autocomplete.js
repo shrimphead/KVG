@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-// $Id: autocomplete.js,v 1.23 2008/01/04 11:53:21 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Attaches the autocomplete behavior to all required fields

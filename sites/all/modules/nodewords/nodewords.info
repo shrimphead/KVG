@@ -1,27 +1,13 @@
-<<<<<<< HEAD
 ; $Id$
 name = Nodewords
 description = Implement an API that other modules can use to implement meta tags.
-=======
-; $Id: nodewords.info,v 1.3.2.9 2009/11/09 11:26:52 kiam Exp $
-name = Nodewords
-description = Allows users to add meta tags, e.g. keywords or description. This module doesn't actually implement any meta tags, but requires other modules to implement them.
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 package = Meta tags
 core = 6.x
 recommends[] = checkall
 recommends[] = vertical_tabs
-<<<<<<< HEAD
 ; Information added by drupal.org packaging script on 2011-12-31
 version = "6.x-1.13"
 core = "6.x"
 project = "nodewords"
 datestamp = "1325335847"
-=======
-; Information added by drupal.org packaging script on 2009-12-31
-version = "6.x-1.11"
-core = "6.x"
-project = "nodewords"
-datestamp = "1262270443"
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 

@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 Panels 3.x-dev
 ==============
 #1025716: Panels fields broken in last update.
 
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 Panels 3.x-3.9 (2011-Jan-12)
 ==============
 #959206: Legacy mode rendering fails with flexible due to CSS file not getting added.

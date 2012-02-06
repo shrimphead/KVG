@@ -147,11 +147,7 @@ function _webform_display_textarea($component, $value, $format = 'html') {
  * Format the output of data for this component.
  */
 function theme_webform_display_textarea($element) {
-<<<<<<< HEAD
   $output = $element['#format'] == 'html' ? nl2br(check_plain($element['#value'])) : $element['#value'];
-=======
-  $output = $element['#format'] == 'html' ? str_replace("\n", '<br />', check_plain($element['#value'])) : $element['#value'];
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   if (drupal_strlen($output) > 80) {
     $output = ($element['#format'] == 'html') ? '<div class="webform-long-answer">' . $output . '</div>' : $output;
   }

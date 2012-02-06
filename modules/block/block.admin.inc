@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: block.admin.inc,v 1.14.2.5 2008/11/24 06:00:02 dries Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -389,10 +385,7 @@ function template_preprocess_block_admin_display_form(&$variables) {
       $variables['form'][$i]['region']['#attributes']['class'] = 'block-region-select block-region-'. $region;
       $variables['form'][$i]['weight']['#attributes']['class'] = 'block-weight block-weight-'. $region;
 
-<<<<<<< HEAD
       $variables['block_listing'][$region][$i] = new stdClass();
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       $variables['block_listing'][$region][$i]->row_class = isset($block['#attributes']['class']) ? $block['#attributes']['class'] : '';
       $variables['block_listing'][$region][$i]->block_modified = isset($block['#attributes']['class']) && strpos($block['#attributes']['class'], 'block-modified') !== FALSE ? TRUE : FALSE;
       $variables['block_listing'][$region][$i]->block_title =  drupal_render($block['info']);

@@ -1,17 +1,9 @@
 <?php
-<<<<<<< HEAD
 // $Id$
 
 /**
  * @file
  * Installation file for nodewords.module.
-=======
-// $Id: nodewords.install,v 1.10.2.154 2009/12/30 17:38:44 kiam Exp $
-
-/**
- * @file
- * Installation file for Nodewords.
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 
 /**
@@ -24,7 +16,6 @@ function nodewords_requirements($phase) {
     drupal_load('module', 'nodewords');
 
     if (!count(nodewords_get_possible_tags())) {
-<<<<<<< HEAD
       if (!count(module_implements('nodewords_tags_info'))) {
         $requirements['nodewords'] = array(
           'title' => t('Nodewords'),
@@ -41,14 +32,6 @@ function nodewords_requirements($phase) {
           'value' => t('There should be at least one module that supports the current API version. Verify you correctly copied the files in the server.'),
         );
       }
-=======
-      $requirements['nodewords'] = array(
-        'title' => t('Nodewords'),
-        'description' => t('There are no modules that implement meta tags, or that support the current API version.'),
-        'severity' => REQUIREMENT_ERROR,
-        'value' => t('Check if there are enabled modules listed under the category <em>Meta tags</em> in the <a href="@modules-page">modules page</a>. If nodewords.module is not the only enabled module listed under the category <em>Meta tags</em>, then <a href="@bug-report">file an issue</a>.', array('@modules-page' => url('admin/build/modules'), '@bug-report' => 'http://drupal.org/node/add/project-issue/nodewords?title=There%20are%20no%20modules%20supporting%20the%20current%20API%20version&component=Code&categories=bug&version=212852')),
-      );
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     }
     elseif (module_exists('nodewords_bypath')) {
       $requirements['nodewords'] = array(
@@ -127,11 +110,7 @@ function nodewords_schema() {
       'name' => array(
         'description' => 'The page name as shown in the list of custom pages.',
         'type' => 'varchar',
-<<<<<<< HEAD
         'length' => 128,
-=======
-        'length' => 60,
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         'not null' => TRUE,
         'default' => '',
       ),
@@ -144,23 +123,15 @@ function nodewords_schema() {
       'weight' => array(
         'description' => 'The weight of the page.',
         'type' => 'int',
-<<<<<<< HEAD
         'size' => 'small',
-=======
-        'size' => 'tiny',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         'not null' => TRUE,
         'default' => 0,
       ),
       'enabled' => array(
         'description' => 'A flag set when the page is enabled.',
         'type' => 'int',
-<<<<<<< HEAD
         'size' => 'small',
         'unsigned' => TRUE,
-=======
-        'size' => 'tiny',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         'not null' => TRUE,
         'default' => 1,
       ),
@@ -177,11 +148,8 @@ function nodewords_schema() {
 function nodewords_install() {
   drupal_install_schema('nodewords');
   db_query("UPDATE {system} SET weight = 10 WHERE name = 'nodewords' AND type = 'module'");
-<<<<<<< HEAD
 
   drupal_set_message(t('The Nodewords module has been installed. Now you can <a href="@settings-page">configure it</a>, after you have enabled at least one module implementing meta tags.', array('@settings-page' => url('admin/content/nodewords'))));
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 }
 
 /**
@@ -297,11 +265,7 @@ function nodewords_update_6102() {
 
   $metatags['copyright'] = empty($settings['copyright']) ? '' : $settings['copyright'];
   $metatags['geourl'] = $coordinates[0] . ',' . $coordinates[1];
-<<<<<<< HEAD
   $metatags['keywords'] = empty($settings['keywords']) ? '' : nodewords_unique_values($settings['keywords']);
-=======
-  $metatags['keywords'] = empty($settings['keywords']) ? '' : nodewords_unique($settings['keywords']);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   $metatags['robots'] = empty($settings['robots']) ? '' : $settings['robots'];
 
   foreach ($metatags as $name => $content) {
@@ -553,21 +517,13 @@ function nodewords_update_6115() {
           ),
           'weight' => array(
             'type' => 'int',
-<<<<<<< HEAD
             'size' => 'small',
-=======
-            'size' => 'tiny',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
             'not null' => TRUE,
             'default' => 0,
           ),
           'enabled' => array(
             'type' => 'int',
-<<<<<<< HEAD
             'size' => 'small',
-=======
-            'size' => 'tiny',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
             'not null' => TRUE,
             'default' => 1,
           ),
@@ -652,11 +608,7 @@ function nodewords_update_6120() {
   db_change_field($ret, 'nodewords_custom', 'weight', 'weight',
     array(
       'type' => 'int',
-<<<<<<< HEAD
       'size' => 'small',
-=======
-      'size' => 'tiny',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       'not null' => TRUE,
       'default' => 0,
     )
@@ -666,11 +618,7 @@ function nodewords_update_6120() {
     db_add_field($ret, 'nodewords_custom', 'enabled',
       array(
         'type' => 'int',
-<<<<<<< HEAD
         'size' => 'small',
-=======
-        'size' => 'tiny',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         'not null' => TRUE,
         'default' => 1,
       )
@@ -780,11 +728,7 @@ function nodewords_update_6136() {
       $bool = (
         db_result(
           db_query(
-<<<<<<< HEAD
             "SELECT COUNT(*) FROM {nodewords} WHERE name IN (" . db_placeholders($module_tags, 'varchar') . ")",
-=======
-            "SELECT COUNT(1) FROM {nodewords} WHERE name IN (" . db_placeholders($module_tags, 'varchar') . ")",
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
             $module_tags
           )
         )
@@ -842,29 +786,13 @@ function nodewords_update_6140() {
 /**
  * Implements hook_update_N().
  */
-<<<<<<< HEAD
 function nodewords_update_6143() {
-=======
-function nodewords_update_6141() {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   $ret = array();
 
   if (db_table_exists('nodewords_10')) {
     db_drop_table($ret, 'nodewords_10');
   }
 
-<<<<<<< HEAD
-=======
-  return $ret;
-}
-
-/**
- * Implements hook_update_N().
- */
-function nodewords_update_6143() {
-  $ret = array();
-
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   // Only update if the setting have the default value, and if it has been
   // previously set.
   $value = variable_get('nodewords_max_size', NULL);
@@ -884,27 +812,6 @@ function nodewords_update_6143() {
 /**
  * Implements hook_update_N().
  */
-<<<<<<< HEAD
-=======
-function nodewords_update_6144() {
-  $ret = array();
-
-  if (!variable_get('menu_rebuild_needed', FALSE)) {
-    variable_set('menu_rebuild_needed', TRUE);
-
-    $ret[] = array(
-      'success' => TRUE,
-      'query' => 'Updated the menu callback definitions',
-    );
-  }
-
-  return $ret;
-}
-
-/**
- * Implements hook_update_N().
- */
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 function nodewords_update_6145() {
   $ret = array();
 
@@ -1042,15 +949,11 @@ function nodewords_update_6151(&$sandbox) {
 
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
-<<<<<<< HEAD
     $sandbox['current_pid'] = 0;
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     $sandbox['max'] = db_result(db_query("SELECT COUNT(*) FROM {nodewords_custom} WHERE name = ''"));
   }
 
   if ($sandbox['max']) {
-<<<<<<< HEAD
     $pages = db_query_range(
       "SELECT * FROM {nodewords_custom} WHERE name = '' AND pid > %d ORDER BY pid ASC",
       $sandbox['current_pid'], 0, 10
@@ -1062,16 +965,6 @@ function nodewords_update_6151(&$sandbox) {
       );
 
       $sandbox['current_pid'] = $page->pid;
-=======
-    $pages = db_query_range("SELECT * FROM {nodewords_custom} WHERE name = '' ORDER BY pid ASC", $sandbox['progress'], 10);
-
-    while ($page = db_fetch_object($pages)) {
-      db_query(
-        "UPDATE {nodewords_custom} SET name = '%s' WHERE pid = %d",
-        "Custom page #{$sandbox['progress']}", $page->pid
-      );
-
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       $sandbox['progress']++;
     }
   }
@@ -1107,21 +1000,13 @@ function nodewords_update_6153() {
       ),
       'weight' => array(
         'type' => 'int',
-<<<<<<< HEAD
         'size' => 'small',
-=======
-        'size' => 'tiny',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         'not null' => TRUE,
         'default' => 0,
       ),
       'enabled' => array(
         'type' => 'int',
-<<<<<<< HEAD
         'size' => 'small',
-=======
-        'size' => 'tiny',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         'not null' => TRUE,
         'default' => 1,
       ),
@@ -1299,11 +1184,7 @@ function nodewords_update_6160(&$sandbox) {
   );
 
   $ret[] = update_sql(
-<<<<<<< HEAD
     "UPDATE {nodewords} SET type = '" . $new_types[$sandbox['progress']] . "' WHERE type = '" . $old_types[$sandbox['progress']++] . "'"
-=======
-    "UPDATE {nodewords} SET type = " . $new_types[$sandbox['progress']] . " WHERE type = '" . $old_types[$sandbox['progress']++] . "'"
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   );
 
   $ret['#finished'] = ($sandbox['progress'] / 10);
@@ -1334,11 +1215,7 @@ function nodewords_update_6161(&$sandbox) {
     );
 
     while ($metatag = db_fetch_object($metatags)) {
-<<<<<<< HEAD
       $ret[] = update_sql("UPDATE {nodewords} SET id = '" . $metatag->pid . "' WHERE id = '" . db_escape_string(drupal_truncate_bytes($metatag->path, 255)) . "'");
-=======
-      $ret[] = update_sql("UPDATE {nodewords} SET id = " . $metatag->pid . " WHERE id = '" . db_escape_string(drupal_truncate_bytes($metatag->path, 255)) . "'");
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       $sandbox['current_pid'] = $metatag->pid;
       $sandbox['progress']++;
     }
@@ -1359,7 +1236,6 @@ function nodewords_update_6161(&$sandbox) {
 /**
  * Implements hook_update_N().
  */
-<<<<<<< HEAD
 function nodewords_update_6164() {
   $node_types = array_keys(node_get_types('names'));
   $ret = array();
@@ -1541,9 +1417,6 @@ function nodewords_update_6169() {
  * Implements hook_update_N().
  */
 function nodewords_update_6170() {
-=======
-function nodewords_update_6162() {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   $ret = array();
 
   db_drop_index($ret, 'nodewords', 'nodewords_type_id');
@@ -1562,10 +1435,6 @@ function nodewords_update_6162() {
   db_change_field($ret, 'nodewords', 'id', 'id',
     array(
       'type' => 'int',
-<<<<<<< HEAD
-=======
-      'size' => 'small',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       'unsigned' => TRUE,
       'not null' => TRUE,
       'default' => 0,
@@ -1579,11 +1448,7 @@ function nodewords_update_6162() {
     array('type', 'id', 'name')
   );
 
-<<<<<<< HEAD
   variable_set('nodewords_update', 6169);
-=======
-  variable_set('nodewords_update_6162', TRUE);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
   return $ret;
 }
@@ -1591,7 +1456,6 @@ function nodewords_update_6162() {
 /**
  * Implements hook_update_N().
  */
-<<<<<<< HEAD
 function nodewords_update_6173() {
   $ret = array();
 
@@ -1641,52 +1505,12 @@ function nodewords_update_6174() {
   $ret[] = array(
     'success' => TRUE,
     'query' => 'Search engine site verification support has been removed from Nodewords, please make sure to replace this functionality with e.g. the <a href="http://drupal.org/project/site_verify">Site_Verify</a> module.  Note that the verification tags have not been removed, only some anciliary variables, allowing the other modules to convert the settings as needed.',
-=======
-function nodewords_update_6164() {
-  $node_types = array_keys(node_get_types('names'));
-  $ret = array();
-
-  $value = variable_get('nodewords_basic_use_teaser', NULL);
-  if (isset($value)) {
-    variable_set('nodewords_use_teaser', $value);
-  }
-
-  $value = variable_get('nodewords_basic_user_teaser', NULL);
-  if (isset($value)) {
-    variable_set('nodewords_user_teaser', $value);
-  }
-
-  foreach ($node_types as $node_type) {
-    $value = variable_get('nodewords_basic_use_teaser_' . $node_type, NULL);
-    if (isset($value)) {
-      variable_set('nodewords_use_teaser_' . $node_type, $value);
-      variable_del('nodewords_basic_use_teaser_' . $node_type);
-    }
-
-    $value = variable_get('nodewords_basic_user_teaser_' . $node_type, NULL);
-    if (isset($value)) {
-      variable_del('nodewords_basic_user_teaser_' . $node_type);
-    }
-  }
-
-  $value = variable_get('nodewords_use_teaser', NULL);
-  if (isset($value) && $value) {
-    variable_set('metatags_generation_method', 2);
-  }
-
-  variable_set('nodewords_6164', TRUE);
-
-  $ret[] = array(
-    'success' => TRUE,
-    'query' => 'Updated the module settings',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   );
 
   return $ret;
 }
 
 /**
-<<<<<<< HEAD
  * Make the custom tags 'name' field larger.
  */
 function nodewords_update_6175() {
@@ -1759,15 +1583,6 @@ function nodewords_update_6181() {
       'query' => "The {$table} table has been created.",
     );
   }
-=======
- * Implements hook_update_N().
- */
-function nodewords_update_6167() {
-  $ret = array();
-
-  $ret[] = update_sql('DELETE FROM {nodewords} WHERE type = 0');
-  variable_set('nodewords_update_6166', TRUE);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
   return $ret;
 }
@@ -1790,10 +1605,6 @@ function nodewords_uninstall() {
   variable_del('nodewords_global');
   variable_del('nodewords_global_keywords');
   variable_del('nodewords_head');
-<<<<<<< HEAD
-=======
-  variable_del('nodewords_icra_validation_content');
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   variable_del('nodewords_keyword_vids');
   variable_del('nodewords_list_repeat');
   variable_del('nodewords_list_robots');
@@ -1819,10 +1630,7 @@ function nodewords_uninstall() {
     'nodewords_edit_metatags_',
     'nodewords_filter_modules_output_',
     'nodewords_filter_regexp_',
-<<<<<<< HEAD
     'nodewords_use_alt_attribute_',
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     'nodewords_use_teaser_',
   );
 

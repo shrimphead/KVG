@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: comment.tpl.php,v 1.6 2008/01/04 19:24:24 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 ?>
 <div class="comment<?php print ' '. $status; ?>">
   <?php if ($picture) : ?>

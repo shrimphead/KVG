@@ -67,11 +67,7 @@ function features_export_form($form_state, $feature = NULL) {
 
   // User-selected feature source components.
   $components = features_get_components();
-<<<<<<< HEAD
   uasort($components, 'features_compare_component_name');
-=======
-  ksort($components);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
   $form['export'] = array(
     '#type' => 'fieldset',
@@ -110,12 +106,8 @@ function features_export_form($form_state, $feature = NULL) {
       foreach ($options as $k => $v) {
         $options[$k] = check_plain($v);
       }
-<<<<<<< HEAD
       $label = (isset($component_info['name']) ? $component_info['name'] . ": " . $component : $component);
       $form['export']['components']['#options'][$component] = $label;
-=======
-      $form['export']['components']['#options'][$component] = (isset($component_info['name']) ? $component_info['name'] : $component);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       if (!empty($options)) {
         $form['export']['sources'][$component] = array(
           '#type' => 'checkboxes',
@@ -759,7 +751,6 @@ function features_feature_diff($feature, $component = NULL) {
 }
 
 /**
-<<<<<<< HEAD
  * Compare the component names. Used to sort alphabetically.
  */
 function features_compare_component_name($a, $b) {
@@ -767,8 +758,6 @@ function features_compare_component_name($a, $b) {
 }
 
 /**
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * Javascript call back that returns the status of a feature.
  */
 function features_feature_status($feature) {

@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-// $Id: batch.js,v 1.4 2007/10/21 18:59:01 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Attaches the batch behavior to progress bars.

@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-// $Id: panels_ipe.js,v 1.1.2.16 2010/10/19 20:05:19 merlinofchaos Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 // Ensure the $ alias is owned by jQuery.
 (function($) {

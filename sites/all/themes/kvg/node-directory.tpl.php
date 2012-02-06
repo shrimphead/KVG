@@ -73,6 +73,9 @@
   <div class="content grid-12 alpha omega">
 
     <div class="directory-image grid-5 alpha">
+      <?php if ($ad_status_display): ?>
+       <?php print $ad_status_display; ?>
+      <?php endif; ?>
       <?php if ($field_kvg_ad_rendered): ?>
         <?php print $field_kvg_ad_rendered; ?>
       <?php endif; ?>
@@ -106,7 +109,7 @@
       <div class="map node-directory-map grid-12 alpha omega"><?php print $map; ?></div>
     <?php endif; ?>
     
-    <?php if ($feedback): ?><span class="feedback"><?php print $feedback; ?></span><? endif; ?>
+    <?php if ($feedback): ?><div id='feedback-block' class='grid-6 omega'><?php print $feedback; ?></div><? endif; ?>
 
   </div>
 

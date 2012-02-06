@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-// $Id: drupal.js,v 1.41.2.4 2009/07/21 08:59:10 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 var Drupal = Drupal || { 'settings': {}, 'behaviors': {}, 'themes': {}, 'locale': {} };
 

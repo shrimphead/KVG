@@ -1,17 +1,9 @@
 <?php
-<<<<<<< HEAD
 // $Id$
 
 /**
  * @file
  * Installation file for nodewords_extra.module.
-=======
-// $Id: nodewords_extra.install,v 1.1.2.11 2009/12/25 03:09:13 kiam Exp $
-
-/**
- * @file
- * Installation file for Nodewords - extra meta tags.
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 
 /**
@@ -26,7 +18,6 @@ function nodewords_extra_install() {
  */
 
 /**
-<<<<<<< HEAD
  * Implements hook_update_N().
  */
 function nodewords_extra_update_6106() {
@@ -47,8 +38,6 @@ function nodewords_extra_update_6106() {
 }
 
 /**
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * Implements hook_uninstall().
  */
 function nodewords_extra_uninstall() {
@@ -61,10 +50,6 @@ function nodewords_extra_uninstall() {
       'dc.title',
       'geourl',
       'location',
-<<<<<<< HEAD
-=======
-      'pics-label',
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     );
 
     db_query("DELETE FROM {nodewords} WHERE name IN (". db_placeholders($metatags, 'varchar') .")", $metatags);

@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: theme.inc,v 1.415.2.28 2010/11/03 19:03:19 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -15,16 +11,11 @@
  */
 
 /**
-<<<<<<< HEAD
  * @defgroup content_flags Content markers
-=======
- * @name Content markers
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * @{
  * Markers used by theme_mark() and node_mark() to designate content.
  * @see theme_mark(), node_mark()
  */
-<<<<<<< HEAD
 
 /**
  * Mark content as read.
@@ -41,11 +32,6 @@ define('MARK_NEW', 1);
  */
 define('MARK_UPDATED', 2);
 
-=======
-define('MARK_READ',    0);
-define('MARK_NEW',     1);
-define('MARK_UPDATED', 2);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 /**
  * @} End of "Content markers".
  */

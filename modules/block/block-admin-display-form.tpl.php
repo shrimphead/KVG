@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: block-admin-display-form.tpl.php,v 1.3 2008/01/16 22:57:26 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file block-admin-display-form.tpl.php

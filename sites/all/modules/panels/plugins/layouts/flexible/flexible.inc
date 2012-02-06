@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: flexible.inc,v 1.1.2.36 2010/10/22 18:20:50 merlinofchaos Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Implementation of hook_panels_layouts()
@@ -97,13 +93,9 @@ function panels_flexible_convert_settings(&$settings, &$layout) {
 
   if (!empty($layout['layout'])) {
     $settings = $layout['layout']->settings;
-<<<<<<< HEAD
     if ($settings) {
       return $settings;
     }
-=======
-    return $settings;
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   }
 
   if (empty($settings)) {

@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: panels_renderer_standard.class.php,v 1.1.2.32 2011/01/12 23:48:44 merlinofchaos Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * The standard render pipeline for a Panels display object.
@@ -540,7 +536,6 @@ class panels_renderer_standard {
       $content = $cache->content;
     }
     else {
-<<<<<<< HEAD
       if ($caching) {
         $cache = new panels_cache_object();
       }
@@ -549,20 +544,12 @@ class panels_renderer_standard {
         return;
       }
 
-=======
-      $content = ctools_content_render($pane->type, $pane->subtype, $pane->configuration, array(), $this->display->args, $this->display->context);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       foreach (module_implements('panels_pane_content_alter') as $module) {
         $function = $module . '_panels_pane_content_alter';
         $function($content, $pane, $this->display->args, $this->display->context);
       }
-<<<<<<< HEAD
 
       if ($caching && isset($cache)) {
-=======
-      if ($caching) {
-        $cache = new panels_cache_object();
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
         $cache->set_content($content);
         panels_set_cached_content($cache, $this->display, $this->display->args, $this->display->context, $pane);
         $content = $cache->content;

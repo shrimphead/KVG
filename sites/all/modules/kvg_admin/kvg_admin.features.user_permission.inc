@@ -119,7 +119,6 @@ function kvg_admin_user_default_permissions() {
     'name' => 'administer content types',
     'roles' => array(
       '0' => 'admin',
-      '1' => 'editor',
     ),
   );
 
@@ -323,7 +322,6 @@ function kvg_admin_user_default_permissions() {
     'name' => 'create directory content',
     'roles' => array(
       '0' => 'admin',
-      '1' => 'editor',
     ),
   );
 
@@ -383,7 +381,6 @@ function kvg_admin_user_default_permissions() {
     'name' => 'delete any visitor_guide_pages content',
     'roles' => array(
       '0' => 'admin',
-      '1' => 'editor',
     ),
   );
 
@@ -410,7 +407,6 @@ function kvg_admin_user_default_permissions() {
     'name' => 'delete own visitor_guide_pages content',
     'roles' => array(
       '0' => 'admin',
-      '1' => 'editor',
     ),
   );
 
@@ -419,7 +415,6 @@ function kvg_admin_user_default_permissions() {
     'name' => 'delete revisions',
     'roles' => array(
       '0' => 'admin',
-      '1' => 'editor',
     ),
   );
 
@@ -588,7 +583,6 @@ function kvg_admin_user_default_permissions() {
     'name' => 'edit own visitor_guide_pages content',
     'roles' => array(
       '0' => 'admin',
-      '1' => 'editor',
     ),
   );
 
@@ -753,6 +747,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'use admin toolbar',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 

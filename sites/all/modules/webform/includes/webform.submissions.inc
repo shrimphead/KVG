@@ -660,17 +660,12 @@ function webform_get_submissions($filters = array(), $header = NULL, $pager_coun
       $submissions[$row->sid]->uid = $row->uid;
       $submissions[$row->sid]->name = $row->name;
       $submissions[$row->sid]->is_draft = $row->is_draft;
-<<<<<<< HEAD
       $submissions[$row->sid]->data = array();
     }
     // CID may be NULL if this submission does not actually contain any data.
     if ($row->cid) {
       $submissions[$row->sid]->data[$row->cid]['value'][$row->no] = $row->data;
     }
-=======
-    }
-    $submissions[$row->sid]->data[$row->cid]['value'][$row->no] = $row->data;
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     $previous = $row->sid;
   }
 
@@ -757,11 +752,7 @@ function _webform_submission_spam_check($to, $subject, $from, $headers = array()
  * @return
  *   Boolean TRUE if the user has exceeded their limit. FALSE otherwise.
  */
-<<<<<<< HEAD
 function _webform_submission_user_limit_check($node) {
-=======
-function _webform_submission_limit_check($node) {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   global $user;
 
   // Check if submission limiting is enabled.
@@ -808,7 +799,6 @@ function _webform_submission_limit_check($node) {
 }
 
 /**
-<<<<<<< HEAD
  * Check if the total number of submissions has exceeded the limit on this form.
  *
  * @param $node
@@ -841,8 +831,6 @@ function _webform_submission_total_limit_check($node) {
 }
 
 /**
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * Preprocess function for webform-submission.tpl.php.
  */
 function template_preprocess_webform_submission(&$vars) {

@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-// $Id: block.js,v 1.2 2007/12/16 10:36:53 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Move a block in the blocks table from one region to another via select list.

@@ -777,10 +777,6 @@ function webform_select_options_ajax($source_name = '') {
   drupal_json($return);
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 /**
  * Generate a list of options for a select list.
  */
@@ -910,10 +906,6 @@ function _webform_select_options_from_text($text, $flat = FALSE, $filter = TRUE)
   return $option_cache[$flat][$md5];
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 /**
  * Convert an array of options into text.
  */

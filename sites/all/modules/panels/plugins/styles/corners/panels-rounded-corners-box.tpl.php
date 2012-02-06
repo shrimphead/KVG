@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: panels-rounded-corners-box.tpl.php,v 1.1.2.2 2009/04/30 03:41:07 merlinofchaos Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 /**
  * @file
  *

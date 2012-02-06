@@ -82,16 +82,32 @@ function kvg_preprocess_node(&$vars, $hook) {
 * Implementation of kvg_preprocess_node_directory
 */
 function kvg_preprocess_node_directory(&$vars) {
+  // Check Publish date of Directory to determine status.
+  // If newer then $ad_status stays TRUE
+  $ad_status = TRUE;
+  if($vars['field_year'][0]['value'] <= date("Y", strtotime("-1 years"))) {
+    
+    // Create FALSE flag for extra attention and prevent map and extra images.
+    $ad_status = FALSE;
+    // Remove PERKS
+    $vars['field_kvg_ad_rendered'] = FALSE;
+    $vars['field_website_rendered'] = FALSE;
+    $vars['field_image_rendered'] = FALSE;
+    // Message displayed to viewer.
+    $vars['ad_status_display'] = "<div id='status-flag' class='status-flag out-of-date'><h2>The information in this ad may be out of date.</h2>
+<small><a href='submit-directory-listing'>Click here if you are the owner of this business you can make sure your information is up to date.</a></small></div>";
+  }
+    
   /*********  RENDER DIRECTORY NODE ELEMENTS */
   
   /* OPTIONAL IMAGE */
-  if($vars['field_image'][0]['filepath']) {
+  if($vars['field_image'][0]['filepath'] && $ad_status) {
     $optional_image = $vars['field_image'][0]['filepath'];
     $vars['optional_image'] = theme('imagecache', 'directory_image', $optional_image);
   }
 
   /* MAP */
-  if($vars['location']['latitude']) {
+  if($vars['location']['latitude'] && $ad_status) {
     $latitude = $vars['location']['latitude'];
     $longitude = $vars['location']['longitude'];
     $map_content = _kvg_map_content($vars['node']);
@@ -105,7 +121,7 @@ function kvg_preprocess_node_directory(&$vars) {
   }
 
   /* ADDRESS */
-  if($vars['location']['street'] || $vars['location']['additional']) {
+  if($vars['location']['street'] || $vars['location']['additional'] && $ad_status) {
     $street       = ($vars['location']['street'])       ? '<span class="address-street">'     . $vars['location']['street']      . '</span>' : '';
     $additional   = ($vars['location']['additional'])   ? '<span class="address-additional">' . $vars['location']['additional']  . '</span>' : '';
     $city         = ($vars['location']['city'])         ? '<span class="address-city">'       . $vars['location']['city']        . '</span>' : '';

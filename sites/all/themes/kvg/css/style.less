@@ -351,18 +351,18 @@ a:hover {
   }
 }
 
-.feedback{
+#feedback-block {
   text-align: center;
+  .rounded-corners;
+  margin: 40px 0 20px 0px;
+  padding: 5px 15px;
+  background-color: @forest;
   a {
-    background-color: @forest;
     color: @white;
-    padding: 5px 15px;
-    .rounded-corners;
-    margin: 0 0 20px 0px;
   }
   a:hover {
     color: @yellow;
-    background-color: @moss;
+    /* background-color: @moss; */
   }
 }
 
@@ -449,6 +449,29 @@ a:hover {
   background-color: @lake;
 }
 /***************************** DIRECTORY LISTING */
+#status-flag {
+  .rounded-corners;
+  .box-drop-shadow; 
+  padding: 10px;
+  margin: 20px 40px 0 0;
+  background-color: @orange;
+  font-size: .8em;
+  line-height: 1.1em;
+  h2 {
+    line-height: 1.4em;
+    .rounded-corners;
+    text-align: center;
+    padding: 10px;
+    background-color: @white;
+  }
+  a {
+    color: @wine;
+  }
+  .small {
+  }
+}
+
+
 .directory-listing {
   list-style: none;
   .directory-item {

@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: install.mysqli.inc,v 1.12 2008/01/23 09:59:29 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 // MySQLi specific install functions
 

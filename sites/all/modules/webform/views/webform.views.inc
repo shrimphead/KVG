@@ -31,53 +31,32 @@ function webform_views_data() {
     'sort' => array(
       'handler' => 'views_handler_sort',
     ),
-<<<<<<< HEAD
     'argument' => array(
       'handler' => 'views_handler_argument_numeric',
     ),
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   );
 
   // nid
   $data['webform_submissions']['nid'] = array(
     'title' => t('Node'),
-<<<<<<< HEAD
     'help' => t('The webform node this submission was generated from.'),
     'relationship' => array(
       'base' => 'node',
       'field' => 'nid',
       'handler' => 'views_handler_relationship',
       'label' => t('Webform Node'),
-=======
-    'help' => t('The node these submissions were generated from.'),
-    'relationship' => array(
-      'base' => 'node',
-      'handler' => 'views_handler_relationship',
-      'label' => t('Node'),
-      'skip base' => array('node', 'node_revisions'),
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     ),
   );
 
   // uid
   $data['webform_submissions']['uid'] = array(
     'title' => t('User'),
-<<<<<<< HEAD
     'help' => t('The user who sent the webform submission.'),
     'relationship' => array(
       'base' => 'users',
       'field' => 'uid',
       'handler' => 'views_handler_relationship',
       'label' => t('Webform Submission User'),
-=======
-    'help' => t('The users who submitted these submissions.'),
-    'relationship' => array(
-      'base' => 'users',
-      'handler' => 'views_handler_relationship',
-      'label' => t('User'),
-      'skip base' => array('users', 'node', 'node_revisions'),
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     ),
   );
 
@@ -168,7 +147,6 @@ function webform_views_data() {
  * Implements hook_views_data_alter().
  */
 function webform_views_data_alter(&$data) {
-<<<<<<< HEAD
   // Webform submission from node.
   $data['node']['webform_submission'] = array(
     'title' => t('Webform submission'),
@@ -181,8 +159,6 @@ function webform_views_data_alter(&$data) {
       'label' => t('Webform Submission'),
     ),
   );
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   // Submission count (node).
   $data['node']['webform_submission_count_node'] = array(
     'field' => array(
@@ -193,7 +169,6 @@ function webform_views_data_alter(&$data) {
     ),
   );
 
-<<<<<<< HEAD
 
   // Webform submission of user.
   $data['users']['webform_submission'] = array(
@@ -207,8 +182,6 @@ function webform_views_data_alter(&$data) {
       'label' => t('Webform Submission'),
     ),
   );
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
   // Submission count (user).
   $data['users']['webform_submission_count_user'] = array(
     'field' => array(

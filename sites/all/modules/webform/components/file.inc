@@ -174,13 +174,7 @@ function _webform_edit_file_check_directory($element) {
   $destination_dir = $base_dir . '/' . $element['#value'];
 
   // Sanity check input to prevent use parent (../) directories.
-<<<<<<< HEAD
   if (preg_match('/\.\.[\/\\\]/', $destination_dir . '/')) {
-=======
-  $real_base = realpath($base_dir);
-  $real_destination = realpath($destination_dir);
-  if (strpos($real_destination, $real_base) !== 0) {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     form_error($element, t('The save directory %directory is not valid.', array('%directory' => $destination_dir)));
   }
   else {
@@ -511,11 +505,7 @@ function _webform_submit_file($component, $value) {
     file_set_status($file, FILE_STATUS_PERMANENT);
 
     // Delete any previous files.
-<<<<<<< HEAD
     if ($value['_old'] && $value['_old'] != $value['_fid'] && ($existing = webform_get_file($value['_old']))) {
-=======
-    if ($value['_old'] && ($existing = webform_get_file($value['_old']))) {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       file_delete($existing->filepath);
       db_query("DELETE FROM {files} WHERE fid = %d", $existing->fid);
     }
@@ -560,11 +550,7 @@ function theme_webform_display_file($element) {
  */
 function _webform_delete_file($component, $value) {
   // Delete an individual submission file.
-<<<<<<< HEAD
   if (!empty($value[0]) && ($file = webform_get_file($value[0]))) {
-=======
-  if (isset($value[0]) && ($file = webform_get_file($value[0]))) {
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     unlink($file->filepath);
     db_query("DELETE FROM {files} WHERE fid = '%d'", $file->fid);
   }

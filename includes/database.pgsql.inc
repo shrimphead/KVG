@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: database.pgsql.inc,v 1.68.2.11 2010/12/15 20:41:10 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -665,11 +661,7 @@ function db_drop_table(&$ret, $table) {
  *   table along with adding the field. The format is the same as a
  *   table specification but without the 'fields' element.  If you are
  *   adding a type 'serial' field, you MUST specify at least one key
-<<<<<<< HEAD
  *   or index including it in this array. See db_change_field() for more
-=======
- *   or index including it in this array. @see db_change_field for more
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  *   explanation why.
  */
 function db_add_field(&$ret, $table, $field, $spec, $new_keys = array()) {

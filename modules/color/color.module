@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: color.module,v 1.39.2.2 2009/05/16 16:09:21 dries Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Implementation of hook_help().
@@ -49,10 +45,7 @@ function color_form_alter(&$form, $form_state, $form_id) {
         '#theme' => 'color_scheme_form',
       );
       $form['color'] += color_scheme_form($form_state, arg(4));
-<<<<<<< HEAD
       $form['#validate'][] = 'color_scheme_form_validate';
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
       $form['#submit'][] = 'color_scheme_form_submit';
     }
   }
@@ -244,7 +237,6 @@ function theme_color_scheme_form($form) {
 }
 
 /**
-<<<<<<< HEAD
  * Validation handler for color change form.
  */
 function color_scheme_form_validate($form, &$form_state) {
@@ -257,8 +249,6 @@ function color_scheme_form_validate($form, &$form_state) {
 }
 
 /**
-=======
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * Submit handler for color change form.
  */
 function color_scheme_form_submit($form, &$form_state) {

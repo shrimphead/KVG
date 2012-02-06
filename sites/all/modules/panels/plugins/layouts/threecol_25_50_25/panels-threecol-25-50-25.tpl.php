@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: panels-threecol-25-50-25.tpl.php,v 1.1.2.1 2008/12/16 21:27:58 merlinofchaos Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 /**
  * @file
  * Template for the 1 column panel layout.

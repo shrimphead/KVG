@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: menu.module,v 1.157.2.6 2009/04/27 12:50:13 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -49,11 +45,7 @@ function menu_perm() {
 function menu_menu() {
   $items['admin/build/menu'] = array(
     'title' => 'Menus',
-<<<<<<< HEAD
     'description' => "Control your site's navigation menu, primary links and secondary links, as well as rename and reorganize menu items.",
-=======
-    'description' => "Control your site's navigation menu, primary links and secondary links. as well as rename and reorganize menu items.",
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
     'page callback' => 'menu_overview_page',
     'access callback' => 'user_access',
     'access arguments' => array('administer menu'),

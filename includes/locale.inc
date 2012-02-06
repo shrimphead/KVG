@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: locale.inc,v 1.174.2.14 2010/08/11 19:42:26 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -1675,11 +1671,7 @@ function _locale_import_shorten_comments($comment) {
       break;
     }
   }
-<<<<<<< HEAD
   return trim(substr($comm, 0, -2));
-=======
-  return substr($comm, 0, -2);
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 }
 
 /**

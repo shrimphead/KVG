@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: menu.inc,v 1.255.2.38 2010/12/09 11:57:18 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * @file
@@ -75,11 +71,7 @@
  */
 
 /**
-<<<<<<< HEAD
  * @defgroup menu_flags Menu flags
-=======
- * @name Menu flags
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * @{
  * Flags for use in the "type" attribute of menu items.
  */
@@ -97,15 +89,10 @@ define('MENU_IS_LOCAL_TASK', 0x0080);
  */
 
 /**
-<<<<<<< HEAD
  * @defgroup menu_item_types Menu item types
  * @{
  * Definitions for various menu item types.
  *
-=======
- * @name Menu item types
- * @{
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * Menu item definitions provide one of these constants, which are shortcuts for
  * combinations of the above flags.
  */
@@ -149,11 +136,7 @@ define('MENU_DEFAULT_LOCAL_TASK', MENU_IS_LOCAL_TASK | MENU_LINKS_TO_PARENT);
  */
 
 /**
-<<<<<<< HEAD
  * @defgroup menu_status_codes Menu status codes
-=======
- * @name Menu status codes
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  * @{
  * Status codes for menu callbacks.
  */
@@ -168,15 +151,9 @@ define('MENU_SITE_OFFLINE', 4);
  */
 
 /**
-<<<<<<< HEAD
  * @defgroup menu_tree_parameters Menu tree parameters
  * @{
  * Parameters for a menu tree.
-=======
- * @Name Menu tree parameters
- * @{
- * Menu tree
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
  */
 
  /**

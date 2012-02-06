@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-// $Id: mail.inc,v 1.8.2.8 2010/06/02 12:07:24 goba Exp $
->>>>>>> 7df91a28a0b98a4e2c4a737bc64d30156be224d5
 
 /**
  * Compose and optionally send an e-mail message.
