@@ -243,7 +243,7 @@ function visitor_guide_browser_content_default_fields() {
     'widget' => array(
       'default_value' => array(
         '0' => array(
-          'value' => '',
+          'value' => '2012',
         ),
       ),
       'default_value_php' => NULL,

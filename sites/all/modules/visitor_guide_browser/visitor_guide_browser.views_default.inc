@@ -16,6 +16,13 @@ function visitor_guide_browser_views_default_views() {
   $view->api_version = '2';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   $handler = $view->new_display('default', 'Defaults', 'default');
+  $handler->override_option('relationships', array(
+    'field_image_fid' => array(
+      'id' => 'field_image_fid',
+      'table' => 'node_data_field_image',
+      'field' => 'field_image_fid',
+    ),
+  ));
   $handler->override_option('fields', array(
     'nid' => array(
       'label' => '',
@@ -166,6 +173,12 @@ function visitor_guide_browser_views_default_views() {
       'field' => 'title',
       'relationship' => 'none',
     ),
+    'filename' => array(
+      'id' => 'filename',
+      'table' => 'files',
+      'field' => 'filename',
+      'relationship' => 'field_image_fid',
+    ),
   ));
   $handler->override_option('arguments', array(
     'field_year_value' => array(
@@ -282,23 +295,26 @@ function visitor_guide_browser_views_default_views() {
     ),
     'field_year_value' => array(
       'operator' => '=',
-      'value' => '2011',
+      'value' => '2012',
       'group' => '0',
       'exposed' => FALSE,
       'expose' => array(
         'operator' => 'field_year_value_op',
         'label' => 'Content: Year (field_year)',
+        'optional' => TRUE,
         'use_operator' => FALSE,
         'identifier' => 'field_year_value',
         'remember' => FALSE,
         'single' => TRUE,
-        'optional' => TRUE,
       ),
       'case' => 1,
       'id' => 'field_year_value',
       'table' => 'node_data_field_year',
       'field' => 'field_year_value',
       'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
     ),
     'type' => array(
       'operator' => 'in',
@@ -569,14 +585,14 @@ function visitor_guide_browser_views_default_views() {
       ),
       'relationship' => 'none',
       'default_options_div_prefix' => '',
-      'default_argument_fixed' => '160',
+      'default_argument_fixed' => '259',
       'default_argument_user' => 0,
       'default_argument_php' => '',
       'validate_argument_node_type' => array(
         'visitor_guide_pages' => 'visitor_guide_pages',
-        'webform' => 0,
         'article' => 0,
         'directory' => 0,
+        'webform' => 0,
       ),
       'validate_argument_node_access' => 0,
       'validate_argument_nid_type' => 'nid',
@@ -588,6 +604,13 @@ function visitor_guide_browser_views_default_views() {
       'validate_argument_transform' => 0,
       'validate_user_restrict_roles' => 0,
       'validate_argument_php' => '',
+      'default_taxonomy_tid_term_page' => 0,
+      'default_taxonomy_tid_node' => 0,
+      'default_taxonomy_tid_limit' => 0,
+      'default_taxonomy_tid_vids' => array(
+        2 => 0,
+        1 => 0,
+      ),
     ),
   ));
   $handler->override_option('items_per_page', 1);

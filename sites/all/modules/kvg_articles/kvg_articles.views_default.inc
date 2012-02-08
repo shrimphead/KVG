@@ -542,8 +542,10 @@ print $block[\'content\'];
         'text' => '',
         'make_link' => 0,
         'path' => '',
+        'absolute' => 0,
         'link_class' => '',
         'alt' => '',
+        'rel' => '',
         'prefix' => '',
         'suffix' => '',
         'target' => '',
@@ -558,10 +560,11 @@ print $block[\'content\'];
       'empty' => '',
       'hide_empty' => 0,
       'empty_zero' => 0,
+      'hide_alter_empty' => 1,
       'value' => '<?php
 print l(\'Browse Kaslo Directory\', \'directory/all\', array(\'attributes\'=>array(\'id\' => \'embed-browse-directory\')));
 print l(\'See All Articles\', \'articles\', array(\'attributes\'=>array(\'id\' => \'embed-browse-articles\')));
-print l(\'Read The Kaslo Guide Online\', \'visitor-guide/1\', array(\'attributes\'=>array(\'id\' => \'embed-browse-guide\')));
+print l(\'Read The Kaslo Guide Online\', \'visitor-guide/\', array(\'attributes\'=>array(\'id\' => \'embed-browse-guide\')));
 ?>
 ',
       'exclude' => 0,
