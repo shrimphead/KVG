@@ -94,8 +94,8 @@ function kvg_preprocess_node_directory(&$vars) {
     $vars['field_website_rendered'] = FALSE;
     $vars['field_image_rendered'] = FALSE;
     // Message displayed to viewer.
-    $vars['ad_status_display'] = "<div id='status-flag' class='status-flag out-of-date'><h2>The information in this ad may be out of date.</h2>
-<small><a href='submit-directory-listing'>Click here if you are the owner of this business you can make sure your information is up to date.</a></small></div>";
+    $vars['ad_status_display'] = "<div id='status-flag' class='status-flag out-of-date'>
+<a href='http://visitkaslo.com/submit-directory-listing'>Get your free ad listing here.</a></div>";
   }
     
   /*********  RENDER DIRECTORY NODE ELEMENTS */
