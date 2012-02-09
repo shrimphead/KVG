@@ -68,6 +68,9 @@ function kvg_directory_views_default_views() {
       'table' => 'node_data_field_year',
       'field' => 'field_year_value',
       'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
     ),
     'field_kvg_ad_fid' => array(
       'label' => '',
@@ -116,7 +119,7 @@ function kvg_directory_views_default_views() {
     'nothing_1' => array(
       'label' => '',
       'alter' => array(
-        'text' => '<span class=\'[field_year_value]\'>[field_kvg_ad_fid]</span>',
+        'text' => '<div class=\'pub-[field_year_value]\'>[field_kvg_ad_fid]</div>',
         'make_link' => 0,
         'path' => '',
         'absolute' => 0,
@@ -137,7 +140,7 @@ function kvg_directory_views_default_views() {
       'empty' => '',
       'hide_empty' => 0,
       'empty_zero' => 0,
-      'hide_alter_empty' => 1,
+      'hide_alter_empty' => 0,
       'exclude' => 0,
       'id' => 'nothing_1',
       'table' => 'views',
