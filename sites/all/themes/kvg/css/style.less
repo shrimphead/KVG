@@ -372,11 +372,13 @@ a:hover {
 }
 
 #feedback-block {
+  margin: 20px 40px 10px 0;
   text-align: center;
   .rounded-corners;
-  margin: 40px 0 20px 0px;
   padding: 5px 15px;
+  font-size: 1em;
   background-color: @forest;
+  border: 2pt solid @moss;
   a {
     color: @white;
   }
@@ -469,17 +471,14 @@ a:hover {
   background-color: @lake;
 }
 /***************************** DIRECTORY LISTING */
-#status-flag {
+.status-flag {
+  margin: 20px 40px 20px 0;
   border: 2pt solid @white;
  .box-drop-shadow(@black, 2px, 5px);
-  width: 120px;
-  font-size: 80%;
+  font-size: 1em;
   line-height: 1em;
   text-align: center;
   padding: 10px;
-  color: @white;
-  background-color: @orange;
-  text-shadow: 1px 1px 1px @black;
   .box-corners(10px, 10px, 10px, 10px);
   a {
     text-transform: uppercase;
@@ -489,7 +488,29 @@ a:hover {
     color: @aqua;
   }
 }
-
+.status-flag.out-of-date {
+  background-color: @wine;
+  color: @white;
+  text-shadow: 1px 1px 1px @black;
+}
+.status-flag.recent-update {
+  background-color: @orange;
+  color: @white;
+  text-shadow: 1px 1px 1px @black;
+}
+.status-flag.updated-listing-flag {
+  background-color: @wine;
+  text-transform: uppercase;
+  color: @white;
+  border: none;
+  .box-no-shadow;
+  padding: 4pt;
+  font-size: .8em;
+  .box-corners(10px, 10px, 0, 0);
+  width: 40%;
+  margin: 0;  
+  
+}
 
 .directory-listing {
   list-style: none;
@@ -615,7 +636,7 @@ a:hover {
   background-color: rgba(154,166,68, .2);
   padding: 5px 10px;
   .rounded-corners;
-  margin: 20px 40px 0 0;
+  margin: 20px 40px 10px 0;
   .node-referrer-title {
     text-align: center;
     padding: 0;

@@ -28,6 +28,89 @@ function kvg_directory_views_default_views() {
     ),
   ));
   $handler->override_option('fields', array(
+    'changed' => array(
+      'label' => 'Updated date',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'absolute' => 0,
+        'link_class' => '',
+        'alt' => '',
+        'rel' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'hide_alter_empty' => 1,
+      'date_format' => 'small',
+      'custom_date_format' => '',
+      'exclude' => 1,
+      'id' => 'changed',
+      'table' => 'node',
+      'field' => 'changed',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'phpcode' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'absolute' => 0,
+        'link_class' => '',
+        'alt' => '',
+        'rel' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'hide_alter_empty' => 0,
+      'value' => '<?php
+//dpm($data);
+
+if ( $data->node_changed > strtotime("-4 months")) {
+    $flag = "<div class=\'status-flag updated-listing-flag\'>Recently Updated!</div>";
+}
+else {
+  $flag = \' \';
+}
+return ($flag);
+?>',
+      'exclude' => 0,
+      'id' => 'phpcode',
+      'table' => 'customfield',
+      'field' => 'phpcode',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
     'field_year_value' => array(
       'label' => '',
       'alter' => array(
@@ -558,6 +641,7 @@ function kvg_directory_views_default_views() {
       'field_year_value' => 'left',
       'field_kvg_ad_fid' => 'left',
       'nothing_1' => 'left',
+      'timestamp' => 'left',
       'title' => 'right',
       'city' => 'right',
       'field_section_value' => 'right',

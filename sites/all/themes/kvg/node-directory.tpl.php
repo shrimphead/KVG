@@ -87,6 +87,11 @@
           <h3 class="node-referrer-title">Related Articles</h3>
           <?php print $field_referrers_rendered; ?></div>
       <?php endif ?>
+      <?php if ($feedback): ?>
+        <div id='feedback-block'>
+          <?php print $feedback; ?>
+        </div>
+        <? endif; ?>
     </div>
 
     <div class="directory-body grid-7 omega">
@@ -109,7 +114,6 @@
       <div class="map node-directory-map grid-12 alpha omega"><?php print $map; ?></div>
     <?php endif; ?>
     
-    <?php if ($feedback): ?><div id='feedback-block' class='grid-6 omega'><?php print $feedback; ?></div><? endif; ?>
 
   </div>
 

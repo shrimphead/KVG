@@ -84,6 +84,7 @@ function kvg_preprocess_node(&$vars, $hook) {
 function kvg_preprocess_node_directory(&$vars) {
   // Check Publish date of Directory to determine status.
   // If newer then $ad_status stays TRUE
+  // - Determine when ad was updated.
   $ad_status = TRUE;
   if($vars['field_year'][0]['value'] <= date("Y", strtotime("-1 years"))) {
     
@@ -94,10 +95,19 @@ function kvg_preprocess_node_directory(&$vars) {
     $vars['field_website_rendered'] = FALSE;
     $vars['field_image_rendered'] = FALSE;
     // Message displayed to viewer.
-    $vars['ad_status_display'] = "<div id='status-flag' class='status-flag out-of-date'>
+    $ad_status_display = "<div class='status-flag status-flag out-of-date'>
 <a href='http://visitkaslo.com/submit-directory-listing'>Get your free ad listing here.</a></div>";
   }
-    
+  else if ( $vars['changed'] > strtotime("-4 months")) {
+    $ad_status_display = "<div class='status-flag status-flag recent-update'>Recently Updated!</div>";
+  }
+  else {
+    $ad_status_display = NULL;
+  }
+  
+  $vars['ad_status_display'] = $ad_status_display;
+
+
   /*********  RENDER DIRECTORY NODE ELEMENTS */
   
   /* OPTIONAL IMAGE */
