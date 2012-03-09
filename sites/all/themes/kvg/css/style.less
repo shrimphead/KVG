@@ -290,6 +290,7 @@ a:hover {
   padding-bottom:20px;
   text-align: center;
   font-weight: bold; 
+  line-height: 1.4em;
 }
 
 #sidebar-left {
@@ -404,6 +405,7 @@ a:hover {
   .title-text(48px, @black);
   text-align: left;
   padding: 8px 0px 4px 80px;
+  line-height: 1.2em;
 }
 .lead-article-body {
   width: 600px;
@@ -687,6 +689,21 @@ a:hover {
   a { 
     color: @wine;
     font-weight: bold;
+  }
+  ol, ul {
+    margin: 10px 30px;
+    list-style-position: outside;
+  }
+  blockquote {
+    margin: 30px;
+    padding: 12px;
+    .rounded-corners;
+    .box-drop-shadow;
+    font-size: bigger;
+    background-color: rgba(222, 161, 64, .2);
+    div {
+      padding: 8px;
+    }
   }
 }
 .articlepage-link, .articlepage-edit, .reference-link, .node_read_more, .nodequeue-ajax-toggle {
