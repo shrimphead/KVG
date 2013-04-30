@@ -1,0 +1,18 @@
+<?php
+
+/**
+* Implementation of HOOK_form_alter
+*
+* - Modify the webform submission form.
+*/
+
+
+function kvg_misc_form_alter (&$form, &$form_state, $form_id) {
+  //dpm($form_id);
+  // replace #### with your webform node id
+  if ($form_id == "webform_client_form_317") {
+    dpm($form);
+    $form['submitted']['contest_details']['#access'] = FALSE;
+    $form['submitted']['agreement']['#description'] = '<p class="description-link">By clicking on the Submit button, I hereby declare that I have read, understood, and complied with the <strong><a href="/rules">contest rules.</a><strong></p>';
+  }
+}

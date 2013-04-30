@@ -102,7 +102,7 @@ else {
 }
 return ($flag);
 ?>',
-      'exclude' => 0,
+      'exclude' => 1,
       'id' => 'phpcode',
       'table' => 'customfield',
       'field' => 'phpcode',

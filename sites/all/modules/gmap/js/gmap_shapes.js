@@ -1,4 +1,3 @@
-/* $Id: gmap_shapes.js,v 1.7.2.1 2010/07/03 00:35:46 bdragon Exp $ */
 
 /**
  * @file

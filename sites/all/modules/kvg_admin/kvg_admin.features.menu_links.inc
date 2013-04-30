@@ -192,6 +192,24 @@ function kvg_admin_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '-45',
   );
+  // Exported menu link: menu-submit-links:node/317
+  $menu_links['menu-submit-links:node/317'] = array(
+    'menu_name' => 'menu-submit-links',
+    'link_path' => 'node/317',
+    'router_path' => 'node/%',
+    'link_title' => 'Enter Photo Contest',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
   // Translatables
   // Included for use with string extractors like potx.
   t('Create Article');
@@ -202,6 +220,7 @@ function kvg_admin_menu_default_menu_links() {
   t('Edit All Entries');
   t('Edit Articles');
   t('Edit Directory');
+  t('Enter Photo Contest');
   t('Logout');
   t('Submit Your Free Listing');
 

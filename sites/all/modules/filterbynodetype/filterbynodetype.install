@@ -1,14 +1,75 @@
 <?php
-// $Id: filterbynodetype.install,v 1.2 2008/10/20 00:06:54 crell Exp $
+
+/**
+ * Implementation of hook_install().
+ */
+function filterbynodetype_install() {
+  _filterbynodetype_set_weight();
+}
+
+function _filterbynodetype_set_weight() {
+  $weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'comment'"));
+  db_query("UPDATE {system} SET weight = %d WHERE name = 'filterbynodetype'", $weight + 5);
+}
+
+/**
+ * Helper function to clean up our variables.
+ */
+function _filterbynodetype_cleanup_vars() {
+  db_query("DELETE FROM {variable} WHERE name LIKE 'filterbynodetype_%%'");
+}
 
 /**
  * Implementation of hook_uninstall().
  */
 function filterbynodetype_uninstall() {
-  // Clean up any variables we've created.
-  foreach (filter_formats() as $format) {
-    foreach (node_get_types() as $type) {
-      variable_del('filterbynodetype_' . $format->format . '_' . $type->type);
+  _filterbynodetype_cleanup_vars();
+}
+
+/**
+ * Implementation of hook_update_N().
+ */
+function filterbynodetype_update_6100() {
+  _filterbynodetype_set_weight();
+  return array();
+}
+
+/**
+ * Transform existing variables to the new variable scheme.
+ */
+function filterbynodetype_update_6101() {
+  // Load all existing variables. Due to DB API restrictions and
+  // with portability in mind we should not use RLIKE etc.
+  $res = db_query("SELECT * FROM {variable} WHERE name LIKE 'filterbynodetype_%%'");
+  while ($var = db_fetch_object($res)) {
+    $oldvars[] = $var;
+  }
+
+  // Now walk all arrays and transform them.
+  if(!empty($oldvars)) {
+    $newvars = array();
+    foreach($oldvars as $var) {
+      // D6 variable values are serialized.
+      $var->value = unserialize($var->value);
+      // The old varname schema is filterbynodetype_[format ID]_[node type].
+      if (preg_match('/^filterbynodetype_([0-9]+)_(.+)$/', $var->name, $match)) {
+        // The new varname schema is filterbynodetype_[node type].
+        $newvars['filterbynodetype_' . $match[2]][$match[1]] = $var->value;
+      }
     }
   }
+
+  // Now that we have our new variables, we can drop the existing ones
+  // and start saving the new ones to the DB.
+  _filterbynodetype_cleanup_vars();
+  if (!empty($newvars)) {
+    foreach($newvars as $varname => $values) {
+      variable_set($varname, $values);
+    }
+    drupal_set_message(t('Successfully transformed variables for !count node types.', array(
+      '!count' => count($newvars),
+    )));
+  }
+  
+  return array();
 }

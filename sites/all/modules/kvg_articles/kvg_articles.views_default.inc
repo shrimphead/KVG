@@ -249,6 +249,17 @@ function kvg_articles_views_default_views() {
     ),
   ));
   $handler->override_option('sorts', array(
+    'changed' => array(
+      'order' => 'DESC',
+      'granularity' => 'minute',
+      'id' => 'changed',
+      'table' => 'node',
+      'field' => 'changed',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
     'status' => array(
       'order' => 'DESC',
       'id' => 'status',
@@ -672,8 +683,8 @@ print l(\'Read The Kaslo Guide Online\', \'visitor-guide/\', array(\'attributes\
   ));
   $handler->override_option('cache', array(
     'type' => 'time',
-    'results_lifespan' => '21600',
-    'output_lifespan' => '21600',
+    'results_lifespan' => '-1',
+    'output_lifespan' => '-1',
   ));
   $handler->override_option('items_per_page', 1);
   $handler->override_option('distinct', 1);
@@ -704,17 +715,17 @@ print l(\'Read The Kaslo Guide Online\', \'visitor-guide/\', array(\'attributes\
         'element_type' => 'div',
         'class' => 'lead-article-image-horz grid-16 alpha omega',
       ),
-      'phpcode' => array(
-        'element_type' => 'div',
-        'class' => 'grid-4 omega',
-      ),
       'title' => array(
         'element_type' => 'h2',
-        'class' => 'lead-article-title grid-16 alpha omega',
+        'class' => 'lead-article-title grid-14 alpha omega',
       ),
       'body' => array(
         'element_type' => 'p',
         'class' => 'lead-article-body grid-12 alpha',
+      ),
+      'phpcode' => array(
+        'element_type' => 'div',
+        'class' => 'grid-4 omega',
       ),
       'edit_node' => array(
         'element_type' => 'span',
@@ -728,6 +739,268 @@ print l(\'Read The Kaslo Guide Online\', \'visitor-guide/\', array(\'attributes\
     'skip_blank' => 0,
   ));
   $handler = $view->new_display('page', 'Page - lead', 'page_1');
+  $handler->override_option('fields', array(
+    'field_image_horizontal_fid' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 0,
+      'label_type' => 'none',
+      'format' => 'front_page_lead_article_default',
+      'multiple' => array(
+        'group' => TRUE,
+        'multiple_number' => '',
+        'multiple_from' => '',
+        'multiple_reversed' => FALSE,
+      ),
+      'exclude' => 0,
+      'id' => 'field_image_horizontal_fid',
+      'table' => 'node_data_field_image_horizontal',
+      'field' => 'field_image_horizontal_fid',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'title' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'link_to_node' => 1,
+      'exclude' => 0,
+      'id' => 'title',
+      'table' => 'node',
+      'field' => 'title',
+      'relationship' => 'none',
+      'override' => array(
+        'button' => 'Override',
+      ),
+    ),
+    'nothing' => array(
+      'label' => '',
+      'alter' => array(
+        'text' => '<div id="lead-article-extra-links" class="grid-4 omega">
+<?php
+$block = module_invoke(\'directory\', \'block\', \'view\', 0);
+print $block[\'content\'];
+  ?>
+</div>',
+        'make_link' => 0,
+        'path' => '',
+        'absolute' => 0,
+        'link_class' => '',
+        'alt' => '',
+        'rel' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'hide_alter_empty' => 1,
+      'exclude' => 1,
+      'id' => 'nothing',
+      'table' => 'views',
+      'field' => 'nothing',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+    'body' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 1,
+        'max_length' => '450',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 1,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'exclude' => 0,
+      'id' => 'body',
+      'table' => 'node_revisions',
+      'field' => 'body',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'phpcode' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'absolute' => 0,
+        'link_class' => '',
+        'alt' => '',
+        'rel' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'hide_alter_empty' => 1,
+      'value' => '<div id=\'front_menu_links\'>
+<?php 
+print theme(\'links\', menu_navigation_links(\'menu-front-menu-links\'));
+//$menu_tree = menu_load(\'menu-front-menu-links\');
+//$menu = theme_menu_tree($menu_tree);
+//print($menu);
+
+?>
+<?php
+//print l(\'Browse Directory\', \'directory/all\', array(\'attributes\'=>array(\'id\' => \'embed-browse-directory\')));
+//print l(\'View Articles\', \'articles\', array(\'attributes\'=>array(\'id\' => \'embed-browse-articles\')));
+//print l(\'Read The Guide\', \'guide/\', array(\'attributes\'=>array(\'id\' => \'embed-browse-guide\')));
+?>
+</div>',
+      'exclude' => 0,
+      'id' => 'phpcode',
+      'table' => 'customfield',
+      'field' => 'phpcode',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+    'edit_node' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'text' => 'EDIT',
+      'exclude' => 0,
+      'id' => 'edit_node',
+      'table' => 'node',
+      'field' => 'edit_node',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+    'view_node' => array(
+      'label' => '',
+      'alter' => array(
+        'alter_text' => 0,
+        'text' => '',
+        'make_link' => 0,
+        'path' => '',
+        'link_class' => '',
+        'alt' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'target' => '',
+        'help' => '',
+        'trim' => 0,
+        'max_length' => '',
+        'word_boundary' => 1,
+        'ellipsis' => 1,
+        'html' => 0,
+        'strip_tags' => 0,
+      ),
+      'empty' => '',
+      'hide_empty' => 0,
+      'empty_zero' => 0,
+      'text' => 'More >>',
+      'exclude' => 0,
+      'id' => 'view_node',
+      'table' => 'node',
+      'field' => 'view_node',
+      'override' => array(
+        'button' => 'Override',
+      ),
+      'relationship' => 'none',
+    ),
+  ));
   $handler->override_option('path', 'front');
   $handler->override_option('menu', array(
     'type' => 'none',

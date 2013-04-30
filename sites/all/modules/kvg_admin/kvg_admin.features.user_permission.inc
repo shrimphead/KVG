@@ -78,6 +78,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'access user profiles',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -119,6 +120,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'administer content types',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -271,6 +273,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'administer users',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -322,6 +325,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'create directory content',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -339,6 +343,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'create visitor_guide_pages content',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -381,6 +386,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'delete any visitor_guide_pages content',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -407,6 +413,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'delete own visitor_guide_pages content',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -415,6 +422,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'delete revisions',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -583,6 +591,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'edit own visitor_guide_pages content',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -591,6 +600,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'edit own webform submissions',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -599,6 +609,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'flush imagecache',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -739,6 +750,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'use add another',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 
@@ -975,6 +987,7 @@ function kvg_admin_user_default_permissions() {
     'name' => 'view user map',
     'roles' => array(
       '0' => 'admin',
+      '1' => 'editor',
     ),
   );
 

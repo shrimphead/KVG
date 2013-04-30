@@ -135,10 +135,10 @@ function kvg_articles_content_default_fields() {
     'module' => 'nodereference',
     'active' => '1',
     'referenceable_types' => array(
-      'directory' => 'directory',
-      'visitor_guide_pages' => 0,
-      'webform' => 0,
       'article' => 'article',
+      'directory' => 'directory',
+      'webform' => 'webform',
+      'visitor_guide_pages' => 0,
     ),
     'advanced_view' => '--',
     'advanced_view_args' => '',

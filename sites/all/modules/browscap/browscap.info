@@ -1,11 +1,10 @@
-; $Id: browscap.info,v 1.1.2.1.2.1 2008/05/29 20:00:43 robloach Exp $
 name = Browscap
-description = "Provides statistics on browsers and a replacement for PHPs get_browser() function."
+description = Provides a replacement for PHPs get_browser() function.
 core = 6.x
 
-; Information added by drupal.org packaging script on 2009-09-30
-version = "6.x-1.1"
+; Information added by drupal.org packaging script on 2012-11-22
+version = "6.x-2.0"
 core = "6.x"
 project = "browscap"
-datestamp = "1254331511"
+datestamp = "1353586508"
 

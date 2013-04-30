@@ -11,10 +11,9 @@ function kvg_map_views_default_views() {
   $view->name = 'directory_map';
   $view->description = 'Directory Map';
   $view->tag = 'map';
-  $view->view_php = '';
   $view->base_table = 'node';
-  $view->is_cacheable = FALSE;
-  $view->api_version = 2;
+  $view->core = 0;
+  $view->api_version = '2';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->override_option('fields', array(
@@ -262,10 +261,10 @@ function kvg_map_views_default_views() {
       'field' => 'nid',
       'validate_user_argument_type' => 'uid',
       'validate_user_roles' => array(
-        '2' => 0,
-        '9' => 0,
-        '8' => 0,
-        '4' => 0,
+        2 => 0,
+        9 => 0,
+        8 => 0,
+        4 => 0,
       ),
       'override' => array(
         'button' => 'Override',
@@ -284,8 +283,8 @@ function kvg_map_views_default_views() {
       'validate_argument_node_access' => 0,
       'validate_argument_nid_type' => 'nid',
       'validate_argument_vocabulary' => array(
-        '2' => 0,
-        '1' => 0,
+        2 => 0,
+        1 => 0,
       ),
       'validate_argument_type' => 'tid',
       'validate_argument_transform' => 0,
@@ -454,10 +453,10 @@ function kvg_map_views_default_views() {
       'field' => 'nid',
       'validate_user_argument_type' => 'uid',
       'validate_user_roles' => array(
-        '2' => 0,
-        '9' => 0,
-        '8' => 0,
-        '4' => 0,
+        2 => 0,
+        9 => 0,
+        8 => 0,
+        4 => 0,
       ),
       'override' => array(
         'button' => 'Override',
@@ -476,8 +475,8 @@ function kvg_map_views_default_views() {
       'validate_argument_node_access' => 0,
       'validate_argument_nid_type' => 'nid',
       'validate_argument_vocabulary' => array(
-        '2' => 0,
-        '1' => 0,
+        2 => 0,
+        1 => 0,
       ),
       'validate_argument_type' => 'tid',
       'validate_argument_transform' => 0,
@@ -735,10 +734,10 @@ function kvg_map_views_default_views() {
       'field' => 'nid',
       'validate_user_argument_type' => 'uid',
       'validate_user_roles' => array(
-        '2' => 0,
-        '9' => 0,
-        '8' => 0,
-        '4' => 0,
+        2 => 0,
+        9 => 0,
+        8 => 0,
+        4 => 0,
       ),
       'override' => array(
         'button' => 'Use default',
@@ -757,8 +756,8 @@ function kvg_map_views_default_views() {
       'validate_argument_node_access' => 0,
       'validate_argument_nid_type' => 'nid',
       'validate_argument_vocabulary' => array(
-        '2' => 0,
-        '1' => 0,
+        2 => 0,
+        1 => 0,
       ),
       'validate_argument_type' => 'tid',
       'validate_argument_transform' => 0,

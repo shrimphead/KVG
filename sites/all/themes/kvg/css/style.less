@@ -1,6 +1,6 @@
 /************************ VARIABLES */
 /*
-* PRIMARY COLOURS 
+* PRIMARY COLOURS
 */
 @lake: #4A708D;
 @sky: #6D96A6;
@@ -35,40 +35,40 @@
 }
 .image-curl-after {
   /*   for the object with ':after' */
-  z-index: -1; 
-  position: absolute; 
-  background: transparent; 
-  width: 70%; 
-  height: 55%; 
-  content: ''; 
-  right: 10px; 
-  bottom: 10px; 
+  z-index: -1;
+  position: absolute;
+  background: transparent;
+  width: 70%;
+  height: 55%;
+  content: '';
+  right: 10px;
+  bottom: 10px;
   transform: skew(15deg) rotate(6deg);
   -webkit-transform: skew(15deg) rotate(6deg);
   -moz-transform: skew(15deg) rotate(6deg);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, .6); 
-  -webkit-box-shadow: 0 8px 16px rgba(0, 0, 0, .6); 
-  -moz-box-shadow: 0 8px 16px rgba(0, 0, 0, .6); 
-} 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, .6);
+  -webkit-box-shadow: 0 8px 16px rgba(0, 0, 0, .6);
+  -moz-box-shadow: 0 8px 16px rgba(0, 0, 0, .6);
+}
 .image-curl-before {
   /*   for the object with ':before' */
-  z-index: -2; 
-  position: absolute; 
-  background: transparent; 
-  width: 70%; 
-  height: 55%; 
-  content: ''; 
-  left: 10px; 
-  bottom: 10px; 
-  transform: skew(-15deg) rotate(-6deg); 
-  -webkit-transform: skew(-15deg) rotate(-6deg); 
-  -moz-transform: skew(-15deg) rotate(-6deg); 
-  box-shadow: 0 8px 16px rgba(0, 0, 0, .6); 
-  -webkit-box-shadow: 0 8px 16px rgba(0, 0, 0, .6); 
-  -moz-box-shadow: 0 8px 16px rgba(0, 0, 0, .6); 
+  z-index: -2;
+  position: absolute;
+  background: transparent;
+  width: 70%;
+  height: 55%;
+  content: '';
+  left: 10px;
+  bottom: 10px;
+  transform: skew(-15deg) rotate(-6deg);
+  -webkit-transform: skew(-15deg) rotate(-6deg);
+  -moz-transform: skew(-15deg) rotate(-6deg);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, .6);
+  -webkit-box-shadow: 0 8px 16px rgba(0, 0, 0, .6);
+  -moz-box-shadow: 0 8px 16px rgba(0, 0, 0, .6);
 }
 
-.col(@cols: 2, @gap: 30px) {    
+.col(@cols: 2, @gap: 30px) {
   -webkit-column-count : @cols;
   -webkit-column-gap : @gap;
   -moz-column-count : @cols;
@@ -107,7 +107,7 @@
     .rounded-corners(5px);
     text-shadow: 2px 2px 4px @hover;
     .box-drop-shadow(@sky, 2px, 8px);
-  }    
+  }
   a:hover {
     background: @wine;
   }
@@ -126,7 +126,7 @@
   font-size: @size;
   margin: 0px;
   padding: 5px 10px;
-  color: @black;  
+  color: @black;
   .text-drop-shadow(@shadow);
 }
 
@@ -212,7 +212,7 @@ a:hover {
     .box-drop-shadow(@black, 2px, 5px);
   }
   li {
-    color: @white;    
+    color: @white;
     width: 80px;
     font-size: 85%;
     border-left: 1pt solid @white;
@@ -233,7 +233,7 @@ a:hover {
     font-size: 90%;
     text-transform: uppercase;
     background-color: none;
-    li { 
+    li {
       float: left;
       text-align: center;
       line-height: 1.4em;
@@ -241,7 +241,7 @@ a:hover {
       .rounded-corners(5px);
       margin: 2px 5px 0 0;
       padding: 4px;
-      width: 100px; 
+      width: 100px;
       display: block;
       font-weight: bold;
     }
@@ -254,42 +254,49 @@ a:hover {
     color: @red;
     text-shadow: 0 0 5px @white;
   }
-  
+
 }
 #submit-block {
   ul {
     list-style: none;
     margin: 0px;
     padding: 0px;
-  }
-  border-left: 2pt solid @white;
-  border-right: 2pt solid @white;
-  border-bottom: 2pt solid @white;
-  .box-drop-shadow(@black, 2px, 5px);
-  width: 80px;
-  font-size: 80%;
-  line-height: 1em;
-  text-align: center;
-  padding: 10px;
-  color: @white;
-  background-color: @red;
-  text-shadow: 1px 1px 1px @black;
-  .box-corners(0, 0, 10px, 10px);
-  a {
-    text-transform: uppercase;
-    vertical-align: middle;
-  }
-  a:hover,  a.active {
-    color: @yellow;
+    border-left: 2pt solid @white;
+    border-right: 2pt solid @white;
+    border-bottom: 2pt solid @white;
+    .box-drop-shadow(@black, 2px, 5px);
+/*     width: 80px; */
+    font-size: .7em;
+    line-height: .9em;
+    text-align: center;
+    color: @white;
+    background-color: @red;
+    text-shadow: 1px 1px 1px @black;
+    .box-corners(0, 0, 10px, 10px);
+    a {
+      text-transform: uppercase;
+      vertical-align: middle;
+      width: 100%;
+    }
+    a:hover,  a.active {
+      color: @yellow;
+    }
+    li {
+      margin: 0 0 5px 0;
+      padding: 8px;
+    }
+    li:hover {
+      background-color: lighten(@red, 20%);
+    }
   }
 
 }
 
 .page-title {
-  .title-text; 
+  .title-text;
   padding-bottom:20px;
   text-align: center;
-  font-weight: bold; 
+  font-weight: bold;
   line-height: 1.4em;
 }
 
@@ -336,7 +343,7 @@ a:hover {
     li ul {
       font-size: .8em;
       line-height: 1em;
-      
+
       border: none;
       .box-no-shadow;
       width: 95%;
@@ -354,14 +361,22 @@ a:hover {
     height: 0px;
     padding: 0px;
     margin: 0px;
-  }    
+  }
   ul.menu {
     border: 0px;
     .rounded-corners(10px);
-    border: 6px solid @forest;
-    background-color: @forest;
-    color: @white;
-    font-weight: bold;
+    background: transparent;
+    li {
+/*       border: 6px solid @forest; */
+      padding: 10px;
+      background-color: @forest;
+      color: @white;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    li:hover {
+      background-color: lighten(@forest, 10%);
+    }
     a {
       color: @white;
       text-shadow: 2px 2px 4px @black;
@@ -401,16 +416,40 @@ a:hover {
     .image-curl-before;
   }
 }
+/* embeded links on front page */
+#front_menu_links {
+  ul.links {
+    li a {
+      clear: both;
+      display: block;
+      text-shadow: 2px 2px 4px @black;
+      .box-drop-shadow(@forest, 2px, 8px);
+      float: left;
+      padding: 6px;
+      width: 180px;
+      margin: 5px;
+      .rounded-corners;
+      background-color: @moss;
+      color: @white;
+      text-align: center;
+    }
+    li a:hover {
+      background-color: @orange;
+    }
+  }
+}
 .lead-article-title {
   .title-text(48px, @black);
   text-align: left;
   padding: 8px 0px 4px 80px;
   line-height: 1.2em;
+  width: 840px;
 }
 .lead-article-body {
   width: 600px;
   .col;
   display: inline;
+  /* embedded links */
 }
 .lead-article-link, .lead-article-edit, .sub-article-link, .sub-article-edit {
   .buttons-view-edit-template;
@@ -449,28 +488,20 @@ a:hover {
   padding-top: 20px;
 }
 
-/* embedded links */
-#embed-browse-directory,
-#embed-browse-articles,
-#embed-browse-guide {
-  text-shadow: 2px 2px 4px @black;
-  .box-drop-shadow(@forest, 2px, 8px);
-  float: left;
-  padding: 6px;
-  width: 180px;
-  margin: 5px;
-  .rounded-corners;
-  background-color: @moss;
-  color: @white;
-  text-align: center;
+/* embedded menu links */
+/* #embed-browse-directory, */
+/* #embed-browse-articles, */
+/* #embed-browse-guide  */
+.lead-article-body {
 }
+
 #embed-browse-directory:hover,
 #embed-browse-articles:hover,
 #embed-browse-guide:hover {
-  background-color: @orange;
+/*   background-color: @orange; */
 }
 #embed-browse-directory {
-  background-color: @lake;
+/*   background-color: @lake; */
 }
 /***************************** DIRECTORY LISTING */
 .status-flag {
@@ -510,8 +541,8 @@ a:hover {
   font-size: .8em;
   .box-corners(10px, 10px, 0, 0);
   width: 40%;
-  margin: 0;  
-  
+  margin: 0;
+
 }
 
 .directory-listing {
@@ -556,10 +587,10 @@ a:hover {
   margin-right: 5px;
   display: block;
   clear: both;
-  margin-top: 10px; 
+  margin-top: 10px;
   br, p {display: inline;}
   .address-title { font-weight: bold; clear: both; }
-  .address-street, 
+  .address-street,
   .address-additional, { clear: both; display: block; }
   .address-postal_code,
   .address-province,
@@ -579,8 +610,8 @@ a:hover {
 .views-field-edit-node {
   .buttons-edit-overide;
 }
-.views-field-field-kvg-ad-fid img {  
-  .image-curl; 
+.views-field-field-kvg-ad-fid img {
+  .image-curl;
   margin: 0 auto;
   display: block;
 }
@@ -645,16 +676,16 @@ a:hover {
     margin: 0;
     text-transform: uppercase;
   }
-  h2{ 
-    margin:4px 0 0 10px; 
+  h2{
+    margin:4px 0 0 10px;
     padding: 10px 2px 4px 2px;
     line-height: 1.3em;
   }
-  ul li { 
-    list-style: none; 
-    margin: 0px; 
+  ul li {
+    list-style: none;
+    margin: 0px;
     padding: 0px;
-    clear: both; 
+    clear: both;
     font-size: 80%;
     line-height: 1.2em;
     }
@@ -686,7 +717,7 @@ a:hover {
   font-weight: bold;
 }
 .article-body {
-  a { 
+  a {
     color: @wine;
     font-weight: bold;
   }
@@ -726,12 +757,12 @@ a:hover {
   color: @white;
   margin-bottom: 10px;
   text-align: center;
-  
+
 }
 .reference {
   .reference-content {
     display: inline;
-    overflow: hidden;    
+    overflow: hidden;
     ul, p {
       overflow: hidden;
       li{
@@ -890,6 +921,54 @@ a:hover {
   background-color: rgba(212,105,99,.2);
 }
 
+/**** Photo Contest - Webform ****/
+#node-317 {
+  .form-items {
+    .description {
+      margin-left: 160px;
+
+    }
+  }
+  #webform-component-photograph--category {
+    label {
+/*       margin-left: -120px; */
+    }
+    #edit-submitted-photograph-category-1-wrapper {
+      margin-top: -50px;
+    }
+    #edit-submitted-photograph-category-1-wrapper,
+    #edit-submitted-photograph-category-2-wrapper,
+    #edit-submitted-photograph-category-3-wrapper,
+    #edit-submitted-photograph-category-4-wrapper {
+      margin-left: 120px;
+    }
+  }
+  #edit-submitted-photograph-location {
+    margin-left: 40px;
+  }
+
+}
+
+/**** Survey button ****/
+
+#node-306, #node-317 {
+  p.kvg_survey_button {
+    .buttons-view-edit-template;
+    a {
+      display: block;
+      margin: 0 auto 20px auto;
+      font-size: 1.8em;
+      background-color: @wine;
+    }
+    a:hover {
+      background-color: @sky;
+    }
+  }
+  .description {
+    margin-left: 160px;
+  }
+}
+
 /*************************** SEARCH RESULTS */
 .search-title {
   h3{
@@ -902,7 +981,7 @@ a:hover {
   border-bottom: 1pt solid @sky;
   .search-image { padding: 20px; }
   .search-link, .search-edit {
-    .buttons-view-edit-template;  
+    .buttons-view-edit-template;
   }
   .search-edit {
     .buttons-edit-overide;
@@ -913,8 +992,8 @@ a:hover {
 .view-directory-map {
   .map-section-listing-title { margin: 20px 0 0 0; }
   .map-section-title, .map-section-listing-list-item { margin: 0px; padding: 0px; }
-  .map-section-listing-list { 
-    .col(4, 20px); 
+  .map-section-listing-list {
+    .col(4, 20px);
     line-height: 1em;
     li {
       .map-section-listing-list-item {
@@ -954,10 +1033,10 @@ a:hover {
     margin-top: 10px;
   }
 /*
-  td { 
-    padding: 0px; 
-    margin: 0px; 
-    line-height: 1em; 
+  td {
+    padding: 0px;
+    margin: 0px;
+    line-height: 1em;
     border-bottom: 1pt solid rgba(109,150,166,02);
     }
   .field-content {
@@ -980,6 +1059,6 @@ a:hover {
 
 .show-box { visibility: visible; }
 .hide-box {  visibility: hidden; width: 10px; height: 10px;}
- 
+
 .view-directory .pub-2012 { .show-box }
 .view-directory .pub-2011, .view-directory .pub-2010, .view-directory .pub-2009 { .hide-box }
