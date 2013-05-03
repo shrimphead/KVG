@@ -31,20 +31,19 @@ class XMLSitemapTaxonomyFunctionalTest extends XMLSitemapTestHelper {
 
     $edit = array(
       'name' => $this->randomName(),
+      'machine_name' => drupal_strtolower($this->randomName()),
       'xmlsitemap[status]' => '1',
       'xmlsitemap[priority]' => '1.0',
     );
-    $this->drupalPost('admin/content/taxonomy/add/vocabulary', $edit, 'Save');
+    $this->drupalPost('admin/structure/taxonomy/add', $edit, 'Save');
     $this->assertText("Created new vocabulary {$edit['name']}.");
-
-    $vid = db_result(db_query("SELECT vid FROM {vocabulary} WHERE name = '%s'", $edit['name']));
-    $vocabulary = taxonomy_vocabulary_load($vid);
+    $vocabulary = taxonomy_vocabulary_machine_name_load($edit['machine_name']);
 
     $edit = array(
       'name' => $this->randomName(),
       'xmlsitemap[status]' => 'default',
       'xmlsitemap[priority]' => 'default',
     );
-    $this->drupalPost("admin/content/taxonomy/$vid/add/term", $edit, 'Save');
+    $this->drupalPost("admin/structure/taxonomy/{$vocabulary->machine_name}/add", $edit, 'Save');
   }
 }

@@ -1,3 +1,4 @@
+/* $Id: markerloader_static.js,v 1.3 2009/02/11 19:30:22 bdragon Exp $ */
 
 /**
  * @file

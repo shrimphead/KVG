@@ -25,7 +25,7 @@
  */
 
 /**
- * Implementation of hook_menu
+ * Implements hook_menu
  */
 function ctools_plugin_example_menu() {
   $items = array();
@@ -42,7 +42,7 @@ function ctools_plugin_example_menu() {
 }
 
 /**
- * Implementation of hook_ctools_plugin_directory().
+ * Implements hook_ctools_plugin_directory().
  *
  * It simply tells panels where to find the .inc files that define various
  * args, contexts, content_types. In this case the subdirectories of
@@ -85,8 +85,8 @@ function ctools_plugin_example_explanation_page() {
     You can find it in %path.',
     array(
       '@demo_url' => url('ctools_plugin_example/xxxxx'),
-      '!ctools_plugin_example_help' => theme('advanced_help_topic', 'ctools_plugin_example', 'Chaos-Tools--CTools--Plugin-Examples', 'title'),
-      '!ctools_help' => theme('advanced_help_topic', 'ctools', 'plugins', 'title'),
+      '!ctools_plugin_example_help' => theme('advanced_help_topic', array('module' => 'ctools_plugin_example', 'topic' => 'Chaos-Tools--CTools--Plugin-Examples', 'type' => 'title')),
+      '!ctools_help' => theme('advanced_help_topic', array('module' => 'ctools', 'topic' => 'plugins', 'type' => 'title')),
       '%path' => drupal_get_path('module', 'ctools_plugin_example'),
     )) . '</p>';
 

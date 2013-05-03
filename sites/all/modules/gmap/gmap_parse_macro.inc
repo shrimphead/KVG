@@ -155,17 +155,17 @@ function _gmap_parse_macro($instring, $ver = 2) {
   // Fixup legacy lines.
   if (isset($m['line1'])) {
     if (!isset($m['line'])) $m['line'] = array();
-    $m['line'][] = $def['line_colors'][0] .':'. $m['line1'];
+    $m['line'][] = $def['line_colors'][0] . ':' . $m['line1'];
     unset($m['line1']);
   }
   if (isset($m['line2'])) {
     if (!isset($m['line'])) $m['line'] = array();
-    $m['line'][] = $def['line_colors'][1] .':'. $m['line3'];
+    $m['line'][] = $def['line_colors'][1] . ':' . $m['line3'];
     unset($m['line2']);
   }
   if (isset($m['line3'])) {
     if (!isset($m['line'])) $m['line'] = array();
-    $m['line'][] = $def['line_colors'][2] .':'. $m['line3'];
+    $m['line'][] = $def['line_colors'][2] . ':' . $m['line3'];
     unset($m['line3']);
   }
 
@@ -323,7 +323,7 @@ function _gmap_parse_macro($instring, $ver = 2) {
       // @@@ Gmap allows both a tooltip and a popup, how to represent?
       if (strpos($point, ':')) {
         list($point, $marker['text']) = explode(':', $point, 2);
-        $marker['text'] = theme('gmap_marker_popup', $marker['text']);
+        $marker['text'] = theme('gmap_marker_popup', array('label' => $marker['text']));
       }
       if (strpos($point, '%')) {
         list($point, $addons) = explode('%', $point, 2);
@@ -356,7 +356,7 @@ function _gmap_parse_macro($instring, $ver = 2) {
   // manipulations on $m OR return the changes
   // they want to apply to $m.)
   foreach (module_implements('gmap') as $module) {
-    $additions = call_user_func_array($module .'_gmap', array('parse_macro', &$m));
+    $additions = call_user_func_array($module . '_gmap', array('parse_macro', &$m));
     if (!empty($additions)) {
       foreach ($additions as $k => $v) {
         $m[$k] = $v;

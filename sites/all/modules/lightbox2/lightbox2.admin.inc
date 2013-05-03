@@ -20,7 +20,7 @@ function lightbox2_settings_page($op = NULL) {
 function lightbox2_general_settings_form() {
 
   // Add the javascript which disables / enables form elements.
-  drupal_add_js(drupal_get_path('module', 'lightbox2') .'/js/lightbox2.js', 'module');
+  drupal_add_js(drupal_get_path('module', 'lightbox2') . '/js/lightbox2.js', 'module');
 
   // Enable translation of default strings for potx.
   $default_strings = array(t('View Image Details'), t('Image !current of !total'), t('Page !current of !total'), t('Video !current of !total'), t('Download Original'));
@@ -263,59 +263,30 @@ function lightbox2_general_settings_form() {
     '#default_value' => variable_get('lightbox2_page_list', ''),
   );
 
-  // Define cck settings fieldset.
+  // Define grouping settings fieldset.
   /* ------------------------------------ */
-  if ((module_exists('emfield') && module_exists('emimage')) || (module_exists('imagefield') && module_exists('imagecache'))) {
-    $form['cck_options'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('CCK display settings'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-    );
+  $form['group_options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Group display settings'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
 
-    $cck_options = array(
-      0 => t('No grouping'),
-      1 => t('Group by field name'),
-      2 => t('Group by node id'),
-      3 => t('Group by field name and node id'),
-      4 => t('Group all nodes and fields'),
-    );
+  $group_options = array(
+    0 => t('No grouping'),
+    1 => t('Group by field name'),
+    2 => t('Group by node id'),
+    3 => t('Group by field name and node id'),
+    4 => t('Group all nodes and fields'),
+  );
 
-    // Add checkbox for emfield emimage grouping.
-    if (module_exists('emfield') && module_exists('emimage')) {
-      $form['cck_options']['lightbox2_image_ncck_group_node_id'] = array(
-        '#type' => 'select',
-        '#title' => t('Select Emfield Image grouping in Views'),
-        '#description' => t('By default, emfield images in views are grouped by the field name they appear in the view in.  You can override that grouping here.'),
-        '#options' => $cck_options,
-        '#default_value' => variable_get('lightbox2_image_ncck_group_node_id', 1),
-      );
-    }
-
-    // Add checkbox for imagefield grouping.
-    if (module_exists('imagefield') && module_exists('imagecache')) {
-      $form['cck_options']['lightbox2_imagefield_group_node_id'] = array(
-        '#type' => 'select',
-        '#title' => t('Select Imagefield grouping in Views'),
-        '#description' => t('By default, imagefields in views are grouped by the field name they appear in the view in.  You can override that grouping here.'),
-        '#options' => $cck_options,
-        '#default_value' => variable_get('lightbox2_imagefield_group_node_id', 1),
-      );
-      $form['cck_options']['lightbox2_imagefield_use_node_title'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('Use node title as caption'),
-        '#description' => t('By default, the caption for imagefields is the image title text configured.  If no title is configured, then the alt text will be used.  This option allows you to override that and always display the node title as the image caption.'),
-        '#default_value' => variable_get('lightbox2_imagefield_use_node_title', FALSE),
-      );
-      $form['cck_options']['lightbox2_view_image_text'] = array(
-        '#type' => 'textfield',
-        '#title' => t('Text to view image'),
-        '#description' => t('This is the text that can appear when linking to the image using CCK imagefields.'),
-        '#default_value' => variable_get('lightbox2_view_image_text', 'View image'),
-      );
-
-    }
-  }
+  $form['group_options']['lightbox2_image_group_node_id'] = array(
+    '#type' => 'select',
+    '#title' => t('Select Imagefield grouping in Views'),
+    '#description' => t('By default, imagefields in views are grouped by the field name they appear in the view in.  You can override that grouping here.'),
+    '#options' => $group_options,
+    '#default_value' => variable_get('lightbox2_image_group_node_id', 1),
+  );
 
 
   // Define advanced settings fieldset.
@@ -484,7 +455,7 @@ function lightbox2_general_settings_form() {
   );
   // Set animation help text.
   $form['advanced_options']['animation_settings']['animation_options_help'] = array(
-    '#value' => '<p>'. t("These options aren't available when using Lightbox2 Lite.") .'</p>',
+    '#value' => '<p>' . t("These options aren't available when using Lightbox2 Lite.") . '</p>',
   );
   $resize_sequence_options = array(
     t('Simultaneous'),
@@ -604,7 +575,7 @@ function lightbox2_general_settings_form_submit($form, &$form_state) {
 function lightbox2_slideshow_settings_form() {
 
   // Add the javascript which disables / enables form elements.
-  drupal_add_js(drupal_get_path('module', 'lightbox2') .'/js/lightbox2.js', 'module');
+  drupal_add_js(drupal_get_path('module', 'lightbox2') . '/js/lightbox2.js', 'module');
 
   // Set up a hidden variable.
   $form['lightbox2_lite'] = array(
@@ -690,7 +661,7 @@ function lightbox2_slideshow_settings_form_validate($form, &$form_state) {
 function lightbox2_iframe_settings_form() {
 
   // Add the javascript which disables / enables form elements.
-  drupal_add_js(drupal_get_path('module', 'lightbox2') .'/js/lightbox2.js', 'module');
+  drupal_add_js(drupal_get_path('module', 'lightbox2') . '/js/lightbox2.js', 'module');
 
   // Set up a hidden variable.
   $form['lightbox2_lite'] = array(
@@ -749,7 +720,7 @@ function lightbox2_iframe_settings_form_validate($form, &$form_state) {
 function lightbox2_auto_image_handling_settings_form() {
 
   // Add the javascript which disables / enables form elements.
-  drupal_add_js(drupal_get_path('module', 'lightbox2') .'/js/lightbox2.js', 'module');
+  drupal_add_js(drupal_get_path('module', 'lightbox2') . '/js/lightbox2.js', 'module');
 
   // Set up a hidden variable.
   $form['lightbox2_lite'] = array(
@@ -798,9 +769,10 @@ function lightbox2_auto_image_handling_settings_form() {
     '#default_value' => variable_get('lightbox2_image_node', 0),
   );
 
+  /*
   // Add drop-down for list of available image sizes.
   if (module_exists('image')) {
-    $sizes = _image_get_sizes();
+    $sizes = image_get_sizes();
     foreach ($sizes as $size_key => $size) {
       if ($size_key == 'original' or $size_key == '_original')  {
         $size_key = 'original';
@@ -825,6 +797,7 @@ function lightbox2_auto_image_handling_settings_form() {
     );
 
   }
+  */
 
   // Add checkbox for disabling lightbox for gallery lists.
   $form['handler_options']['image_node_options']['lightbox2_disable_nested_galleries']  = array(

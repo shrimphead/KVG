@@ -6,13 +6,6 @@
  */
 
 /**
- * Implements hook_init().
- */
-function mollom_test_server_init() {
-  module_load_include('inc', 'mollom', 'includes/mollom.class');
-}
-
-/**
  * Implements hook_menu().
  */
 function mollom_test_server_menu() {
@@ -25,23 +18,24 @@ function mollom_test_server_menu() {
   $base = array(
     'access callback' => TRUE,
     'type' => MENU_CALLBACK,
-    'page callback' => 'mollom_test_server_rest_deliver',
+    'delivery callback' => 'mollom_test_server_rest_deliver',
   );
 
   $items[$path . '/site'] = $base + array(
-    'page arguments' => array('mollom_test_server_rest_site'),
+    'page callback' => 'mollom_test_server_rest_site',
   );
   $items[$path . '/content'] = $base + array(
-    'page arguments' => array('mollom_test_server_rest_content'),
+    'page callback' => 'mollom_test_server_rest_content',
   );
   $items[$path . '/captcha'] = $base + array(
-    'page arguments' => array('mollom_test_server_rest_captcha'),
+    'page callback' => 'mollom_test_server_rest_captcha',
   );
   $items[$path . '/feedback'] = $base + array(
-    'page arguments' => array('mollom_test_server_rest_send_feedback'),
+    'page callback' => 'mollom_test_server_rest_send_feedback',
   );
   $items[$path . '/blacklist/%'] = $base + array(
-    'page arguments' => array('mollom_test_server_rest_blacklist', $base_args + 2),
+    'page callback' => 'mollom_test_server_rest_blacklist',
+    'page arguments' => array($base_args + 2),
   );
   // @todo Whitelist endpoints.
 
@@ -55,7 +49,7 @@ function mollom_test_server_menu() {
  * @see http://php.net/manual/en/wrappers.php.php
  */
 function mollom_test_server_rest_get_parameters() {
-  static $data;
+  $data = &drupal_static(__FUNCTION__);
 
   if (isset($data)) {
     return $data;
@@ -76,7 +70,7 @@ function mollom_test_server_rest_get_parameters() {
  * Returns the parsed HTTP Authorization request header as an array.
  */
 function mollom_test_server_rest_get_auth_header() {
-  static $header;
+  $header = &drupal_static(__FUNCTION__);
 
   if (isset($header)) {
     return $header;
@@ -102,16 +96,11 @@ function mollom_test_server_rest_get_auth_header() {
 /**
  * Delivery callback for REST API endpoints.
  */
-function mollom_test_server_rest_deliver($callback) {
-  // D6:
-  $args = func_get_args();
-  array_shift($args);
-  $page_callback_result = call_user_func_array($callback, $args);
-
+function mollom_test_server_rest_deliver($page_callback_result) {
   // All fake-server responses are not cached.
-  $GLOBALS['conf']['cache'] = FALSE;
+  drupal_page_is_cacheable(FALSE);
 
-  drupal_set_header('Content-Type: application/xml; charset=utf-8');
+  drupal_add_http_header('Content-Type', 'application/xml; charset=utf-8');
 
   $xml = new DOMDocument('1.0', 'utf-8');
   $element = $xml->createElement('response');
@@ -188,7 +177,7 @@ function mollom_test_server_rest_validate_auth() {
 
   // Validate the timestamp.
   $client_time = $header['oauth_timestamp'];
-  $time = time();
+  $time = REQUEST_TIME;
   $offset = abs($time - $client_time);
   if ($offset > Mollom::TIME_OFFSET_MAX) {
     return FALSE;
@@ -266,8 +255,8 @@ function mollom_test_server_rest_site($publicKey = NULL, $delete = FALSE) {
     // Create new site.
     // Authentication is ignored in this case.
     elseif (!$delete) {
-      $data['publicKey'] = $publicKey = md5(rand() . time());
-      $data['privateKey'] = $privateKey = md5(rand() . time());
+      $data['publicKey'] = $publicKey = md5(rand() . REQUEST_TIME);
+      $data['privateKey'] = $privateKey = md5(rand() . REQUEST_TIME);
       // Apply default values.
       $data += array(
         'url' => '',
@@ -586,7 +575,7 @@ function mollom_test_server_check_content($data) {
     }
     elseif (count($matches[1]) > 3) {
       $languages[] = array(
-        'languageCode' => 'und',
+        'languageCode' => LANGUAGE_NONE,
         'languageScore' => 1.0,
       );
     }

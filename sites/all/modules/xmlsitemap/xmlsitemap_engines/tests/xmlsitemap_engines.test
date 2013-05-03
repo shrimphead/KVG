@@ -23,6 +23,12 @@ class XMLSitemapEnginesFunctionalTest extends XMLSitemapTestHelper {
 
     $this->admin_user = $this->drupalCreateUser(array('access content', 'administer xmlsitemap'));
     $this->drupalLogin($this->admin_user);
+
+    // @todo For some reason the test client does not have clean URLs while
+    // the test runner does, so it causes mismatches in watchdog assertions
+    // later.
+    variable_set('clean_url', 0);
+
     $this->submit_url = url('ping', array('absolute' => TRUE, 'query' => array('sitemap' => ''))) . '[sitemap]';
   }
 
@@ -63,7 +69,7 @@ class XMLSitemapEnginesFunctionalTest extends XMLSitemapTestHelper {
 
   function testPing() {
     $edit = array('xmlsitemap_engines_engines[simpletest]' => TRUE);
-    $this->drupalPost('admin/settings/xmlsitemap/engines', $edit, t('Save configuration'));
+    $this->drupalPost('admin/config/search/xmlsitemap/engines', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'));
 
     $this->submitEngines();
@@ -73,13 +79,13 @@ class XMLSitemapEnginesFunctionalTest extends XMLSitemapTestHelper {
 
   function testCustomURL() {
     $edit = array('xmlsitemap_engines_custom_urls' => 'an-invalid-url');
-    $this->drupalPost('admin/settings/xmlsitemap/engines', $edit, t('Save configuration'));
+    $this->drupalPost('admin/config/search/xmlsitemap/engines', $edit, t('Save configuration'));
     $this->assertText('Invalid URL an-invalid-url.');
     $this->assertNoText('The configuration options have been saved.');
 
     $url = url('ping', array('absolute' => TRUE));
     $edit = array('xmlsitemap_engines_custom_urls' => $url);
-    $this->drupalPost('admin/settings/xmlsitemap/engines', $edit, t('Save configuration'));
+    $this->drupalPost('admin/config/search/xmlsitemap/engines', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'));
 
     $this->submitEngines();
@@ -88,7 +94,7 @@ class XMLSitemapEnginesFunctionalTest extends XMLSitemapTestHelper {
     $this->assertWatchdogMessage(array('type' => 'page not found', 'message' => 'ping'));
 
     $edit = array('xmlsitemap_engines_custom_urls' => $this->submit_url);
-    $this->drupalPost('admin/settings/xmlsitemap/engines', $edit, t('Save configuration'));
+    $this->drupalPost('admin/config/search/xmlsitemap/engines', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'));
 
     $this->submitEngines();

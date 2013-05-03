@@ -1,85 +1,49 @@
-$Id: README.txt,v 1.32 2011/01/03 14:40:44 thierrygd Exp $
-
-Copyright 2010 http://www.arvoriad.com
-
-
 Description
 -----------
-This module provides a phone field type for CCK.
+This module provides a phone field type and FAPI element.
 
 Features:
 ---------
-* Validation of phone numbers : support of
-	+ France,
-	+ Belgium,
-	+ Great Britain,
-	+ Switzerland,
-	+ Italy,
-	+ Greece,
-	+ Netherland,
-	+ Israel,
-	+ Russia,
-	+ Ukraine,
-	+ Australia
-	+ Spain,
-	+ Czech,
-	+ Hungary,
-	+ Poland (mobile only),
-	+ Costa Rica,
-	+ Panamana,
-	+ Brazil,
-	+ Chili,
-	+ New Zealand,
-	+ China,
-	+ Hong-Kong,
-	+ Macau,
-	+ Philippine,
-	+ Singapore,
-	+ US,
-	+ Swiss,
-	+ Jordan,
-	+ Egypt,
-	+ South Africa,
-	+ Pakistan,
-	and Canadian phone numbers
-	and generic international phone numbers
-* Formating of phone numbers
-* Option for internationalization of phone numbers
-* IPhone support
-* Phone CCK fields can be used as a Token 
-* This module is compatible with module http://drupal.org/project/node_import Node Import module, this module allowing to import data into phone fields 
+  - Provides a Phone field type, Phone field widget, and several formatters.
+  - Provides a Phone FAPI element which can be used in custom modules.
+  - Backports the "tel" input element from D8 as "phone_tel",
+    and allows this to be used for number input elements.
+  - One field instance can support every country.
+  - Limit allowable countries.
+  - Includes customisable type/label support (Work, Home, Fax, etc..).
+  - Full region level validation for all phone numbers using libphonenumber.
+    This supports most if not all known countries, and works for both the
+    Phone field widget, and Phone FAPI element.
+  - Region specific output formatting using libphonenumber, supporting
+    International, National, E.164, and RFC3966 output styles.
+  - tel: href support using RFC3966.
+  - Full token support.
+  - Feeds & Migrate integration.
+  - Microdata (itemprop=telephone), RDFa (foaf:phone),
+    and microformats hcard (class="tel/type/value") support.
+  - Devel Generate support.
+  - Views and Entity API integration.
+  - Support for countries to be disabled via external
+    modules like the Countries module (http://drupal.org/project/countries).
 
 Prerequisites
 -------------
-The phone.module requires the content.module to be installed.
+  The libraries module >= 7.x-2.x (http://drupal.org/project/libraries)
+  The libphonenumber library for php must be installed in your sites
+  library path. libphonenumber is available from
+  https://github.com/chipperstudios/libphonenumber-for-php
 
 Installation
 ------------
-To install, copy the phone directory and all its contents to your modules
-directory.
+  To install, download and install the prerequisites, then copy the phone
+  directory and all its contents to your modules directory.
 
 Configuration
 -------------
-To enable this module, visit administer -> modules, and enable phone.
+  To enable this module, visit administer -> modules, and enable phone.
 
 Bugs/Features/Patches:
 ----------------------
-If you want to report bugs, feature requests, or submit a patch, please do so
-at the project page on the Drupal web site.
-http://drupal.org/project/phone
-
-Todo List:
-----------
-* add support to other country phone numbers
-* improve the validation of phone numbers for the different countries
-* internationalization of the module
-
-Author
-------
-Thierry Guégan (http://www.arvoriad.com)
-
-If you use this module, find it useful, and want to send the author
-a thank you note, then use the Feedback/Contact page at the URL above.
-
-The author can also be contacted for paid customizations of this
-and other modules.
+  If you want to report bugs, feature requests, or submit a patch, please do
+  so at the project page on the Drupal web site.
+  http://drupal.org/project/phone

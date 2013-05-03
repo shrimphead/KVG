@@ -6,7 +6,7 @@
  */
 
 /**
- * Implementation of hook_locationapi().
+ * Implements hook_locationapi().
  */
 function location_fax_locationapi(&$location, $op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {
@@ -33,36 +33,44 @@ function location_fax_locationapi(&$location, $op, $a3 = NULL, $a4 = NULL) {
       break;
 
     case 'save':
-      db_query('DELETE FROM {location_fax} WHERE lid = %d', $location['lid']);
+      db_delete('location_fax')
+        ->condition('lid', $location['lid'])
+        ->execute();
       if (!empty($location['fax'])) {
-        db_query("INSERT INTO {location_fax} (lid, fax) VALUES (%d, '%s')", $location['lid'], $location['fax']);
+        db_insert('location_fax')
+          ->fields(array(
+            'lid' => $location['lid'],
+            'fax' => $location['fax'],
+          ))
+          ->execute();
       }
       break;
 
     case 'load':
-      $fields = array('fax' => '');
-      if ($row = db_fetch_object(db_query('SELECT fax FROM {location_fax} WHERE lid = %d', $location['lid']))) {
-        $fields['fax'] = $row->fax;
-      }
+      $fields = array();
+      $fax = db_query('SELECT fax FROM {location_fax} WHERE lid = :lid', array(':lid' => $location['lid']))->fetchField();
+      $fields['fax'] = $fax ? $fax : '';
       return $fields;
 
     case 'delete':
-      db_query('DELETE FROM {location_fax} WHERE lid = %d', $location['lid']);
+      db_delete('location_fax')
+        ->condition('lid', $location['lid'])
+        ->execute();
       break;
   }
 }
 
 /**
- * Implementation of hook_views_api().
+ * Implements hook_views_api().
  */
 function location_fax_views_api() {
   return array(
-    'api' => 2,
+    'api' => 3,
   );
 }
 
 /**
- * Implementation of hook_token_list().
+ * Implements hook_token_list().
  */
 function location_fax_token_list($type = 'all') {
   if ($type == 'node' || $type == 'user' || $type == 'all') {

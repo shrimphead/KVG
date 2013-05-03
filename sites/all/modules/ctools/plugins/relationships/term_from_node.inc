@@ -15,8 +15,7 @@ $plugin = array(
   'description' => t('Adds a taxonomy term from a node context; if multiple terms are selected, this will get the "first" term only.'),
   'required context' => new ctools_context_required(t('Node'), 'node'),
   'context' => 'ctools_term_from_node_context',
-  'settings form' => 'ctools_term_from_node_settings_form',
-  'settings form validate' => 'ctools_term_from_node_settings_form_validate',
+  'edit form' => 'ctools_term_from_node_settings_form',
   'defaults' => array('vid' => ''),
 );
 
@@ -26,13 +25,13 @@ $plugin = array(
 function ctools_term_from_node_context($context, $conf) {
   // If unset it wants a generic, unfilled context, which is just NULL.
   if (empty($context->data)) {
-    return ctools_context_create_empty('term', NULL);
+    return ctools_context_create_empty('entity:taxonomy_term', NULL);
   }
 
   if (isset($context->data->taxonomy)) {
     foreach ($context->data->taxonomy as $term) {
       if ($term->vid == $conf['vid']) {
-        return ctools_context_create('term', $term);
+        return ctools_context_create('entity:taxonomy_term', $term);
       }
     }
   }
@@ -41,7 +40,9 @@ function ctools_term_from_node_context($context, $conf) {
 /**
  * Settings form for the relationship.
  */
-function ctools_term_from_node_settings_form($conf) {
+function ctools_term_from_node_settings_form($form, &$form_state) {
+  $conf = $form_state['conf'];
+
   $options = array();
   foreach (taxonomy_get_vocabularies() as $vid => $vocabulary) {
     $options[$vid] = $vocabulary->name;
@@ -51,7 +52,7 @@ function ctools_term_from_node_settings_form($conf) {
     '#type' => 'select',
     '#options' => $options,
     '#default_value' => $conf['vid'],
-    '#prefix' => '<div class="clear-block">',
+    '#prefix' => '<div class="clearfix">',
     '#suffix' => '</div>',
   );
 

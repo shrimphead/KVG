@@ -17,7 +17,7 @@ function module_filter_settings() {
   $form['module_filter_tabs'] = array(
     '#type' => 'checkbox',
     '#title' => t('Tabs'),
-    '#description' => t('Themes module list into tabs.'),
+    '#description' => t('Divide module groups into tabbed list.'),
     '#default_value' => variable_get('module_filter_tabs', 1)
   );
   $form['tabs'] = array(

@@ -6,7 +6,7 @@
  */
 
 function _security_review_help() {
-  drupal_add_js(drupal_get_path('module', 'security_review') . '/security_review.js', 'module', 'header');
+  drupal_add_js(drupal_get_path('module', 'security_review') . '/security_review.js');
   $output = '';
   $output .= '<p>';
   $output .= t('You should take the security of your site very seriously.
@@ -16,16 +16,16 @@ function _security_review_help() {
     Be mindful of who visits your site and what features you expose for their use.');
   $output .= '</p>';
   $output .= '<p>';
-  $output .= t('You can read more about securing your site in the <a href="!do">drupal.org handbooks</a> and on <a href="!cd">DrupalScout.com</a>.
+  $output .= t('You can read more about securing your site in the <a href="!do">drupal.org handbooks</a> and on <a href="!cd">CrackingDrupal.com</a>.
     There are also additional modules you can install to secure or protect your site. Be aware though that the more modules you have running on your site the greater (usually) attack area you expose.',
-    array('!do' => 'http://drupal.org/security/secure-configuration', '!cd' => 'http://drupalscout.com'));
+    array('!do' => 'http://drupal.org/security/secure-configuration', '!cd' => 'http://crackingdrupal.com'));
   $output .= '</p>';
   $output .= '<p>' . l(t('Drupal.org Handbook: Introduction to security-related contrib modules'), 'http://drupal.org/node/382752') . '</p>';
   /*$output .= '<h3>' . t('Contrib modules for additional security and strength') . '</h3>';
-  $output .= '<p>' . t('There are a wealth of modules on drupal.org.') . '</p>';
-  $items[] = _security_review_help_ssl();
-  $items[] = _security_review_help_spam();
-  $output .= theme('item_list', $items);*/
+   $output .= '<p>' . t('There are a wealth of modules on drupal.org.') . '</p>';
+   $items[] = _security_review_help_ssl();
+   $items[] = _security_review_help_spam();
+   $output .= theme('item_list', $items);*/
   return $output;
 }
 
@@ -42,7 +42,7 @@ function _security_review_help_ssl() {
       ),
     ),
   );
-  return theme('security_review_help_options', $element);
+  return theme('security_review_help_options', array('element' => $element));
 }
 
 function _security_review_help_spam() {
@@ -57,7 +57,7 @@ function _security_review_help_spam() {
       ),
     ),
   );
-  return theme('security_review_help_options', $element);
+  return theme('security_review_help_options', array('element' => $element));
 }
 
 function theme_security_review_help_options($element) {
@@ -68,7 +68,7 @@ function theme_security_review_help_options($element) {
   foreach ($element['options'] as $option) {
     $items[] = l($option['name'], $option['href']);
   }
-  $output .= theme('item_list', $items);
+  $output .= theme('item_list', array('items' => $items));
   $output .= '</div>';
   $output .= '</div>';
   return $output;
@@ -100,7 +100,7 @@ function security_review_check_file_perms_help($result = NULL) {
 }
 
 function security_review_check_input_formats_help($result = NULL) {
-  $element['title'] = t('Allowed HTML tags in input formats');
+  $element['title'] = t('Allowed HTML tags in text formats');
   $element['descriptions'][] = t("Certain HTML tags can allow an attacker to take control of your site. Drupal's input format system makes use of a set filters to run on incoming text. The 'HTML Filter' strips out harmful tags and Javascript events and should be used on all formats accessible by untrusted users.");
   $element['descriptions'][] = t("<a href='!link'>Read more about Drupal's input formats in the handbooks.</a>", array('!link' => url('http://drupal.org/node/224921')));
   $last_check = security_review_get_last_check('security_review', 'input_formats');
@@ -112,7 +112,7 @@ function security_review_check_input_formats_help($result = NULL) {
       $result = security_review_check_input_formats();
     }
     if (!empty($result['value']['tags'])) {
-      $element['findings']['descriptions'][] = t('<a href="!link">Review your input formats.</a>', array('!link' => url('admin/settings/filters')));
+      $element['findings']['descriptions'][] = t('<a href="!link">Review your text formats.</a>', array('!link' => url('admin/config/content/formats')));
       $element['findings']['descriptions'][] = t('It is recommended you remove the following tags from roles accessible by untrusted users.');
       foreach ($result['value']['tags'] as $tag) {
         $element['findings']['items'][] = array(
@@ -122,12 +122,12 @@ function security_review_check_input_formats_help($result = NULL) {
       }
     }
     elseif (!empty($result['value']['formats'])) {
-      $element['findings']['descriptions'][] = t('The following formats are usable by untrusted roles and do not filter allowed HTML tags. The default filter will have all roles checked.');
-      foreach ($result['value']['formats'] as $id => $name) {
+      $element['findings']['descriptions'][] = t('The following formats are usable by untrusted roles and do not filter or escape allowed HTML tags.');
+      foreach ($result['value']['formats'] as $id => $format) {
         $element['findings']['items'][] = array(
-          'html' => l($name, 'admin/settings/filters/' . $id),
-          'safe' => check_plain($name),
-          'raw' => $name,
+          'html' => l($format->name, 'admin/config/content/formats/' . $format->format),
+          'safe' => check_plain($format->name),
+          'raw' => $format->name,
         );
       }
     }
@@ -137,7 +137,7 @@ function security_review_check_input_formats_help($result = NULL) {
 
 function security_review_check_php_filter_help($result = NULL) {
   $element['title'] = t('PHP Input Format');
-  $element['descriptions'][] = t("Drupal's PHP Input Format allows for the interpretation and execution of PHP code via user-supplied input. Because this input runs in the context of Drupal itself it has access to everything Drupal does.");
+  $element['descriptions'][] = t("Drupal's PHP Text Format allows for the interpretation and execution of PHP code via user-supplied input. Because this input runs in the context of Drupal itself it has access to everything Drupal does.");
   $last_check = security_review_get_last_check('security_review', 'untrusted_php');
   if ($last_check['skip'] == '1') {
     $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
@@ -147,15 +147,32 @@ function security_review_check_php_filter_help($result = NULL) {
       $result = security_review_check_php_filter();
     }
     if (!empty($result['value']['formats'])) {
-      $element['findings']['descriptions'][] = t('The following formats are usable by untrusted roles and allow use of the PHP evaluator. The default filter will have all roles checked. You should edit the format to remove PHP use.');
-      foreach ($result['value']['formats'] as $id => $name) {
+      $element['findings']['descriptions'][] = t('The following formats are usable by untrusted roles and allow use of the PHP evaluator. You should edit the format to remove PHP use.');
+      foreach ($result['value']['formats'] as $id => $format) {
         $element['findings']['items'][] = array(
-          'html' => l($name, 'admin/settings/filters/' . $id),
-          'safe' => check_plain($name),
-          'raw' => $name,
+          'html' => l($format->name, 'admin/config/content/formats/' . $format->format),
+          'safe' => check_plain($format->name),
+          'raw' => $format->name,
         );
       }
     }
+  }
+  return $element;
+}
+
+function security_review_check_error_reporting_help($result = NULL) {
+  $element['title'] = t('Error reporting');
+  $element['descriptions'][] = t('As a form of hardening your site you should avoid information disclosure. Drupal by default prints errors to the screen and writes them to the log. Error messages disclose the full path to the file where the error occured.');
+  $last_check = security_review_get_last_check('security_review', 'error_reporting');
+  if ($last_check['skip'] == '1') {
+    $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
+  }
+  elseif ($last_check['result'] == '0') {
+    if (is_null($result)) {
+      $result = security_review_check_error_reporting();
+    }
+    $element['findings']['descriptions'][] = t('You have error reporting set to both the screen and the log.');
+    $element['findings']['descriptions'][] = t('<a href="!link">Alter error reporting settings.</a>', array('!link' => url('admin/config/development/logging')));
   }
   return $element;
 }
@@ -169,30 +186,7 @@ function security_review_check_private_files_help($result = NULL) {
   }
   elseif ($last_check['result'] == '0') {
     $element['findings']['descriptions'][] = t('Your files directory is not outside of the server root.');
-    $element['findings']['descriptions'][] = t('<a href="!link">Edit the files directory path.</a>', array('!link' => url('admin/settings/file-system')));
-  }
-  return $element;
-}
-
-function security_review_check_upload_extensions_help($result = NULL) {
-  $element['title'] = t('Allowed upload extensions');
-  $element['descriptions'][] = t("The upload module allows users to attach files to content. Some extensions are considered dangerous because the files can be evaluated and then executued in the browser. A malicious user could use this opening to gain control of your site.");
-  $last_check = security_review_get_last_check('security_review', 'upload_extensions');
-  if ($last_check['skip'] == '1') {
-    $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
-  }
-  elseif ($last_check['result'] == '0') {
-    if (is_null($result)) {
-      $result = security_review_check_upload_extensions();
-    }
-    $element['findings']['descriptions'][] = t('<a href="!link">Alter file upload settings.</a>', array('!link' => url('admin/settings/uploads')));
-    $element['findings']['descriptions'][] = t('The following extensions are considered unsafe and should be removed or limited from use. Or, be sure you are not granting untrusted users the ability to upload files.');
-    foreach ($result['value'] as $extension) {
-      $element['findings']['items'][] = array(
-        'raw' => $extension,
-        'safe' => check_plain($extension),
-      );
-    }
+    $element['findings']['descriptions'][] = t('<a href="!link">Edit the files directory path.</a>', array('!link' => url('admin/config/media/file-system')));
   }
   return $element;
 }
@@ -228,7 +222,7 @@ function security_review_check_failed_logins_help($results = NULL) {
     $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
   }
   elseif ($last_check['result'] == '0') {
-    $element['findings']['descriptions'][] = t('The following IPs were observed with an abundance of failed login attempts.');
+    $element['findings']['descriptions'][] = t('The following IPs were observed with an abundanced of failed login attempts.');
     if (is_null($results)) {
       $results = security_review_check_failed_logins();
     }
@@ -243,7 +237,7 @@ function security_review_check_failed_logins_help($results = NULL) {
 }
 
 function security_review_check_admin_permissions_help($results = NULL) {
-  $element['title'] = t('Admin permissions');
+  $element['title'] = t('Admin and trusted Drupal permissions');
   $element['descriptions'][] = t("Drupal's permission system is extensive and allows for varying degrees of control. Certain permissions would allow a user total control, or the ability to escalate their control, over your site and should only be granted to trusted users.");
   $element['descriptions'][] = t('<a href="!link">Read more about trusted vs. untrusted roles and permissions on DrupalScout.com.</a>', array('!link' => url('http://drupalscout.com/knowledge-base/importance-user-roles-and-permissions-site-security')));
   $last_check = security_review_get_last_check('security_review', 'admin_permissions');
@@ -254,82 +248,85 @@ function security_review_check_admin_permissions_help($results = NULL) {
     if (is_null($results)) {
       $results = security_review_check_admin_permissions();
     }
-    $element['findings']['descriptions'][] = t('You have granted untrusted roles the following administrative permissions that you should revoke.');
+    $roles = user_roles();
+    $element['findings']['descriptions'][] = t('You have granted untrusted roles the following permissions that you should revoke.');
     foreach ($results['value'] as $rid => $permissions) {
-      $role = db_fetch_array(db_query("SELECT name FROM {role} WHERE rid = %d", $rid));
       $permissions = implode(', ', $permissions);
-      $item = t('<a href="!link">@name</a> has %permissions', array('!link' => url('admin/user/permissions/' . $rid), '@name' => $role['name'], '%permissions' => $permissions));
-      $safe = t('@name has %permissions', array('@name' => $role['name'], $permissions));
-      $element['findings']['items'][] = array(
-        'html' => $item,
-        'safe' => $safe,
-        'raw' => $role['name'] . ':' . $permissions,
-      );
-    }
-  }
-  return $element;
-}
-
-function security_review_check_nodes_help($results = NULL) {
-  $element['title'] = t('Dangerous tags in nodes');
-  $element['descriptions'][] = t("Script and PHP code in the body of nodes does not align with Drupal best practices and may be a vulnerability if an untrusted user is allowed to edit such content. It is recommended you remove such content from the body of nodes.");
-
-  $last_check = security_review_get_last_check('security_review', 'nodes');
-  if ($last_check['skip'] == '1') {
-    $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
-  }
-  elseif ($last_check['result'] == '0') {
-    $element['findings']['descriptions'][] = t('The following nodes potentially have dangerous tags. The links go to the edit page.');
-    if (is_null($results)) {
-      $results = security_review_check_nodes(); // Don't pass $last_check because timestamp is wrong now.
-    }
-    $destination = drupal_get_destination();
-    foreach ($results['value'] as $problem_nid) {
-      // There is no access checking. We state that the use of this module should be granted to trusted users only.
-      $node = node_load(current($problem_nid));
-      $description = key($problem_nid);
-      $html = t('@description found in <a href="!link">@title</a>', array('@description' => $description, '!link' => url('node/' . $node->nid . '/edit', array('query' => $destination)), '@title' => $node->title));
-      $url = url('node/' . $node->nid . '/edit');
+      $html = t('<a href="!link">@name</a> has %permissions', array('!link' => url('admin/people/permissions/' . $rid), '@name' => $roles[$rid], '%permissions' => $permissions));
+      $safe = t('@name has %permissions', array('@name' => $roles[$rid], $permissions));
       $element['findings']['items'][] = array(
         'html' => $html,
-        'safe' => t('@description in !url', array('@description' => $description, '!url' => $url)),
-        'raw' => $description . ':' . $url,
+        'safe' => $safe,
+        'raw' => $roles[$rid] . ':' . $permissions,
       );
     }
-    $element['findings']['pager'] = theme('pager', NULL, 50);
+  }
+  return $element;
+}
+
+function security_review_check_field_help($results = NULL) {
+  $element['title'] = t('Dangerous tags in content');
+  $element['descriptions'][] = t("Script and PHP code in content does not align with Drupal best practices and may be a vulnerability if an untrusted user is allowed to edit such content. It is recommended you remove such contents.");
+
+  $last_check = security_review_get_last_check('security_review', 'field');
+  if ($last_check['skip'] == '1') {
+    $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
+  }
+  elseif ($last_check['result'] == '0') {
+    $element['findings']['descriptions'][] = t('The following items potentially have dangerous tags.  ');
+    if (is_null($results)) {
+      $results = security_review_check_field(); // Don't pass $last_check because timestamp is wrong now.
+    }
+    foreach ($results['value'] as $entity_type => $value) {
+      $ids = array_keys($value);
+      $entity_info = entity_get_info($entity_type);
+      $id = $entity_info['entity keys']['id'];
+      $label = $entity_info['entity keys']['label'];
+      $uri_callback = $entity_info['uri callback'];
+      // There is no access checking. We state that the use of this module should be granted to trusted users only.
+      $entities = entity_load($entity_type, $ids);
+      foreach ($entities as $entity) {
+        $uri = '#';
+        if (function_exists($uri_callback)) {
+          $uri = $uri_callback($entity);
+          $uri = url($uri['path'] . '/edit'); // @todo can this assumption be made?
+        }
+        $html = t('@description found in <a href="!link">@title</a>', array('@description' => $value[$entity->{$id}], '!link' => $uri, '@title' => $entity->{$label}));
+        $element['findings']['items'][] = array(
+          'html' => $html,
+          'safe' => t('@description in !url', array('@description' => $value[$entity->{$id}], '!url' => $uri)),
+          'raw' => $value[$entity->{$id}] . ':' . $uri,
+        );
+      }
+    }
+    //$element['findings']['pager'] = theme('pager', array('tags' => NULL));
   }
 
   return $element;
 }
 
-function security_review_check_comments_help($results = NULL) {
-  $element['title'] = t('Dangerous tags in comments');
-  $element['descriptions'][] = t("There is little reason for script and PHP tags to be in comments (unless they are code examples) and could be in use maliciously.");
-
-  $last_check = security_review_get_last_check('security_review', 'comments');
+function security_review_check_upload_extensions_help($results = NULL) {
+  $element['title'] = t('Allowed upload extensions');
+  $element['descriptions'][] = t("File and image fields allow for uploaded files. Some extensions are considered dangerous because the files can be evaluated and then executued in the browser. A malicious user could use this opening to gain control of your site.");
+  $last_check = security_review_get_last_check('security_review', 'upload_extensions');
   if ($last_check['skip'] == '1') {
     $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
   }
   elseif ($last_check['result'] == '0') {
-    $element['findings']['descriptions'][] = t('The following comments have dangerous tags. The links go to the edit page.');
     if (is_null($results)) {
-      $results = security_review_check_comments(); // Don't pass $last_check because timestamp is wrong now.
+      $result = security_review_check_upload_extensions();
     }
-    $destination = drupal_get_destination();
-    foreach ($results['value'] as $cid => $nid) {
-      $comment = _comment_load($cid);
-      // There is no access checking. We state that the use of this module should be granted to trusted users only.
-      $node = node_load($nid);
-      $title = t('!subject on !title', array('!subject' => $comment->subject, '!title' => $node->title));
-      $element['findings']['items'][] = array(
-        'html' => l($title, 'comment/edit/' . $cid, array('query' => $destination)),
-        'safe' => check_plain($title),
-        'raw' => $title . ':' . url('comment/edit/' . $cid),
-      );
-    }
-    $element['findings']['pager'] = theme('pager', NULL, 20);
-  }
 
+    $element['findings']['descriptions'][] = t('The following extensions are considered unsafe and should be removed or limited from use. Or, be sure you are not granting untrusted users the ability to upload files.');
+    foreach ($result['value'] as $field_name => $extensions) {
+      foreach ($extensions as $extension) {
+        $element['findings']['items'][] = array(
+          'raw' => $extension,
+          'safe' => check_plain($extension),
+        );
+      }
+    }
+  }
   return $element;
 }
 
@@ -356,124 +353,5 @@ function security_review_check_name_passwords_help($results = NULL) {
     $element['findings']['pager'] = theme('pager', NULL, 20);
   }
 
-  return $element;
-}
-
-/**
- * Help for the Security Review check for allowed extensions on Filefield fields.
- */
-function security_review_check_filefield_extensions_help($results = NULL) {
-  $element['title'] = t('Filefield allowed uploads');
-  $element['descriptions'][] = t("The Filefield module allows users to attach files to content. Some extensions are considered dangerous because the files can be evaluated and then executued in the browser. A malicious user could use this opening to gain control of your site.");
-  $last_check = security_review_get_last_check('filefield', 'filefield_extensions');
-  if ($last_check['skip'] == '1') {
-    $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
-  }
-  elseif ($last_check['result'] == '0') {
-    $element['findings']['descriptions'][] = t('The following Filefield fields have unsafe extensions allowed for uploaded files.');
-    if (is_null($results)) {
-      $results = security_review_check_filefield_extensions();
-    }
-    $fields = filefield_get_field_list();
-    foreach ($results['value'] as $field_name => $value) {
-      $edit_url = "admin/content/node-type/" . str_replace('_', '-', $fields[$field_name]['type_name']) . "/fields/$field_name";
-      if (isset($value['empty']) && $value['empty'] == TRUE) {
-        $html = t('<a href="!url">%field_name</a> has all extensions allowed and should be corrected to limit uploads to safe extensions only', array('%field_name' => $field_name, '!url' => url($edit_url)));
-        $item = t('%field_name has all extensions allowed and should be corrected to limit uploads to safe extensions only', array('%field_name' => $field_name));
-        $element['findings']['items'][] = array(
-          'html' => $html, 
-          'safe' => $item,
-          'raw' => $field_name
-        );
-      }
-      else {
-        $extensions = implode(', ', $value['extensions']);
-        $html = t('<a href="!url">%field_name</a> has the unsafe extensions: @extensions', array('%field_name' => $field_name, '@extensions' => $extensions, '!url' => url($edit_url)));
-        $item = t('%field_name has the unsafe extensions: @extensions', array('%field_name' => $field_name, '@extensions' => $extensions));
-        $element['findings']['items'][] = array(
-          'html' => $html,
-          'safe' => $item,
-          'raw' => $field_name . ' : ' . $extensions 
-        );
-      }
-    }
-  }
-  return $element;
-}
-
-function security_review_check_views_access_help($results = NULL) {
-  $element['title'] = t('Views access');
-  $element['descriptions'][] = t("Views can check if the user is allowed access to the content. It is recommended that all Views implement some amount of access control, at a minimum checking for the permission 'access content'.");
-
-  $last_check = security_review_get_last_check('views', 'access');
-  if ($last_check['skip'] == '1') {
-    $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
-  }
-  elseif ($last_check['result'] == '0') {
-    $element['findings']['descriptions'][] = t('The following View displays do not check access.');
-    if (is_null($results)) {
-      $results = security_review_check_views_access();
-    }
-    foreach ($results['value'] as $view => $displays) {
-      $url = 'admin/build/views/edit/' . $view;
-      foreach ($displays as $display) {
-        $item = $view . ': ' . $display;
-        $element['findings']['items'][] = array(
-          'html' => l($item, $url, array('fragment' => $display)),
-          'safe' => $item, // View names are safe.
-          'raw' => $item,
-        );
-      }
-    }
-  }
-
-  return $element;
-}
-
-function security_review_check_email_passwords_help($results = NULL) {
-  $element['title'] = t('Password included in user emails');
-  $element['descriptions'][] = t("Drupal offers a '!password' token that can be included in email templates, but it should not be used because it can be stolen.");
-
-  $last_check = security_review_get_last_check('security_review', 'password_in_emails');
-  if ($last_check['skip'] == '1') {
-    $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
-  }
-  elseif ($last_check['result'] == '0') {
-    if (is_null($results)) {
-      $results = security_review_check_email_passwords();
-    }
-
-    if (empty($results['value'])) {
-      $element['findings']['descriptions'][] = t('No user email templates include the !password token.');
-    }
-    else {
-      $element['findings']['descriptions'][] = t('The following email templates include the !password token. Visit the !user_settings page to modify these templates.', array('!user_settings' => l('User Settings', 'admin/user/settings')));
-      // It'd be best to print non-machine names for these templates.
-      foreach ($results['value'] as $template_name) {
-        $element['findings']['items'][] = array(
-          'safe' => $template_name,
-          'raw' => $template_name,
-        );
-      }
-    }
-  }
-  return $element;
-}
-
-function security_review_check_error_reporting_help($result = NULL) {
-  $element['title'] = t('Error reporting');
-  $element['descriptions'][] = t('As a form of hardening your site you should avoid information disclosure. Drupal by default prints errors to the screen and writes them to the log. Error messages disclose the full path to the file where the error occured.');
-  
-  $last_check = security_review_get_last_check('security_review', 'error_reporting');
-  if ($last_check['skip'] == '1') {
-    $element['findings']['descriptions'][] = _security_review_check_skipped($last_check);
-  }
-  elseif ($last_check['result'] == '0') {
-    if (is_null($result)) {
-      $result = security_review_check_error_reporting();
-    }
-    $element['findings']['descriptions'][] = t('You have error reporting set to both the screen and the log.');
-    $element['findings']['descriptions'][] = t('<a href="!link">Alter error reporting settings.</a>', array('!link' => url('admin/settings/error-reporting')));
-  }
   return $element;
 }

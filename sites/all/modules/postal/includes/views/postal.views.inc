@@ -1,4 +1,4 @@
-<?php // $Id: postal.views.inc,v 1.1 2009/08/20 05:18:11 vauxia Exp $
+<?php
 
 /**
  * Implementation of hook_views_handlers().

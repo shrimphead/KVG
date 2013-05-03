@@ -54,6 +54,7 @@ function ctools_terms_settings_form(&$form, &$form_state, $conf) {
     '#default_value' => !empty($conf['breadcrumb']),
     '#description' => t('If checked, taxonomy term parents will appear in the breadcrumb trail.'),
   );
+//  return $form;
 }
 
 /**

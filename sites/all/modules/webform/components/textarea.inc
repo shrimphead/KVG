@@ -36,7 +36,7 @@ function _webform_defaults_textarea() {
 function _webform_theme_textarea() {
   return array(
     'webform_display_textarea' => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'file' => 'components/textarea.inc',
     ),
   );
@@ -112,9 +112,7 @@ function _webform_render_textarea($component, $value = NULL, $filter = TRUE) {
     '#cols' => !empty($component['extra']['cols']) ? $component['extra']['cols'] : 60,
     '#attributes' => $component['extra']['attributes'],
     '#resizable' => (bool) $component['extra']['resizable'], // MUST be FALSE to disable.
-    '#theme_wrappers' => array('webform_element_wrapper'),
-    '#pre_render' => array('webform_element_title_display'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => array('webform_element'),
     '#translatable' => array('title', 'description'),
   );
 
@@ -142,8 +140,7 @@ function _webform_display_textarea($component, $value, $format = 'html') {
     '#title' => $component['name'],
     '#weight' => $component['weight'],
     '#theme' => 'webform_display_textarea',
-    '#theme_wrappers' => $format == 'html' ? array('webform_element', 'webform_element_wrapper') : array('webform_element_text'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => $format == 'html' ? array('webform_element') : array('webform_element_text'),
     '#format' => $format,
     '#value' => isset($value[0]) ? $value[0] : '',
     '#translatable' => array('title'),
@@ -153,7 +150,8 @@ function _webform_display_textarea($component, $value, $format = 'html') {
 /**
  * Format the output of data for this component.
  */
-function theme_webform_display_textarea($element) {
+function theme_webform_display_textarea($variables) {
+  $element = $variables['element'];
   $output = $element['#format'] == 'html' ? nl2br(check_plain($element['#value'])) : $element['#value'];
   if (drupal_strlen($output) > 80) {
     $output = ($element['#format'] == 'html') ? '<div class="webform-long-answer">' . $output . '</div>' : $output;
@@ -165,18 +163,21 @@ function theme_webform_display_textarea($element) {
  * Implements _webform_analysis_component().
  */
 function _webform_analysis_textarea($component, $sids = array()) {
-  $placeholders = count($sids) ? array_fill(0, count($sids), "'%s'") : array();
-  $sidfilter = count($sids) ? " AND sid in (" . implode(",", $placeholders) . ")" : "";
-  $query = 'SELECT data ' .
-    ' FROM {webform_submitted_data} ' .
-    ' WHERE nid = %d ' .
-    ' AND cid = %d ' . $sidfilter;
+  $query = db_select('webform_submitted_data', 'wsd', array('fetch' => PDO::FETCH_ASSOC))
+    ->fields('wsd', array('no', 'data'))
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid']);
+
+  if (count($sids)) {
+    $query->condition('sid', $sids, 'IN');
+  }
+
   $nonblanks = 0;
   $submissions = 0;
   $wordcount = 0;
 
-  $result = db_query($query, array_merge(array($component['nid'], $component['cid']), $sids));
-  while ($data = db_fetch_array($result)) {
+  $result = $query->execute();
+  foreach ($result as $data) {
     if (drupal_strlen(trim($data['data'])) > 0) {
       $nonblanks++;
       $wordcount += str_word_count(trim($data['data']));

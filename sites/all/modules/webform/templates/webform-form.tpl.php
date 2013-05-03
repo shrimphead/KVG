@@ -24,4 +24,4 @@
 
   // Always print out the entire $form. This renders the remaining pieces of the
   // form that haven't yet been rendered above.
-  print drupal_render($form);
+  print drupal_render_children($form);

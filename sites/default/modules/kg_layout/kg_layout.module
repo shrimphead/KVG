@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the KG Layout feature.
+ */
+
+include_once 'kg_layout.features.inc';

@@ -31,26 +31,47 @@ define('MOLLOM_FALLBACK_BLOCK', 0);
 define('MOLLOM_FALLBACK_ACCEPT', 1);
 
 /**
+ * Implements hook_hook_info().
+ */
+function mollom_hook_info() {
+  $hooks = array(
+    'mollom_form_list',
+    'mollom_form_list_alter',
+    'mollom_form_info',
+    'mollom_form_info_alter',
+    'mollom_form_insert',
+    'mollom_form_update',
+    'mollom_form_delete',
+    'mollom_data_insert',
+    'mollom_data_update',
+    'mollom_data_delete',
+  );
+  $hooks = array_fill_keys($hooks, array(
+    'group' => 'mollom',
+  ));
+  return $hooks;
+}
+
+/**
  * Implements hook_help().
  */
 function mollom_help($path, $arg) {
   $output = '';
 
-  if ($path == 'admin/settings/mollom') {
+  if ($path == 'admin/config/content/mollom') {
     $output .= '<p>';
     $output .= t('All listed forms below are protected by Mollom, unless users are able to <a href="@permissions-url">bypass Mollom\'s protection</a>.', array(
-      '@permissions-url' => url('admin/user/permissions', array('fragment' => 'module-mollom')),
+      '@permissions-url' => url('admin/people/permissions', array('fragment' => 'module-mollom')),
     ));
-    $output .= '</p>';
-    $output .= '<p>';
+    $output .= ' ';
     $output .= t('You can <a href="@add-form-url">add a form</a> to protect, configure already protected forms, or remove the protection.', array(
-      '@add-form-url' => url('admin/settings/mollom/add'),
+      '@add-form-url' => url('admin/config/content/mollom/add'),
     ));
     $output .= '</p>';
     return $output;
   }
 
-  if ($path == 'admin/settings/mollom/blacklist') {
+  if ($path == 'admin/config/content/mollom/blacklist') {
     return t('Mollom automatically blocks unwanted content and learns from all participating sites to improve its filters. On top of automatic filtering, you can define a custom blacklist.');
   }
 
@@ -112,14 +133,11 @@ function mollom_help($path, $arg) {
  * Implements hook_init().
  */
 function mollom_init() {
-  module_load_include('inc', 'mollom', 'includes/mollom.class');
-  module_load_include('inc', 'mollom', 'mollom.drupal');
-
   // On all Mollom administration pages, check the module configuration and
   // display the corresponding requirements error, if invalid.
-  if (empty($_POST) && strpos($_GET['q'], 'admin/settings/mollom') === 0 && user_access('administer mollom')) {
+  if (empty($_POST) && strpos($_GET['q'], 'admin/config/content/mollom') === 0 && user_access('administer mollom')) {
     // Re-check the status on the settings form only.
-    $status = _mollom_status($_GET['q'] == 'admin/settings/mollom/settings');
+    $status = _mollom_status($_GET['q'] == 'admin/config/content/mollom/settings');
     if ($status !== TRUE) {
       // Fetch and display requirements error message, without re-checking.
       module_load_install('mollom');
@@ -135,7 +153,6 @@ function mollom_init() {
   if (variable_get('mollom_moderation_redirect', 0) && strpos($_GET['q'], 'admin/content/comment') === 0) {
     drupal_goto('http://my.mollom.com');
   }
-  drupal_add_css(drupal_get_path('module', 'mollom') . '/mollom.css');
 }
 
 /**
@@ -164,46 +181,44 @@ function mollom_menu() {
     'page arguments' => array(2, 3),
     'access callback' => 'mollom_moderate_access',
     'access arguments' => array(2, 3),
-    // D6 sometimes has strange issues with MENU_CALLBACKs having dynamic args.
-    //'type' => MENU_CALLBACK,
+    'type' => MENU_CALLBACK,
   );
 
-  $items['admin/settings/mollom'] = array(
+  $items['admin/config/content/mollom'] = array(
     'title' => 'Mollom content moderation',
     'description' => 'Configure how the Mollom service moderates user-submitted content such as spam and profanity.',
     'page callback' => 'mollom_admin_form_list',
     'access arguments' => array('administer mollom'),
     'file' => 'mollom.admin.inc',
   );
-  $items['admin/settings/mollom/forms'] = array(
+  $items['admin/config/content/mollom/forms'] = array(
     'title' => 'Forms',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
   );
-  $items['admin/settings/mollom/add'] = array(
+  $items['admin/config/content/mollom/add'] = array(
     'title' => 'Add form',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('mollom_admin_configure_form'),
     'access arguments' => array('administer mollom'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_LOCAL_ACTION,
     'file' => 'mollom.admin.inc',
   );
-  $items['admin/settings/mollom/manage/%mollom_form'] = array(
+  $items['admin/config/content/mollom/manage/%mollom_form'] = array(
     'title' => 'Configure',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('mollom_admin_configure_form', 4),
+    'page arguments' => array('mollom_admin_configure_form', 5),
     'access arguments' => array('administer mollom'),
     'file' => 'mollom.admin.inc',
   );
-  $items['admin/settings/mollom/unprotect/%mollom_form'] = array(
+  $items['admin/config/content/mollom/unprotect/%mollom_form'] = array(
     'title' => 'Unprotect form',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('mollom_admin_unprotect_form', 4),
+    'page arguments' => array('mollom_admin_unprotect_form', 5),
     'access arguments' => array('administer mollom'),
-    'type' => MENU_CALLBACK,
     'file' => 'mollom.admin.inc',
   );
-  $items['admin/settings/mollom/blacklist'] = array(
+  $items['admin/config/content/mollom/blacklist'] = array(
     'title' => 'Blacklists',
     'description' => 'Configure blacklists.',
     'page callback' => 'drupal_get_form',
@@ -212,31 +227,31 @@ function mollom_menu() {
     'type' => MENU_LOCAL_TASK,
     'file' => 'mollom.admin.inc',
   );
-  $items['admin/settings/mollom/blacklist/spam'] = array(
+  $items['admin/config/content/mollom/blacklist/spam'] = array(
     'title' => 'Spam',
     'description' => 'Configure spam blacklist entries.',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -10,
   );
-  $items['admin/settings/mollom/blacklist/profanity'] = array(
+  $items['admin/config/content/mollom/blacklist/profanity'] = array(
     'title' => 'Profanity',
     'description' => 'Configure profanity blacklist entries.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('mollom_admin_blacklist_form', 4),
+    'page arguments' => array('mollom_admin_blacklist_form', 5),
     'access arguments' => array('administer mollom'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'mollom.admin.inc',
   );
-  $items['admin/settings/mollom/blacklist/unwanted'] = array(
+  $items['admin/config/content/mollom/blacklist/unwanted'] = array(
     'title' => 'Unwanted',
     'description' => 'Configure unwanted blacklist entries.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('mollom_admin_blacklist_form', 4),
+    'page arguments' => array('mollom_admin_blacklist_form', 5),
     'access arguments' => array('administer mollom'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'mollom.admin.inc',
   );
-  $items['admin/settings/mollom/blacklist/delete'] = array(
+  $items['admin/config/content/mollom/blacklist/delete'] = array(
     'title' => 'Delete blacklist entry',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('mollom_admin_blacklist_delete'),
@@ -244,7 +259,7 @@ function mollom_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'mollom.admin.inc',
   );
-  $items['admin/settings/mollom/settings'] = array(
+  $items['admin/config/content/mollom/settings'] = array(
     'title' => 'Settings',
     'description' => 'Configure Mollom keys and global settings.',
     'page callback' => 'drupal_get_form',
@@ -274,6 +289,28 @@ function mollom_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function mollom_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if ($router_item['tab_root'] === 'admin/config/content/mollom' && user_access('access mollom statistics')) {
+    // Inject link to 'Statistics' before the last 'Settings' tab.
+    // The render array supports the regular #weight, but D7 core does not
+    // assign a #weight property for local tasks derived from the menu router.
+    // This causes element_children() to re-sort the existing local tasks
+    // (without weights) and they appear in an arbitrary order.
+    // @see http://drupal.org/node/1864066
+    array_splice($data['tabs'][0]['output'], -1, 0, array(array(
+      '#theme' => 'menu_local_task',
+      '#link' => array(
+        'title' => t('Statistics'),
+        'href' => 'admin/reports/mollom',
+        'localized_options' => array('html' => FALSE),
+      ),
+    )));
+  }
 }
 
 /**
@@ -349,21 +386,34 @@ function mollom_report_access($entity, $id) {
 }
 
 /**
- * Implements hook_perm().
+ * Implements hook_permission().
  */
-function mollom_perm() {
+function mollom_permission() {
   return array(
-    'administer mollom',
-    'bypass mollom protection',
-    'access mollom statistics',
+    'administer mollom' => array(
+      'title' => t('Administer Mollom-protected forms and Mollom settings'),
+    ),
+    'bypass mollom protection' => array(
+      'title' => t('Bypass Mollom protection on forms'),
+    ),
+    'access mollom statistics' => array(
+      'title' => t('View Mollom statistics'),
+    ),
   );
 }
 
 /**
- * Implements hook_flush_caches().
+ * Implements hook_modules_installed().
  */
-function mollom_flush_caches() {
-  return array('cache_mollom');
+function mollom_modules_installed($modules) {
+  drupal_static_reset('mollom_get_form_info');
+}
+
+/**
+ * Implements hook_modules_uninstalled().
+ */
+function mollom_modules_uninstalled($modules) {
+  db_delete('mollom_form')->condition('module', $modules)->execute();
 }
 
 /**
@@ -371,8 +421,10 @@ function mollom_flush_caches() {
  */
 function mollom_cron() {
   // Mollom session data auto-expires after 6 months.
-  $expired = time() - 86400 * 30 * 6;
-  db_query("DELETE FROM {mollom} WHERE changed < %d", array($expired));
+  $expired = REQUEST_TIME - 86400 * 30 * 6;
+  db_delete('mollom')
+    ->condition('changed', $expired, '<')
+    ->execute();
 }
 
 /**
@@ -382,7 +434,7 @@ function mollom_cron() {
  *   The contentId to retrieve data for.
  */
 function mollom_content_load($contentId) {
-  return db_fetch_object(db_query_range("SELECT * FROM {mollom} WHERE contentId = '%s'", array($contentId), 0, 1));
+  return mollom_db_query_range('SELECT * FROM {mollom} WHERE contentId = :contentId', 0, 1, array(':contentId' => $contentId))->fetchObject();
 }
 
 /**
@@ -394,7 +446,55 @@ function mollom_content_load($contentId) {
  *   The entity id to retrieve data for.
  */
 function mollom_data_load($entity, $id) {
-  return db_fetch_object(db_query_range("SELECT * FROM {mollom} WHERE entity = '%s' AND id = '%s'", array($entity, $id), 0, 1));
+  return mollom_db_query_range('SELECT * FROM {mollom} WHERE entity = :entity AND id = :id', 0, 1, array(':entity' => $entity, ':id' => $id))->fetchObject();
+}
+
+/**
+ * Executes database queries with natural letter casing.
+ *
+ * Drupal core enforces lowercase column names in PDO statements for no
+ * particular reason.
+ *
+ * @see http://drupal.org/node/1171866
+ */
+function mollom_db_query($query, array $args = array(), array $options = array()) {
+  if (empty($options['target'])) {
+    $options['target'] = 'default';
+  }
+
+  $connection = Database::getConnection($options['target']);
+  // Backup PDO::ATTR_CASE to restore it afterwards, sticks on the connection.
+  $backup = $connection->getAttribute(PDO::ATTR_CASE);
+
+  $connection->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+  $result = $connection->query($query, $args, $options);
+  $connection->setAttribute(PDO::ATTR_CASE, $backup);
+
+  return $result;
+}
+
+/**
+ * Fetches a database record with natural letter casing.
+ *
+ * Drupal core enforces lowercase column names in PDO statements for no
+ * particular reason.
+ *
+ * @see http://drupal.org/node/1171866
+ */
+function mollom_db_query_range($query, $from, $count, array $args = array(), array $options = array()) {
+  if (empty($options['target'])) {
+    $options['target'] = 'default';
+  }
+
+  $connection = Database::getConnection($options['target']);
+  // Backup PDO::ATTR_CASE to restore it afterwards, sticks on the connection.
+  $backup = $connection->getAttribute(PDO::ATTR_CASE);
+
+  $connection->setAttribute(PDO::ATTR_CASE, PDO::CASE_NATURAL);
+  $result = $connection->queryRange($query, $from, $count, $args, $options);
+  $connection->setAttribute(PDO::ATTR_CASE, $backup);
+
+  return $result;
 }
 
 /**
@@ -426,7 +526,7 @@ function mollom_data_load($entity, $id) {
  *     written in.
  */
 function mollom_data_save($data) {
-  $data->changed = time();
+  $data->changed = REQUEST_TIME;
 
   // Convert languages array into a string.
   if (isset($data->languages) && is_array($data->languages)) {
@@ -437,7 +537,10 @@ function mollom_data_save($data) {
     $data->languages = implode(',', $languages);
   }
 
-  $update = db_result(db_query_range("SELECT 'id' FROM {mollom} WHERE entity = '%s' AND id = '%s'", $data->entity, $data->id, 0, 1));
+  $update = db_query_range("SELECT 'id' FROM {mollom} WHERE entity = :entity AND id = :id", 0, 1, array(
+    ':entity' => $data->entity,
+    ':id' => $data->id,
+  ))->fetchField();
   drupal_write_record('mollom', $data, $update ? array('entity', $update) : array());
 
   if (!$update) {
@@ -500,17 +603,13 @@ function mollom_data_delete_multiple($entity, array $ids) {
       module_invoke_all('mollom_data_delete', $data);
     }
   }
-  $placeholders = db_placeholders($ids, 'varchar');
-  return db_query("DELETE FROM {mollom} WHERE entity = '%s' AND id IN ($placeholders)", array_merge(array($entity), $ids));
+  return db_delete('mollom')->condition('entity', $entity)->condition('id', $ids)->execute();
 }
 
 /**
  * Helper function to add Mollom feedback options to confirmation forms.
  */
 function mollom_data_delete_form_alter(&$form, &$form_state) {
-  if (!isset($form['actions']['#weight'])) {
-    $form['actions']['#weight'] = 100;
-  }
   if (!isset($form['description']['#weight'])) {
     $form['description']['#weight'] = 90;
   }
@@ -614,7 +713,7 @@ function mollom_form_alter(&$form, &$form_state, $form_id) {
   $forms = mollom_form_cache();
 
   // Remind of enabled testing mode on all protected forms.
-  if (isset($forms['protected'][$form_id]) || strpos($_GET['q'], 'admin/settings/mollom') === 0) {
+  if (isset($forms['protected'][$form_id]) || strpos($_GET['q'], 'admin/config/content/mollom') === 0) {
     _mollom_testing_mode_warning();
   }
 
@@ -628,56 +727,14 @@ function mollom_form_alter(&$form, &$form_state, $form_id) {
           return;
         }
       }
-      // Compute the weight of the CAPTCHA so we can position it in the form.
-      // #type 'actions' is new in D7, but contributed modules use the concept
-      // in D6 already. We therefore expect the key without #type.
-      if (isset($form['actions']) && !isset($form['actions']['#type'])) {
-        // D6 code should set a #weight. If none is set, we ensure a default of
-        // 100, like #type 'actions' in D7.
-        if (!isset($form['actions']['#weight'])) {
-          $form['actions']['#weight'] = 100;
-        }
-        $weight = $form['actions']['#weight'] - 1;
-      }
-      // Some forms use 'buttons' as key.
-      elseif (isset($form['buttons']) && !isset($form['buttons']['#type'])) {
-        // D6 code should set a #weight. If none is set, we ensure a default of
-        // 100, like #type 'actions' in D7.
-        if (!isset($form['buttons']['#weight'])) {
-          $form['buttons']['#weight'] = 100;
-        }
-        $weight = $form['buttons']['#weight'] - 1;
-      }
-      else {
-        $weight = 99999;
-        foreach (element_children($form) as $key) {
-          // Scan the top-level form elements for buttons.
-          if (isset($form[$key]['#type']) && in_array($form[$key]['#type'], array('submit', 'button', 'image_button'))) {
-            // For each button, slightly increase the weight to allocate room for
-            // the CAPTCHA.
-            if (isset($form[$key]['#weight'])) {
-              $form[$key]['#weight'] += 0.0002;
-            }
-            else {
-              $form[$key]['#weight'] = 1.0002;
-            }
-            // We want to position the CAPTCHA just before the first button, so
-            // we make the CAPTCHA's weight slightly lighter than the lightest
-            // button's weight.
-            $weight = min($weight, $form[$key]['#weight'] - 0.0001);
-          }
-        }
-      }
       // Add Mollom form widget.
       $form['mollom'] = array(
         '#type' => 'mollom',
         '#mollom_form' => $mollom_form,
-        '#weight' => $weight,
+        // #type 'actions' defaults to 100.
+        '#weight' => (isset($form['actions']['#weight']) ? $form['actions']['#weight'] - 1 : 99),
         '#tree' => TRUE,
       );
-      // D6: Mimic D7's $form_state['complete form'] to allow validation
-      // handlers to access and alter the 'mollom' element.
-      $form_state['complete form'] = &$form;
 
       // Add Mollom form validation handlers.
       // Form-level validation handlers are required, since we need access to
@@ -686,10 +743,6 @@ function mollom_form_alter(&$form, &$form_state, $form_id) {
       $form['#validate'][] = 'mollom_validate_captcha';
       $form['#validate'][] = 'mollom_validate_analysis';
       $form['#validate'][] = 'mollom_validate_post';
-      // Add an #after_build callback on the $form to collect all buttons.
-      // @see mollom_form_get_values()
-      // @see _mollom_form_state_values_clean()
-      $form['#after_build'][] = 'mollom_form_buttons_after_build';
 
       // Append a submit handler to store Mollom session data. Requires that
       // the primary submit handler has run already, so a potential 'post_id'
@@ -700,12 +753,8 @@ function mollom_form_alter(&$form, &$form_state, $form_id) {
       //   no #post_submit property or form processing phase, we could rely on.
       //   Potentially applies to other contrib entities, too.
       // @see http://drupal.org/node/1150756
-      // In D6, node_form() is probably the only function that sets both
-      // $form['#node'] and $form_state['node']. Compared to that, the
-      // $form['#id'] of 'node-form' is less reliable, since any module can
-      // (rightfully) alter it.
-      if (isset($form['#node']) && isset($form_state['node'])) {
-        $form_submit_key = &$form['buttons']['submit'];
+      if (isset($form_state['build_info']['base_form_id']) && $form_state['build_info']['base_form_id'] == 'node_form') {
+        $form_submit_key = &$form['actions']['submit'];
       }
       else {
         $form_submit_key = &$form;
@@ -718,7 +767,7 @@ function mollom_form_alter(&$form, &$form_state, $form_id) {
         $form['mollom']['privacy'] = array(
           '#prefix' => '<div class="description mollom-privacy">',
           '#suffix' => '</div>',
-          '#value' => t('By submitting this form, you accept the <a href="@privacy-policy-url" class="mollom-target" rel="nofollow">Mollom privacy policy</a>.', array(
+          '#markup' => t('By submitting this form, you accept the <a href="@privacy-policy-url" class="mollom-target" rel="nofollow">Mollom privacy policy</a>.', array(
             '@privacy-policy-url' => '//mollom.com/web-service-privacy-policy',
           )),
           '#weight' => 10,
@@ -739,6 +788,24 @@ function mollom_form_alter(&$form, &$form_state, $form_id) {
     $mollom_form_id = $forms['delete'][$form_id];
     $module = $forms['protected'][$mollom_form_id];
     $form_info = mollom_form_load($mollom_form_id, $module);
+
+    // For entities, there is only one delete confirmation form per entity type.
+    // But not all of its bundles may be protected. We therefore need to figure
+    // out whether the bundle of the entity being deleted is protected - which
+    // is a reverse-mapping that does not exist in D7.
+    $is_protected = TRUE;
+    $is_entity = !empty($form_info['entity']);
+    $has_entity_argument = isset($form_state['build_info']['args'][0]) && is_object($form_state['build_info']['args'][0]);
+    if ($is_entity && $has_entity_argument) {
+      list(, , $bundle) = entity_extract_ids($form_info['entity'], $form_state['build_info']['args'][0]);
+      $is_protected = db_query_range('SELECT 1 FROM {mollom_form} WHERE entity = :entity AND bundle = :bundle', 0, 1, array(
+        ':entity' => $form_info['entity'],
+        ':bundle' => $bundle,
+      ))->fetchField();
+    }
+    if (!$is_protected) {
+      return;
+    }
     // Check access, if there is a 'report access' permission list.
     if (isset($form_info['report access'])) {
       $access = FALSE;
@@ -782,7 +849,7 @@ function mollom_form_alter(&$form, &$form_state, $form_id) {
  *     and therefore have an identical 'post_id' mapping.
  */
 function mollom_form_cache($reset = FALSE) {
-  static $forms;
+  $forms = &drupal_static(__FUNCTION__);
 
   if ($reset) {
     // This catches both 'mollom_form_cache' as well as mollom_form_load()'s
@@ -801,11 +868,7 @@ function mollom_form_cache($reset = FALSE) {
     return $forms;
   }
 
-  $result = db_query("SELECT form_id, module FROM {mollom_form}");
-  $forms['protected'] = array();
-  while ($row = db_fetch_array($result)) {
-    $forms['protected'][$row['form_id']] = $row['module'];
-  }
+  $forms['protected'] = db_query("SELECT form_id, module FROM {mollom_form}")->fetchAllKeyed();
 
   // Build a list of delete confirmation forms of entities integrating with
   // Mollom, so we are able to alter the delete confirmation form to display
@@ -829,26 +892,6 @@ function mollom_form_cache($reset = FALSE) {
   cache_set('mollom_form_cache', $forms);
 
   return $forms;
-}
-
-/**
- * Return the protection mode for a given form id.
- *
- * @return
- *   The protection mode for the given form id, one of:
- *   - MOLLOM_MODE_DISABLED: None.
- *   - MOLLOM_MODE_CAPTCHA: CAPTCHA only.
- *   - MOLLOM_MODE_ANALYSIS: Text analysis with CAPTCHA fallback.
- */
-function mollom_get_mode($form_id) {
-  static $modes;
-
-  if (!isset($modes[$form_id])) {
-    $mollom_form = mollom_form_load($form_id);
-    $modes[$form_id] = isset($mollom_form['mode']) ? $mollom_form['mode'] : MOLLOM_MODE_DISABLED;
-  }
-
-  return $modes[$form_id];
 }
 
 /**
@@ -881,12 +924,26 @@ function mollom_form_list() {
  *   The form id to return information for.
  * @param $module
  *   The module name $form_id belongs to.
+ * @param array $form_list
+ *   (optional) The return value of hook_mollom_form_list() of $module, if
+ *   already kown. Primarily used by mollom_form_list().
  */
-function mollom_form_info($form_id, $module) {
-  $form_info = module_invoke($module, 'mollom_form_info', $form_id);
-  if (empty($form_info)) {
-    $form_info = array();
+function mollom_form_info($form_id, $module, $form_list = NULL) {
+  $form_info = array();
+
+  // Fetch the basic form information from hook_mollom_form_list() first.
+  // This makes the integrating module (needlessly) rebuild all of its available
+  // forms, but the base properties are absolutely required here, so we can
+  // apply the default properties below.
+  if (!isset($form_list)) {
+    $form_list = module_invoke($module, 'mollom_form_list');
   }
+  if (isset($form_list[$form_id])) {
+    $form_info += $form_list[$form_id];
+  }
+
+  // Any information in hook_mollom_form_info() overrides the list info.
+  $form_info = array_merge($form_info, module_invoke($module, 'mollom_form_info', $form_id));
 
   // Ensure default properties.
   $form_info += array(
@@ -895,6 +952,7 @@ function mollom_form_info($form_id, $module) {
     'title' => $form_id,
     'module' => $module,
     'entity' => NULL,
+    'bundle' => NULL,
     // Configuration properties.
     'mode' => NULL,
     'checks' => array(),
@@ -917,6 +975,43 @@ function mollom_form_info($form_id, $module) {
 }
 
 /**
+ * Helper function to add field form element mappings for fieldable entities.
+ *
+ * May be used by hook_mollom_form_info() implementations to automatically
+ * populate the 'elements' definition with attached text fields on the entity
+ * type's bundle.
+ *
+ * @param array $form_info
+ *   The basic information about the registered form. Taken by reference.
+ * @param string $entity_type
+ *   The entity type; e.g., 'node'.
+ * @param string $bundle
+ *   The entity bundle name; e.g., 'article'.
+ *
+ * @return void
+ *   $form_info is taken by reference and enhanced with any attached field
+ *   mappings; e.g.:
+ *   @code
+ *     $form_info['elements']['field_name][und][0][value'] = 'Field label';
+ *   @endcode
+ */
+function mollom_form_info_add_fields(&$form_info, $entity_type, $bundle) {
+  $entity_info = entity_get_info($entity_type);
+  $form_info['mapping']['post_id'] = $entity_info['entity keys']['id'];
+
+  if (!empty($entity_info['fieldable'])) {
+    // Add form element mappings for any text fields attached to the bundle.
+    $fields = field_info_fields();
+    foreach (field_info_instances($entity_type, $bundle) as $field_name => $field) {
+      if (in_array($fields[$field_name]['type'], array('text', 'text_long', 'text_with_summary'))) {
+        // @todo Language code must not be contained here.
+        $form_info['elements'][$field_name . '][' . LANGUAGE_NONE . '][0][value'] = check_plain(t($field['label']));
+      }
+    }
+  }
+}
+
+/**
  * Creates a bare Mollom form configuration.
  *
  * @param $form_id
@@ -928,7 +1023,7 @@ function mollom_form_new($form_id) {
   if (isset($form_list[$form_id])) {
     $mollom_form += $form_list[$form_id];
   }
-  $mollom_form += mollom_form_info($form_id, $form_list[$form_id]['module']);
+  $mollom_form += mollom_form_info($form_id, $form_list[$form_id]['module'], $form_list);
 
   // Enable all fields for textual analysis by default.
   $mollom_form['checks'] = array('spam');
@@ -946,17 +1041,28 @@ function mollom_form_load($form_id) {
     return $cache->data;
   }
   else {
-    $mollom_form = db_fetch_array(db_query("SELECT * FROM {mollom_form} WHERE form_id = '%s'", $form_id));
+    $mollom_form = db_query('SELECT * FROM {mollom_form} WHERE form_id = :form_id', array(':form_id' => $form_id))->fetchAssoc();
     if ($mollom_form) {
       $mollom_form['checks'] = unserialize($mollom_form['checks']);
       $mollom_form['enabled_fields'] = unserialize($mollom_form['enabled_fields']);
 
       // Attach form registry information.
-      $form_list = module_invoke($mollom_form['module'], 'mollom_form_list');
-      if (isset($form_list[$form_id])) {
-        $mollom_form += $form_list[$form_id];
-      }
-      $mollom_form += mollom_form_info($form_id, $mollom_form['module']);
+      $form_info = mollom_form_info($form_id, $mollom_form['module']);
+      $mollom_form += $form_info;
+
+      // Override entity type and bundle information with current values from
+      // the form registry. These properties were originally not stored in
+      // {mollom_form} and only introduced in 7.x-2.2. The update path is only
+      // able to map entity types/bundles in Drupal core. Any other form
+      // protections need to be updated manually. That is the situation in which
+      // $mollom_form has NULL values from the database, but the form registry
+      // actually contains the proper values.
+      // @todo Remove in later versions.
+      // @todo Clean up _list() + _info() hook API design and pass the base
+      //   $form_info from _list() into _info(), so that it extends that
+      //   definition instead of replacing it.
+      $mollom_form['entity'] = $form_info['entity'];
+      $mollom_form['bundle'] = $form_info['bundle'];
 
       cache_set($cid, $mollom_form);
     }
@@ -968,7 +1074,7 @@ function mollom_form_load($form_id) {
  * Saves a Mollom form configuration.
  */
 function mollom_form_save(&$mollom_form) {
-  $exists = db_result(db_query_range("SELECT 1 FROM {mollom_form} WHERE form_id = '%s'", $mollom_form['form_id'], 0, 1));
+  $exists = db_query_range('SELECT 1 FROM {mollom_form} WHERE form_id = :form_id', 0, 1, array(':form_id' => $mollom_form['form_id']))->fetchField();
   $status = drupal_write_record('mollom_form', $mollom_form, ($exists ? 'form_id' : array()));
 
   // Allow modules to react on saved form configurations.
@@ -991,7 +1097,9 @@ function mollom_form_save(&$mollom_form) {
 function mollom_form_delete($form_id) {
   $mollom_form = mollom_form_load($form_id);
 
-  db_query("DELETE FROM {mollom_form} WHERE form_id = '%s'", $form_id);
+  db_delete('mollom_form')
+    ->condition('form_id', $form_id)
+    ->execute();
 
   // Allow modules to react on saved form configurations.
   module_invoke_all('mollom_form_delete', $mollom_form);
@@ -1044,7 +1152,7 @@ function mollom_form_get_values(&$form_state, $fields, $mapping) {
 
   // Remove all button values from $form_state['values'].
   $form_state_copy = $form_state;
-  _mollom_form_state_values_clean($form_state_copy);
+  form_state_values_clean($form_state_copy);
   $form_values = $form_state_copy['values'];
 
   // All elements specified in $mapping must be excluded from $fields, as they
@@ -1232,97 +1340,6 @@ function mollom_form_get_values(&$form_state, $fields, $mapping) {
 }
 
 /**
- * #after_build callback to collect all buttons in the form.
- *
- * D7 provides this natively in $form_state['buttons'] and retains the info for
- * other modules, but D6 deletes $form_state['buttons'] right after any button
- * in the form has been built.
- *
- * @see form_builder()
- * @see _mollom_form_state_values_clean()
- */
-function mollom_form_buttons_after_build(&$element, &$form_state) {
-  // Only collect buttons upon a form submission.
-  if (!empty($form_state['submitted'])) {
-    foreach (element_children($element) as $key) {
-      // If the element is a button, add it to the stack.
-      if (isset($element[$key]['#type']) && ($element[$key]['#type'] == 'submit' || $element[$key]['#type'] == 'button')) {
-        // Collect buttons in a separate key, since $form_state['mollom'] is
-        // cached. Otherwise, repetitive form submissions would duplicate the
-        // existing buttons stack.
-        $form_state['mollom_buttons'][] = $element[$key];
-      }
-      // Otherwise, if the element has children, recurse into them.
-      elseif (element_children($element[$key])) {
-        mollom_form_buttons_after_build($element[$key], $form_state);
-      }
-    }
-  }
-  // #after_build callbacks are supposed to return the processed element. This
-  // callback does not change the $form element. By taking it by reference, we
-  // return the identical element that was passed in.
-  return $element;
-}
-
-/**
- * Removes internal Form API elements and buttons from submitted form values.
- *
- * Backported from Drupal 7.
- *
- * This function can be used when a module wants to store all submitted form
- * values, for example, by serializing them into a single database column. In
- * such cases, all internal Form API values and all form button elements should
- * not be contained, and this function allows to remove them before the module
- * proceeds to storage. Next to button elements, the following internal values
- * are removed:
- * - form_id
- * - form_token
- * - form_build_id
- * - op
- *
- * @param $form_state
- *   A keyed array containing the current state of the form, including
- *   submitted form values; altered by reference.
- */
-function _mollom_form_state_values_clean(&$form_state) {
-  // Remove internal Form API values.
-  unset($form_state['values']['form_id'], $form_state['values']['form_token'], $form_state['values']['form_build_id'], $form_state['values']['op']);
-
-  // Remove button values.
-  // form_builder() collects all button elements in a form. We remove the button
-  // value separately for each button element.
-  $buttons = !empty($form_state['mollom_buttons']) ? $form_state['mollom_buttons'] : array();
-  foreach ($buttons as $button) {
-    // Remove this button's value from the submitted form values by finding
-    // the value corresponding to this button.
-    // We iterate over the #parents of this button and move a reference to
-    // each parent in $form_state['values']. For example, if #parents is:
-    //   array('foo', 'bar', 'baz')
-    // then the corresponding $form_state['values'] part will look like this:
-    // array(
-    //   'foo' => array(
-    //     'bar' => array(
-    //       'baz' => 'button_value',
-    //     ),
-    //   ),
-    // )
-    // We start by (re)moving 'baz' to $last_parent, so we are able unset it
-    // at the end of the iteration. Initially, $values will contain a
-    // reference to $form_state['values'], but in the iteration we move the
-    // reference to $form_state['values']['foo'], and finally to
-    // $form_state['values']['foo']['bar'], which is the level where we can
-    // unset 'baz' (that is stored in $last_parent).
-    $parents = $button['#parents'];
-    $values = &$form_state['values'];
-    $last_parent = array_pop($parents);
-    foreach ($parents as $parent) {
-      $values = &$values[$parent];
-    }
-    unset($values[$last_parent]);
-  }
-}
-
-/**
  * Recursive helper function to flatten nested form values.
  *
  * Takes a potentially nested array and returns all non-empty string values in
@@ -1347,12 +1364,7 @@ function _mollom_flatten_form_values($values) {
  */
 function _mollom_get_openid($account) {
   if (isset($account->uid)) {
-    $result = db_query("SELECT * FROM {authmap} WHERE module = 'openid' AND uid = %d", $account->uid);
-
-    $ids = array();
-    while ($identity = db_fetch_object($result)) {
-      $ids[] = $identity->authname;
-    }
+    $ids = db_query('SELECT authname FROM {authmap} WHERE module = :module AND uid = :uid', array(':module' => 'openid', ':uid' => $account->uid))->fetchCol();
 
     if (!empty($ids)) {
       return implode($ids, ' ');
@@ -1448,22 +1460,19 @@ function _mollom_status($reset = FALSE) {
  * Outputs a warning message about enabled testing mode (once).
  */
 function _mollom_testing_mode_warning() {
-  static $warned;
-  if (isset($warned)) {
-    return;
-  }
   // drupal_set_message() starts a session and disables page caching, which
   // breaks cache-related tests. Thus, tests set the verbose variable to TRUE.
-  if ($warned = variable_get('mollom_testing_mode_omit_warning', NULL)) {
+  $warned = &drupal_static(__FUNCTION__, variable_get('mollom_testing_mode_omit_warning', NULL));
+  if (isset($warned)) {
     return;
   }
   $warned = TRUE;
 
   if (variable_get('mollom_testing_mode', 0) && empty($_POST)) {
     $admin_message = '';
-    if (user_access('administer mollom') && $_GET['q'] != 'admin/settings/mollom/settings') {
+    if (user_access('administer mollom') && $_GET['q'] != 'admin/config/content/mollom/settings') {
       $admin_message = t('Visit the <a href="@settings-url">Mollom settings page</a> to disable it.', array(
-        '@settings-url' => url('admin/settings/mollom/settings'),
+        '@settings-url' => url('admin/config/content/mollom/settings'),
       ));
     }
     $message = t('Mollom testing mode is still enabled. !admin-message', array(
@@ -1512,66 +1521,19 @@ function _mollom_format_message_falsepositive($form_state, $data) {
   $params += array_intersect_key($form_state['values']['mollom'], array_flip(array('contentId', 'captchaId')));
   $params += array_intersect_key($data, array_flip(array('authorName', 'authorMail')));
   $params['url'] = $GLOBALS['base_root'] . request_uri();
-  $report_url .= '?' . drupal_query_string_encode($params);
+  $report_url .= '?' . drupal_http_build_query($params);
   return t('If you feel this is in error, please <a href="@report-url" class="mollom-target">report that you are blocked</a>.', array(
     '@report-url' => $report_url,
   ));
 }
 
 /**
- * @defgroup mollom_form_api Mollom Form API workarounds
- * @{
- * Various helper functions to work around bugs in Form API.
- *
- * Normally, Mollom's integration with Form API would be quite simple:
- * - If a form is protected by Mollom, we setup initial information
- *   about the session and the form in $form_state['storage'], bound to the
- *   'form_build_id'.
- * - We enable form caching via $form_state['cache'], so our information in the
- *   form storage is cached. Form API then automatically ensures a proper
- *   'form_build_id' for every form and every user.
- * - We mainly work in and after form validation. Textual analysis validates all
- *   values in the form as a form validation handler. If this validation fails,
- *   we alter the form (during validation) to add a CAPTCHA. If the CAPTCHA
- *   response is invalid, we still alter the form during validation to display a
- *   new CAPTCHA, but without the previously entered value.
- * - In short, roughly:
- *   - Form construction: Nothing.
- *   - Form processing: Output a CAPTCHA for CAPTCHA-only protected forms.
- *   - Form validation: Perform validation and alterations based on validation.
- *
- * This, however, is not possible due to various bugs in Drupal core.
- * - Form caching cannot be enabled for certain forms, because they contain
- *   processing and validation logic.
- *   http://drupal.org/node/644222
- * - $form_state['storage'] is not updated after form processing and validation.
- *   http://drupal.org/node/644150
- * - Form validation handlers cannot alter the form structure.
- *   http://drupal.org/node/642702
- *
- * Hence, something that could be done in one simple function becomes quite a
- * nightmare:
- * - We need our own {cache_mollom} table as replacement for native form
- *   caching, as well as our own logic to validate a submitted 'session_id'
- *   ('form_build_id') against forms and users.
- * - We need to alter the $form structure during form validation. To make this
- *   possible, we mimic D7 and assign $form to $form_state['complete form'] by
- *   reference in mollom_form_alter().
- *
- * @see mollom_form_alter()
+ * Implements hook_element_info().
  */
-
-/**
- * Implements hook_elements().
- */
-function mollom_elements() {
+function mollom_element_info() {
   return array(
     'mollom' => array(
-      '#input' => TRUE,
       '#process' => array(
-        // Try to fetch a Mollom session from cache during form processing/validation.
-        'mollom_process_mollom_form_state',
-        // Setup a new Mollom session.
         'mollom_process_mollom',
       ),
       '#pre_render' => array('mollom_pre_render_mollom'),
@@ -1584,27 +1546,11 @@ function mollom_elements() {
  */
 function mollom_theme() {
   return array(
-    'mollom' => array(
-      'arguments' => array('element' => NULL),
-    ),
     'mollom_admin_blacklist_form' => array(
-      'arguments' => array('form' => NULL),
+      'render element' => 'form',
       'file' => 'mollom.admin.inc',
     ),
   );
-}
-
-/**
- * Format the Mollom form element.
- *
- * This works like #type 'markup' and is only required, because D6 only supports
- * #process callbacks on elements with #input = TRUE.
- *
- * @see form_builder()
- * @see _form_builder_handle_input_element()
- */
-function theme_mollom($element) {
-  return isset($element['#children']) ? $element['#children'] : '';
 }
 
 /**
@@ -1630,20 +1576,19 @@ function theme_mollom($element) {
  *     validation errors preventing the form from submitting directly, as well as
  *     "Preview" buttons that may rebuild the entire form from scratch (if there
  *     are no validation errors).
- *   - To track state, a unique and reliable mollom_build_id is generated,
- *     mimicking D7's form_build_id, which allows to store and retrieve the
- *     $form_state of a previous submission (attempt).
+ *   - To track state, the Form API cache is enabled, which allows to store and
+ *     retrieve the entire $form_state of a previous submission (attempt).
  *   - Furthermore, page caching is force-disabled, so as to ensure that cached
  *     form data is not re-used by different users/visitors.
- *   - This is essentially equal to force-starting a session for all users that
- *     try to submit a CAPTCHA-only protected form. However, a session would
- *     persist across other pages.
+ *   - In combination with the Form API cache, this is essentially equal to
+ *     force-starting a session for all users that try to submit a CAPTCHA-only
+ *     protected form. However, a session would persist across other pages.
  *
  * @see mollom_form_alter()
  * @see mollom_element_info()
  * @see mollom_pre_render_mollom()
  */
-function mollom_process_mollom($element, $input, &$form_state, &$complete_form) {
+function mollom_process_mollom($element, &$form_state, $complete_form) {
   // Setup initial Mollom session and form information.
   $form_state += array('mollom' => array());
   $form_state['mollom'] += array(
@@ -1675,7 +1620,7 @@ function mollom_process_mollom($element, $input, &$form_state, &$complete_form) 
   }
 
   // Add the JavaScript.
-  drupal_add_js(drupal_get_path('module', 'mollom') . '/mollom.js');
+  $element['#attached']['js'][] = drupal_get_path('module', 'mollom') . '/mollom.js';
 
   // Add the Mollom session data elements.
   // These elements resemble the {mollom} database schema. The form validation
@@ -1740,41 +1685,12 @@ function mollom_process_mollom($element, $input, &$form_state, &$complete_form) 
   if (!variable_get('mollom_testing_mode', 0)) {
     $element['captcha']['#attributes']['autocomplete'] = 'off';
   }
-
-  // D6: Comment module invokes form validation from within an #after_build
-  // callback during form processing; i.e., the form is not fully built yet.
-  // A proper submit via drupal_process_form() sets $form_state['submitted']
-  // to TRUE and has a $form_state['clicked_button'].
-  // We cannot check for $form_state['process_input'], since that is only set
-  // after form building/processing, before validation handlers are invoked.
-  // Regular build has: submitted=FALSE, values
-  // Proper submit has: submitted=TRUE, clicked_button, values
-  // Bogus submit has:  submitted=FALSE, clicked_button, buttons, values
-  // ~ + clicked_button][#executes_submit_callback = FALSE
-  $triggered_from_after_build = (!$form_state['submitted'] && isset($form_state['clicked_button']));
-
   // For CAPTCHA-only protected forms:
   if (!$form_state['mollom']['require_analysis'] && $form_state['mollom']['require_captcha']) {
-    // D6: Mimic D7's unique, reliable form build ID.
-    // Tracks the state of a CAPTCHA. Only applies to CAPTCHA-only protected
-    // forms, for which page caching is force-disabled.
-    // @see mollom_process_mollom_form_state()
-    // @see mollom_validate_post()
-    if (!isset($form_state['mollom']['mollom_build_id'])) {
-      $form_state['mollom']['mollom_build_id'] = md5(uniqid(mt_rand(), TRUE));
-    }
-    $element['mollom_build_id'] = array(
-      '#type' => 'hidden',
-      '#value' => $form_state['mollom']['mollom_build_id'],
-    );
-
     // Retrieve and show an initial CAPTCHA.
-    // D6: As authenticated user, after previewing + incorrectly solving a
-    // CAPTCHA on the comment form, previewing + solving it + with other
-    // validation errors, and finally saving/submitting, the
-    // $triggered_from_after_build condition from involved #after_builds is
-    // still FALSE, so additionally check the 'passed_captcha' state.
-    if (empty($form_state['process_input']) && !$form_state['submitted'] && !$triggered_from_after_build && !$form_state['mollom']['passed_captcha']) {
+    if (empty($form_state['process_input'])) {
+      // Enable Form API caching, in order to track the state of the CAPTCHA.
+      $form_state['cache'] = TRUE;
       // mollom_form_add_captcha() adds the CAPTCHA and disables page caching.
       mollom_form_add_captcha($element, $form_state);
     }
@@ -1809,51 +1725,11 @@ function mollom_process_mollom($element, $input, &$form_state, &$complete_form) 
     ),
   );
 
-  // D6: The complete form available to the #pre_render callback.
-  // Only applies to forms with enabled form caching (#cache = TRUE), for which
-  // mollom_form_alter() is not executed. D6 Form API does not pass $form or
-  // $complete_form by reference internally, nor to any callbacks.
-  // The following assignments build a cross-reference for $complete_form
-  // between $form_state and the element property.
-  // @see mollom_pre_render_mollom()
-  if (!isset($form_state['complete form']) || $triggered_from_after_build) {
-    $form_state['complete form'] = &$complete_form;
-    $element['#complete form'] = &$complete_form;
-  }
-
   // Make Mollom form and session information available to entirely different
   // functions.
   // @see mollom_mail_alter()
   $GLOBALS['mollom'] = &$form_state['mollom'];
 
-  return $element;
-}
-
-/**
- * Form element #process callback for Mollom's form storage handling.
- *
- * Albeit this *should* be an #element_validate handler that is only executed
- * during form validation, we must use a #process callback, because
- * mollom_process_mollom() needs to copy over $form_state['mollom'] into
- * $element['#mollom'], and as of now, Form API does not allow form validation
- * handlers to alter any elements in the form structure by reference.
- * @see http://drupal.org/node/642702
- */
-function mollom_process_mollom_form_state($element, $input, &$form_state) {
-  if (empty($form_state['mollom']) && !empty($input['mollom_build_id'])) {
-    if ($cache = cache_get($input['mollom_build_id'], 'cache_mollom')) {
-      if ($cache->data['form_id'] !== $form_state['values']['form_id']) {
-        watchdog('mollom', 'Invalid form ID %form_id for build ID %form_build_id (generated for %cached_form_id).', array(
-          '%form_build_id' => $input['mollom_build_id'],
-          '%cached_form_id' => $cache->data['form_id'],
-          '%form_id' => $form_state['values']['form_id'],
-        ), WATCHDOG_WARNING);
-      }
-      else {
-        $form_state['mollom'] = $cache->data;
-      }
-    }
-  }
   return $element;
 }
 
@@ -1868,13 +1744,7 @@ function mollom_process_mollom_form_state($element, $input, &$form_state) {
  */
 function mollom_form_add_captcha(&$element, &$form_state) {
   // Prevent the page cache from storing a form containing a CAPTCHA element.
-  $GLOBALS['conf']['cache'] = CACHE_DISABLED;
-  // Pressflow in CACHE_EXTERNAL caching mode additionally requires to mark
-  // this request as non-cacheable to bypass external caches (e.g., Varnish).
-  if (function_exists('drupal_page_is_cacheable')) {
-    drupal_page_is_cacheable(FALSE);
-    drupal_set_header('Cache-Control', 'no-cache, must-revalidate, post-check=0, pre-check=0', FALSE);
-  }
+  drupal_page_is_cacheable(FALSE);
 
   $captcha = mollom_get_captcha($form_state);
   // If we get a response, add the image CAPTCHA to the form element.
@@ -1897,10 +1767,7 @@ function mollom_form_add_captcha(&$element, &$form_state) {
 /**
  * Form validation handler to perform textual analysis on submitted form values.
  */
-function mollom_validate_analysis($form_copy, &$form_state) {
-  // D6: The complete but unprocessed form structure from before form_builder().
-  $form = &$form_state['complete form'];
-
+function mollom_validate_analysis(&$form, &$form_state) {
   if (!$form_state['mollom']['require_analysis']) {
     return;
   }
@@ -2017,10 +1884,10 @@ function mollom_validate_analysis($form_copy, &$form_state) {
           $form['mollom']['captcha']['#access'] = TRUE;
 
           if (!empty($form_state['temporary']['mollom']['had_captcha'])) {
-            form_set_error('mollom][captcha', t('The word verification was not completed correctly. Please complete this new word verification and try again.') . ' ' . _mollom_format_message_falsepositive($form_state, $data));
+            form_error($form['mollom']['captcha'], t('The word verification was not completed correctly. Please complete this new word verification and try again.') . ' ' . _mollom_format_message_falsepositive($form_state, $data));
           }
           else {
-            form_set_error('mollom][captcha', t('To complete this form, please complete the word verification below.'));
+            form_error($form['mollom']['captcha'], t('To complete this form, please complete the word verification below.'));
           }
         }
         mollom_log(array(
@@ -2060,10 +1927,7 @@ function mollom_validate_analysis($form_copy, &$form_state) {
  * CAPTCHA, if it was configured to be protected by a CAPTCHA only, or when the
  * text analysis result is "unsure".
  */
-function mollom_validate_captcha($form_copy, &$form_state) {
-  // D6: The complete but unprocessed form structure from before form_builder().
-  $form = &$form_state['complete form'];
-
+function mollom_validate_captcha(&$form, &$form_state) {
   if ($form_state['mollom']['require_analysis']) {
     // For text analysis, only validate the CAPTCHA if there is an ID. If the ID
     // is maliciously removed from the form values, text analysis will punish
@@ -2081,7 +1945,7 @@ function mollom_validate_captcha($form_copy, &$form_state) {
     // If there is no CAPTCHA ID yet, retrieve one and throw an error.
     if (empty($form_state['values']['mollom']['captchaId'])) {
       mollom_form_add_captcha($form['mollom'], $form_state);
-      form_set_error('mollom][captcha', t('To complete this form, please complete the word verification below.'));
+      form_error($form['mollom']['captcha'], t('To complete this form, please complete the word verification below.'));
       return;
     }
   }
@@ -2178,15 +2042,6 @@ function mollom_validate_captcha($form_copy, &$form_state) {
  * - Marks the CAPTCHA as required.
  */
 function mollom_pre_render_mollom($element) {
-  // D6: Take over any adjustments performed by form validation handlers.
-  // Only applies to forms with enabled form caching (#cache = TRUE).
-  // @see mollom_process_mollom()
-  if (isset($element['#complete form']['mollom'])) {
-    foreach (element_children($element['#complete form']['mollom']) as $key) {
-      $element[$key] = array_merge($element[$key], $element['#complete form']['mollom'][$key]);
-    }
-  }
-
   // If there is no CAPTCHA ID, then there is no CAPTCHA that can be displayed.
   // If a CAPTCHA was solved, then the widget makes no sense either.
   if (empty($element['captchaId']['#value']) || !empty($element['captcha']['#solved'])) {
@@ -2207,9 +2062,6 @@ function mollom_pre_render_mollom($element) {
   // DX: Debugging helpers.
 //  $element['#suffix'] = 'contentId: ' . $element['contentId']['#value'] . '<br>';
 //  $element['#suffix'] .= 'captchaId: ' . $element['captchaId']['#value'] . '<br>';
-//  if (isset($element['mollom_build_id'])) {
-//    $element['#suffix'] .= 'mollom_build_id: ' . $element['mollom_build_id']['#value'] . '<br>';
-//  }
 
   return $element;
 }
@@ -2227,11 +2079,6 @@ function mollom_validate_post(&$form, &$form_state) {
 
     $function = $form_state['mollom']['moderation callback'];
     $function($form, $form_state);
-  }
-
-  // Update the Mollom form state.
-  if (!empty($form_state['mollom']['mollom_build_id'])) {
-    cache_set($form_state['mollom']['mollom_build_id'], $form_state['mollom'], 'cache_mollom', time() + (6 * 3600));
   }
 }
 
@@ -2265,11 +2112,7 @@ function mollom_form_submit($form, &$form_state) {
     // For new entities, the entity's form submit handler will have added the
     // new entity id value into $form_state['values'], so we need to rebuild the
     // data mapping. We do not care for the actual fields, only for the value of
-    // the mapped post_id.
-    // Note that most entity forms in Drupal 6 do not insert the entity ID for
-    // new entities into the $form. Therefore, this code does not run for them,
-    // but instead requires dedicated hook_nodeapi() and hook_comment()
-    // implementations.
+    // the mapped postId.
     // @todo Directly extract 'postId' from submitted form values.
     $values = mollom_form_get_values($form_state, $form_state['mollom']['enabled_fields'], $form_state['mollom']['mapping']);
     // We only consider non-empty and non-zero values as valid entity ids.
@@ -2282,13 +2125,7 @@ function mollom_form_submit($form, &$form_state) {
       $form_state['mollom']['data'] = mollom_data_save($data);
     }
   }
-  // Prune expired {cache_mollom} records on every successful form submission.
-  cache_clear_all(NULL, 'cache_mollom');
 }
-
-/**
- * @} End of "defgroup mollom_form_api".
- */
 
 /**
  * Instantiates a new Mollom client.
@@ -2298,11 +2135,7 @@ function mollom_form_submit($form, &$form_state) {
  *   Overrides the 'mollom_class' configuration variable. Debug use only.
  */
 function mollom($class = NULL) {
-  static $instance;
-
-  module_load_include('inc', 'mollom', 'includes/mollom.class');
-  module_load_include('inc', 'mollom', 'mollom.drupal');
-
+  $instance = &drupal_static(__FUNCTION__);
   if (!isset($class)) {
     if (variable_get('mollom_testing_mode', 0)) {
       $class = 'MollomDrupalTest';
@@ -2360,7 +2193,7 @@ function mollom($class = NULL) {
  */
 function mollom_log(array $entry = NULL, $severity = NULL, $reset = FALSE) {
   // Start with debug severity level.
-  static $log = array();
+  $log = &drupal_static(__FUNCTION__, array());
 
   if ($reset) {
     $return = $log;
@@ -2568,7 +2401,7 @@ function _mollom_format_string($string, array $args = array()) {
       case '%':
       default:
         // Escaped and placeholder.
-        $args[$key] = theme('placeholder', $value);
+        $args[$key] = drupal_placeholder($value);
         break;
 
       case '!':
@@ -2636,7 +2469,7 @@ function mollom_get_statistics($refresh = FALSE) {
   $cache = cache_get('mollom:statistics');
 
   // Only fetch if $refresh is TRUE, the cache is empty, or the cache is expired.
-  if ($refresh || !$cache || time() >= $cache->expire) {
+  if ($refresh || !$cache || REQUEST_TIME >= $cache->expire) {
     if (_mollom_status() === TRUE) {
       $statistics = drupal_map_assoc(array(
         'total_days',
@@ -2665,7 +2498,7 @@ function mollom_get_statistics($refresh = FALSE) {
     }
 
     // Cache the statistics and set them to expire in one hour.
-    cache_set('mollom:statistics', $statistics, 'cache', time() + 3600);
+    cache_set('mollom:statistics', $statistics, 'cache', REQUEST_TIME + 3600);
   }
   else {
     $statistics = $cache->data;
@@ -2675,20 +2508,33 @@ function mollom_get_statistics($refresh = FALSE) {
 }
 
 /**
- * Implements hook_content_extra_fields().
+ * Implements hook_field_extra_fields().
  *
- * Allow users of CCK to re-order the CAPTCHA field on node forms through the
- * CCK UI.
+ * Allow users to re-order Mollom form additions through Field UI.
  */
-function mollom_content_extra_fields($type_name) {
-  if ($mollom_form = mollom_form_load($type_name . '_node_form')) {
-    $extras['mollom'] = array(
-      'label' => t('Mollom'),
-      'description' => t('Mollom CAPTCHA or privacy policy link'),
-      'weight' => 99,
-    );
-    return $extras;
+function mollom_field_extra_fields() {
+  $extras = array();
+  $forms = array_flip(db_query('SELECT form_id FROM {mollom_form}')->fetchCol());
+  foreach (mollom_form_list() as $form_id => $info) {
+    // @todo Technically, an 'entity' does not need to be a Entity/Field API
+    //   kind of entity. Ideally of course, developers should use fieldable
+    //   entities, but contributed/custom code may not. It is not clear whether
+    //   registering extra fields for non-existing entities/bundles can break
+    //   anything, so leaving it this way for now.
+    if (isset($info['entity']) && isset($forms[$form_id])) {
+      // If the entity type does not implement bundles, then entity_get_info()
+      // assumes a single bundle named after the entity.
+      $entity_type = $info['entity'];
+      $bundle = (isset($info['bundle']) ? $info['bundle'] : $entity_type);
+
+      $extras[$entity_type][$bundle]['form']['mollom'] = array(
+        'label' => t('Mollom'),
+        'description' => t('Mollom CAPTCHA or privacy policy link'),
+        'weight' => 99,
+      );
+    }
   }
+  return $extras;
 }
 
 /**
@@ -2750,7 +2596,7 @@ function mollom_get_captcha(&$form_state) {
       break;
 
     case 'image':
-      $captcha = theme('image', $url, t('Type the characters you see in this picture.'), '', NULL, FALSE);
+      $captcha = theme('image', array('path' => $url, 'alt' => t('Type the characters you see in this picture.'), 'getsize' => FALSE));
       $output = '<span class="mollom-captcha-content mollom-image-captcha">' . $captcha . '</span>';
       $output .= ' (<a href="#" class="mollom-switch-captcha mollom-audio-captcha">' . t('verify using audio') . '</a>)';
       break;
@@ -2800,7 +2646,7 @@ function mollom_mail_add_report_link(array &$message, array $mollom) {
       $data = mollom_content_load($mollom['response']['content']['id']);
     }
     elseif (!empty($mollom['response']['captcha']['id'])) {
-      $data = db_fetch_object(db_query_range("SELECT * FROM {mollom} WHERE captchaId = '%s'", array($mollom['response']['captcha']['id']), 0, 1));
+      $data = mollom_db_query_range('SELECT * FROM {mollom} WHERE captchaId = :captchaId', 0, 1, array(':captchaId' => $mollom['response']['captcha']['id']))->fetchObject();
     }
     if (!$data) {
       // @todo Mollom session data should have been saved earlier already;
@@ -2832,21 +2678,15 @@ function mollom_mail_add_report_link(array &$message, array $mollom) {
     $report_link = t('Report as inappropriate: @link', array(
       '@link' => url($path, array('absolute' => TRUE)),
     ));
-    // Until D7, hook_mail_alter() accepts both arrays and strings.
-    if (is_array($message['body'])) {
-      $message['body'][] = $report_link;
-    }
-    else {
-      $message['body'] .= "\n\n" . $report_link;
-    }
+    $message['body'][] = $report_link;
   }
 }
 
 /**
  * Implements hook_entity_insert().
  */
-function _mollom_entity_insert($entity, $type, $idKey) {
-  $id = $entity->$idKey;
+function mollom_entity_insert($entity, $type) {
+  list($id) = entity_extract_ids($type, $entity);
   if (!empty($entity->mollom) && !empty($id)) {
     $entity->mollom['id'] = $id;
     $data = (object) $entity->mollom;
@@ -2857,7 +2697,7 @@ function _mollom_entity_insert($entity, $type, $idKey) {
 /**
  * Implements hook_entity_update().
  */
-function _mollom_entity_update($entity, $type, $idKey) {
+function mollom_entity_update($entity, $type) {
   // If an existing entity is published and we have session data stored for it,
   // mark the data as moderated.
   $update = FALSE;
@@ -2874,7 +2714,7 @@ function _mollom_entity_update($entity, $type, $idKey) {
     $update = TRUE;
   }
   if ($update) {
-    $id = $entity->$idKey;
+    list($id) = entity_extract_ids($type, $entity);
     mollom_data_moderate($type, $id);
   }
 }
@@ -2882,8 +2722,8 @@ function _mollom_entity_update($entity, $type, $idKey) {
 /**
  * Implements hook_entity_delete().
  */
-function _mollom_entity_delete($entity, $type, $idKey) {
-  $id = $entity->$idKey;
+function mollom_entity_delete($entity, $type) {
+  list($id) = entity_extract_ids($type, $entity);
   mollom_data_delete($type, $id);
 }
 
@@ -2917,16 +2757,26 @@ function mollom_mollom_data_insert($data) {
   $params['id'] = $data->contentId;
   $params['stored'] = 1;
 
-  if ($data->entity == 'comment' && ($comment = _comment_load($data->id))) {
-    // Add the URL of the posted content itself.
-    $options = array();
+  // Add the URL of the posted content itself.
+  $entity_info = entity_get_info();
+  if (isset($entity_info[$data->entity])) {
+    $entity = entity_load($data->entity, array($data->id));
+    $entity = (isset($entity[$data->id]) ? $entity[$data->id] : FALSE);
+  }
+  if (!empty($entity)) {
+    $options = entity_uri($data->entity, $entity);
     $options['absolute'] = TRUE;
-    $params['url'] = url('node/' . $comment->nid, array('fragment' => 'comment-' . $comment->cid) + $options);
+    $params['url'] = url($options['path'], $options);
 
     // Add the title and URL of the parent content/context of the post, if any.
-    $node = node_load($comment->nid);
-    $params['contextUrl'] = url('node/' . $node->nid, $options);
-    $params['contextTitle'] = $node->title;
+    // @todo Figure out how to do this in a generic way.
+    if ($data->entity == 'comment') {
+      $node = node_load($entity->nid);
+      $options = entity_uri('node', $node);
+      $options['absolute'] = TRUE;
+      $params['contextUrl'] = url($options['path'], $options);
+      $params['contextTitle'] = entity_label('node', $node);
+    }
   }
 
   $result = mollom()->checkContent($params);
@@ -3043,9 +2893,8 @@ function mollom_moderate_validate_oauth() {
   }
 
   // Validate timestamp.
-  $time = time();
-  if ($header['oauth_timestamp'] <= $time - $allowed_timeframe) {
-    $diff = $header['oauth_timestamp'] - $time;
+  if ($header['oauth_timestamp'] <= REQUEST_TIME - $allowed_timeframe) {
+    $diff = $header['oauth_timestamp'] - REQUEST_TIME;
     $diff_sign = ($diff < 0 ? '-' : '+');
     if ($diff < 0) {
       $diff *= -1;
@@ -3083,11 +2932,11 @@ function mollom_moderate_validate_oauth() {
     return FALSE;
   }
   foreach ($nonces as $nonce => $created) {
-    if ($created < $time - $allowed_timeframe) {
+    if ($created < REQUEST_TIME - $allowed_timeframe) {
       unset($nonces[$nonce]);
     }
   }
-  $nonces[$header['oauth_nonce']] = $time;
+  $nonces[$header['oauth_nonce']] = REQUEST_TIME;
   cache_set('mollom_moderation_nonces', $nonces, 'cache');
 
   // Validate signature.
@@ -3139,61 +2988,26 @@ function mollom_moderate($data, $action) {
   $form_info = mollom_form_load($data->form_id);
 
   if ($form_info) {
-    if (isset($form_info['entity load callback'])) {
-      $load_callback = $form_info['entity load callback'];
-      $messages[] = "May load $form_info[entity] entity via {$form_info['entity load callback']}().";
-    }
-    elseif (function_exists($data->entity . '_load')) {
-      $load_callback = $data->entity . '_load';
-      $messages[] = "May load $form_info[entity] entity via {$data->entity}_load().";
-    }
-    if (isset($form_info['entity save callback'])) {
-      $save_callback = $form_info['entity save callback'];
-      $messages[] = "May save $form_info[entity] entity via {$form_info['entity save callback']}().";
-    }
-    elseif (function_exists($data->entity . '_save')) {
-      $save_callback = $data->entity . '_save';
-      $messages[] = "May save $form_info[entity] entity via {$data->entity}_save().";
-    }
-    if (isset($form_info['entity delete multiple callback'])) {
-      $delete_callback = $form_info['entity delete multiple callback'];
-      $messages[] = "May delete $form_info[entity] entity via {$form_info['entity delete multiple callback']}().";
-    }
-    elseif (function_exists($data->entity . '_delete')) {
-      $delete_callback = $data->entity . '_delete';
-      $messages[] = "May delete $form_info[entity] entity via {$data->entity}_delete().";
-    }
-
     // Programmatically invoke publish action.
     if ($action == 'approve') {
+      $messages[] = "Attempt to load $form_info[entity] entity via entity_load().";
       // @todo Abstract this. Possibly requires Entity module as dependency.
-      if ($data->entity == 'comment') {
-        $messages[] = 'Invoked comment-specific code.';
-        if ($comment = _comment_load($data->id)) {
-          $messages[] = "Loaded comment {$data->id} via _comment_load().";
-          // comment_invoke_comment() is a mess, so we abuse the action.
-          comment_publish_action($comment);
-          $messages[] = 'Invoked comment publish action.';
-          // comment_admin_overview_submit() additionally updates node statistics
-          // and invokes hooks, but the action does not.
-          _comment_update_node_statistics($comment->nid);
-          comment_invoke_comment($comment, 'publish');
-          $messages[] = 'Invoked comment publish hooks.';
-
+      $entity = entity_load($data->entity, array($data->id));
+      if (isset($entity[$data->id])) {
+        $entity = $entity[$data->id];
+        $entity->status = 1;
+        $function = $data->entity . '_save';
+        $messages[] = "Attempt to save $form_info[entity] entity via {$data->entity}_save().";
+        if (function_exists($function)) {
+          $function($entity);
+          $messages[] = "Updated status of $form_info[entity] entity via {$data->entity}_save().";
           $result = TRUE;
         }
       }
-      elseif (isset($load_callback) && isset($save_callback) && ($entity = $load_callback($data->id))) {
-        $entity = (object) $entity;
-        $entity->status = 1;
-        $save_callback($entity);
-        $messages[] = "Updated status of $form_info[entity] entity via $load_callback() and $save_callback().";
-
-        $result = TRUE;
-      }
     }
     // Invoke entity delete multiple callback.
-    elseif (isset($delete_callback)) {
+    elseif (!empty($form_info['entity delete multiple callback'])) {
+      $delete_callback = $form_info['entity delete multiple callback'];
       $messages[] = "Attempt to delete $form_info[entity] entity via $delete_callback().";
       if (function_exists($delete_callback)) {
         $delete_callback(array($data->id));
@@ -3205,7 +3019,7 @@ function mollom_moderate($data, $action) {
       }
     }
     // Programmatically invoke delete confirmation form.
-    elseif (isset($form_info['delete form']) && isset($load_callback)) {
+    elseif (isset($form_info['delete form'])) {
       $messages[] = "Attempt to delete $form_info[entity] entity via {$form_info['delete form']} form.";
       if (isset($form_info['delete form file'])) {
         $file = $form_info['delete form file'] + array(
@@ -3218,30 +3032,34 @@ function mollom_moderate($data, $action) {
       }
       // Programmatic form submissions are not able to automatically use the
       // primary form submit button/action, so we need to resemble
-      // drupal_execute().
+      // drupal_form_submit().
       $form_id = $form_info['delete form'];
-      $form_state = array();
+      $form_state = form_state_defaults();
       // We assume that all delete confirmation forms take the fully loaded
       // entity as (only) argument.
-      $args = array($form_id, &$form_state);
-      $args[] = $load_callback($data->id);
-      $form = call_user_func_array('drupal_retrieve_form', $args);
+      $messages[] = "Attempt to load $form_info[entity] entity via entity_load().";
+      $entities = entity_load($data->entity, array($data->id));
+      $form_state['build_info']['args'][] = $entities[$data->id];
+      $form = drupal_retrieve_form($form_id, $form_state);
 
       $form_state['values'] = array();
       $form_state['values']['mollom']['feedback'] = '';
       // Take over the primary submit button of confirm_form().
       $form_state['values']['op'] = $form['actions']['submit']['#value'];
 
-      $form['#post'] = $form_state['values'];
+      $form_state['input'] = $form_state['values'];
       $form_state['programmed'] = TRUE;
       // Programmed forms are always submitted.
       $form_state['submitted'] = TRUE;
 
+      // Reset form validation.
+      $form_state['must_validate'] = TRUE;
+      form_clear_error();
+
       drupal_prepare_form($form_id, $form, $form_state);
       drupal_process_form($form_id, $form, $form_state);
 
-      $errors = form_get_errors();
-      $result = empty($errors);
+      $result = $form_state['executed'];
     }
   }
 
@@ -3259,7 +3077,7 @@ function mollom_moderate($data, $action) {
   }
   else {
     // 400 is not really appropriate, but comes closest.
-    drupal_set_header($_SERVER['SERVER_PROTOCOL'] . ' 400 Unable to process moderation request');
+    drupal_add_http_header('Status', '400 Unable to process moderation request');
 
     mollom_log(array(
       'message' => '%action moderation failure for @entity @id',
@@ -3294,16 +3112,18 @@ function mollom_moderate($data, $action) {
  */
 function node_mollom_form_list() {
   $forms = array();
-  foreach (node_get_types('types') as $type) {
+  foreach (node_type_get_types() as $type) {
     $form_id = $type->type . '_node_form';
     $forms[$form_id] = array(
       'title' => t('@name form', array('@name' => $type->name)),
       'entity' => 'node',
+      'bundle' => $type->type,
       'delete form' => 'node_delete_confirm',
       'delete form file' => array(
         'name' => 'node.pages',
       ),
-      'report access' => array('administer nodes'),
+      'entity delete multiple callback' => 'node_delete_multiple',
+      'report access' => array('bypass node access', 'administer nodes'),
     );
   }
   return $forms;
@@ -3316,20 +3136,19 @@ function node_mollom_form_info($form_id) {
   // Retrieve internal type from $form_id.
   $nodetype = drupal_substr($form_id, 0, -10);
 
-  $type = node_get_types('type', $nodetype);
+  $type = node_type_get_type($nodetype);
   $form_info = array(
     // @todo This is incompatible with node access.
-    'bypass access' => array('administer nodes'),
+    'bypass access' => array('bypass node access'),
     'bundle' => $type->type,
     'moderation callback' => 'node_mollom_form_moderation',
     'elements' => array(),
     'mapping' => array(
-      'post_id' => 'nid',
       'author_name' => 'name',
     ),
   );
-  // @see node_perm()
-  if ($type->module == 'node') {
+  // @see node_permission()
+  if (in_array($type->type, node_permissions_get_configured_types())) {
     $form_info['bypass access'][] = 'edit any ' . $type->type . ' content';
     $form_info['bypass access'][] = 'delete any ' . $type->type . ' content';
   }
@@ -3338,35 +3157,8 @@ function node_mollom_form_info($form_id) {
     $form_info['elements']['title'] = check_plain($type->title_label);
     $form_info['mapping']['post_title'] = 'title';
   }
-  if ($type->has_body) {
-    $form_info['elements']['body'] = check_plain($type->body_label);
-  }
-
-  // Add text fields.
-  if (module_exists('content')) {
-    $content_info = content_types($type->type);
-    foreach ($content_info['fields'] as $field_name => $field) {
-      if ($field['type'] == 'text') {
-        $form_info['elements'][$field_name] = check_plain(t($field['widget']['label']));
-      }
-    }
-  }
-
+  mollom_form_info_add_fields($form_info, 'node', $type->type);
   return $form_info;
-}
-
-/**
- * Implements hook_nodeapi().
- */
-function mollom_nodeapi($node, $op) {
-  // D6: There is no way to support $entity->original, so the content will be
-  // marked as moderated if/whenever it is updated and published.
-  if (in_array($op, array('insert', 'update', 'delete'))) {
-    // Clone the object. We do not alter $node, so this is fastest.
-    $node = drupal_clone($node);
-    $function = '_mollom_entity_' . $op;
-    $function($node, 'node', 'nid');
-  }
 }
 
 /**
@@ -3378,16 +3170,10 @@ function node_mollom_form_moderation(&$form, &$form_state) {
 
 /**
  * Implements hook_form_FORMID_alter().
- *
- * @see mollom_node_admin_overview_submit()
  */
 function mollom_form_node_admin_content_alter(&$form, &$form_state) {
   // @see node_admin_content()
   if (!(isset($form_state['values']['operation']) && $form_state['values']['operation'] == 'delete')) {
-    module_load_include('inc', 'mollom', 'mollom.admin');
-    $form['admin']['options']['operation']['#options']['mollom-unpublish'] = t('Report to Mollom and unpublish');
-    $form['admin']['options']['operation']['#options']['mollom-delete'] = t('Report to Mollom and delete');
-    $form['#validate'][] = 'mollom_node_admin_overview_submit';
     return;
   }
   mollom_data_delete_form_alter($form, $form_state);
@@ -3421,16 +3207,21 @@ function mollom_form_node_multiple_delete_confirm_submit($form, &$form_state) {
  * Implements hook_mollom_form_list().
  */
 function comment_mollom_form_list() {
-  $forms['comment_form'] = array(
-    'title' => t('Comment form'),
-    'entity' => 'comment',
-    'entity load callback' => '_comment_load',
-    'delete form' => 'comment_confirm_delete',
-    'delete form file' => array(
-      'name' => 'comment.admin',
-    ),
-    'report access' => array('administer comments'),
-  );
+  $forms = array();
+  foreach (node_type_get_types() as $type) {
+    $form_id = "comment_node_{$type->type}_form";
+    $forms[$form_id] = array(
+      'title' => t('@name comment form', array('@name' => $type->name)),
+      'entity' => 'comment',
+      'bundle' => 'comment_node_' . $type->type,
+      'delete form' => 'comment_confirm_delete',
+      'delete form file' => array(
+        'name' => 'comment.admin',
+      ),
+      'report access' => array('administer comments'),
+      'entity delete multiple callback' => 'comment_delete_multiple',
+    );
+  }
   return $forms;
 }
 
@@ -3444,66 +3235,18 @@ function comment_mollom_form_info($form_id) {
     'moderation callback' => 'comment_mollom_form_moderation',
     'elements' => array(
       'subject' => t('Subject'),
-      'comment' => t('Comment'),
     ),
     'mapping' => array(
-      'post_id' => 'cid',
       'post_title' => 'subject',
-      // In D6, comment_form() dynamically uses different form elements for
-      // anonymous users, authenticated users, and comment administrators.
       'author_name' => 'name',
       'author_mail' => 'mail',
       'author_url' => 'homepage',
     ),
   );
-
+  // Retrieve internal type from $form_id.
+  $comment_bundle = drupal_substr($form_id, 0, -5);
+  mollom_form_info_add_fields($form_info, 'comment', $comment_bundle);
   return $form_info;
-}
-
-/**
- * Implements hook_form_FORMID_alter().
- *
- * When a registered user posts a comment or when a comment administrator edits
- * an existing comment, comment_form() does not define 'name' and 'mail' form
- * elements, so our form element mapping will fail.
- *
- * @see comment_mollom_form_info()
- * @see mollom_comment_form_validate()
- *
- * @todo Remove in D7.
- */
-function mollom_form_comment_form_alter(&$form, &$form_state) {
-  if (isset($form['author']) || isset($form['admin']['author'])) {
-    $form['#validate'][] = 'mollom_comment_form_validate';
-  }
-}
-
-/**
- * Form validation handler for comment_form().
- *
- * @todo Remove in D7.
- */
-function mollom_comment_form_validate($form, &$form_state) {
-  // If there were no validation errors, prepare submitted form values for
-  // validation via Mollom.
-  if (!form_get_errors()) {
-    // Author is a registered user or comment is edited by administrator.
-    if (isset($form_state['values']['author'])) {
-      // Populate 'name' with value of 'author'.
-      if (!isset($form_state['values']['name'])) {
-        form_set_value(array('#parents' => array('name')), $form_state['values']['author'], $form_state);
-      }
-      // Populate 'mail' based on corresponding user account.
-      if (!isset($form_state['values']['mail'])) {
-        // This should already be validated by comment_validate(), but we still
-        // double-check that we have a valid account before trying to access it.
-        $account = user_load(array('name' => $form_state['values']['author']));
-        if ($account) {
-          form_set_value(array('#parents' => array('mail')), $account->mail, $form_state);
-        }
-      }
-    }
-  }
 }
 
 /**
@@ -3511,37 +3254,6 @@ function mollom_comment_form_validate($form, &$form_state) {
  */
 function comment_mollom_form_moderation(&$form, &$form_state) {
   $form_state['values']['status'] = COMMENT_NOT_PUBLISHED;
-}
-
-/**
- * Implements hook_comment().
- */
-function mollom_comment($comment, $op) {
-  // D6: There is no way to support $entity->original, so the content will be
-  // marked as moderated if/whenever it is updated and published.
-  if (in_array($op, array('insert', 'update', 'delete'))) {
-    // D6: $comment is an array for 'insert' and 'update', but not for 'delete',
-    // and always an array when moderated from admin listings.
-    // In case of an array, just type-cast. If it's an object, force a clone,
-    // but only on PHP5. We do not alter $comment, so this is fastest.
-    $comment = (is_array($comment) ? (object) $comment : drupal_clone($comment));
-    // Adjust (flip) the negated $status property value.
-    // There is no $status property, unless comment_mollom_form_moderation() ran.
-    if (!isset($comment->status)) {
-      $comment->status = (user_access('post comments without approval') ? COMMENT_PUBLISHED : COMMENT_NOT_PUBLISHED);
-    }
-    $comment->status = (int) !$comment->status;
-
-    $function = '_mollom_entity_' . $op;
-    $function($comment, 'comment', 'cid');
-  }
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function mollom_form_comment_confirm_delete_alter(&$form, &$form_state) {
-  $form['cid'] = array('#type' => 'value', '#value' => $form['#comment']->cid);
 }
 
 /**
@@ -3554,7 +3266,7 @@ function mollom_form_comment_multiple_delete_confirm_alter(&$form, &$form_state)
 }
 
 /**
- * Form submission handler for comment_multiple_delete_confirm().
+ * Form submit handler for node_multiple_delete_confirm().
  */
 function mollom_form_comment_multiple_delete_confirm_submit($form, &$form_state) {
   $cids = array_keys($form_state['values']['comments']);
@@ -3564,21 +3276,6 @@ function mollom_form_comment_multiple_delete_confirm_submit($form, &$form_state)
     }
   }
   mollom_data_delete_multiple('comment', $cids);
-}
-
-/**
- * Implements hook_form_FORMID_alter().
- *
- * Hook into the mass comment administration page and add some operations to
- * communicate ham/spam to the XML-RPC server.
- *
- * @see mollom_comment_admin_overview_submit()
- */
-function mollom_form_comment_admin_overview_alter(&$form, $form_state) {
-  module_load_include('inc', 'mollom', 'mollom.admin');
-  $form['options']['operation']['#options']['mollom-unpublish'] = t('Report to Mollom and unpublish');
-  $form['options']['operation']['#options']['mollom-delete'] = t('Report to Mollom and delete');
-  $form['#submit'][] = 'mollom_comment_admin_overview_submit';
 }
 
 /**
@@ -3594,19 +3291,20 @@ function mollom_form_comment_admin_overview_alter(&$form, $form_state) {
  * Implements hook_mollom_form_list().
  */
 function user_mollom_form_list() {
-  $forms['user_register'] = array(
+  $forms['user_register_form'] = array(
     'mode' => MOLLOM_MODE_CAPTCHA,
     'title' => t('User registration form'),
     'type' => 'user',
     'entity' => 'user',
-    'delete form' => 'user_confirm_delete',
-    'delete form file' => array(
-      'name' => 'user.pages',
-    ),
-    'report path' => 'user/%id/delete',
+    'bundle' => 'user',
+    'delete form' => 'user_cancel_confirm_form',
+    'report path' => 'user/%id/cancel',
     'report access' => array('administer users'),
-    'entity delete multiple callback' => '_mollom_user_delete_multiple',
+    'entity delete multiple callback' => 'user_delete_multiple',
   );
+  $forms['user_profile_form'] = $forms['user_register_form'];
+  $forms['user_profile_form']['title'] = t('User profile form');
+
   $forms['user_pass'] = array(
     'mode' => MOLLOM_MODE_CAPTCHA,
     'title' => t('User password request form'),
@@ -3619,19 +3317,18 @@ function user_mollom_form_list() {
  */
 function user_mollom_form_info($form_id) {
   switch ($form_id) {
-    case 'user_register':
+    case 'user_register_form':
+    case 'user_profile_form':
       $form_info = array(
         'bypass access' => array('administer users'),
-        // D6: Not supported. user_register_submit() disallows changes to the
-        // $status property.
-        //'moderation callback' => 'user_mollom_form_moderation',
+        'moderation callback' => 'user_mollom_form_moderation',
         'mail ids' => array('user_register_pending_approval_admin'),
         'mapping' => array(
-          'post_id' => 'uid',
           'author_name' => 'name',
           'author_mail' => 'mail',
         ),
       );
+      mollom_form_info_add_fields($form_info, 'user', 'user');
       return $form_info;
 
     case 'user_pass':
@@ -3656,48 +3353,25 @@ function user_mollom_form_moderation(&$form, &$form_state) {
 }
 
 /**
- * Implements hook_user().
+ * Implements hook_form_FORMID_alter().
  */
-function mollom_user($op, &$edit, $account, $category = NULL) {
-  // We only care for the main 'account' category. Except when a user account is
-  // deleted, since user_delete() does not specify a category.
-  if ($category !== 'account' && $op != 'delete') {
-    return;
-  }
-  // D6: There is no way to support $entity->original, so the content will be
-  // marked as moderated if/whenever it is updated and published.
-  if (in_array($op, array('insert', 'update', 'delete'))) {
-    // Clone the object. We do not alter $account, so this is fastest.
-    $account = drupal_clone($account);
-    if (isset($edit['mollom'])) {
-      $account->mollom = $edit['mollom'];
+function mollom_form_user_multiple_cancel_confirm_alter(&$form, &$form_state) {
+  mollom_data_delete_form_alter($form, $form_state);
+  // Report before deletion.
+  array_unshift($form['#submit'], 'mollom_form_user_multiple_cancel_confirm_submit');
+}
+
+/**
+ * Form submit handler for node_multiple_delete_confirm().
+ */
+function mollom_form_user_multiple_cancel_confirm_submit($form, &$form_state) {
+  $uids = array_keys($form_state['values']['accounts']);
+  if (!empty($form_state['values']['mollom']['feedback'])) {
+    if (mollom_data_report_multiple('user', $uids, $form_state['values']['mollom']['feedback'])) {
+      drupal_set_message(t('The users were successfully reported.'));
     }
-    $function = '_mollom_entity_' . $op;
-    $function($account, 'user', 'uid');
-
-    // Prevent Mollom session data from being serialized into {users}.data.
-    $edit['mollom'] = NULL;
   }
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function mollom_form_user_confirm_delete_alter(&$form, &$form_state) {
-  $form['uid'] = array('#type' => 'value', '#value' => $form['_account']['#value']->uid);
-}
-
-/**
- * Entity delete multiple callback for user accounts.
- *
- * @param array $uids
- *   A list of user account IDs to delete.
- */
-function _mollom_user_delete_multiple($uids) {
-  foreach ((array) $uids as $uid) {
-    $edit = array();
-    user_delete($edit, $uid);
-  }
+  mollom_data_delete_multiple('user', $uids);
 }
 
 /**
@@ -3713,10 +3387,10 @@ function _mollom_user_delete_multiple($uids) {
  * Implements hook_mollom_form_list().
  */
 function contact_mollom_form_list() {
-  $forms['contact_mail_page'] = array(
+  $forms['contact_site_form'] = array(
     'title' => t('Site-wide contact form'),
   );
-  $forms['contact_mail_user'] = array(
+  $forms['contact_personal_form'] = array(
     'title' => t('User contact form'),
   );
   return $forms;
@@ -3727,10 +3401,10 @@ function contact_mollom_form_list() {
  */
 function contact_mollom_form_info($form_id) {
   switch ($form_id) {
-    case 'contact_mail_page':
+    case 'contact_site_form':
       $form_info = array(
         'mode' => MOLLOM_MODE_ANALYSIS,
-        'bypass access' => array('administer site-wide contact form'),
+        'bypass access' => array('administer contact forms'),
         'mail ids' => array('contact_page_mail'),
         'elements' => array(
           'subject' => t('Subject'),
@@ -3744,7 +3418,7 @@ function contact_mollom_form_info($form_id) {
       );
       return $form_info;
 
-    case 'contact_mail_user':
+    case 'contact_personal_form':
       $form_info = array(
         'mode' => MOLLOM_MODE_ANALYSIS,
         'bypass access' => array('administer users'),
@@ -3755,6 +3429,8 @@ function contact_mollom_form_info($form_id) {
         ),
         'mapping' => array(
           'post_title' => 'subject',
+          'author_name' => 'name',
+          'author_mail' => 'mail',
         ),
       );
       return $form_info;
@@ -3776,12 +3452,14 @@ function contact_mollom_form_info($form_id) {
  * Adds profile fields exposed on the user registration form.
  */
 function profile_mollom_form_info_alter(&$form_info, $form_id) {
-  if ($form_id != 'user_register') {
+  if ($form_id != 'user_register_form') {
     return;
   }
   // @see profile_form_profile()
-  $result = db_query("SELECT name, title FROM {profile_fields} WHERE register = 1 AND type IN ('textfield', 'textarea', 'url', 'list')");
-  while ($field = db_fetch_object($result)) {
+  $result = db_query("SELECT name, title FROM {profile_field} WHERE register = 1 AND type IN (:types)", array(
+    ':types' => array('textfield', 'textarea', 'url', 'list'),
+  ));
+  foreach ($result as $field) {
     $form_info['elements'][$field->name] = check_plain($field->title);
   }
 }

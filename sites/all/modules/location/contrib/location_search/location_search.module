@@ -6,7 +6,7 @@
  */
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function location_search_menu() {
   $items['admin/settings/location/search'] = array(
@@ -24,209 +24,262 @@ function location_search_menu() {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function location_search_theme() {
   return array(
-    'search_results_location' => array(
-      'arguments' => array('results' => NULL, 'type' => NULL),
-      'template' => 'search-results-location',
-    ),
     'search_result_location' => array(
-      'arguments' => array('result' => NULL, 'type' => NULL),
-      'template' => 'search-result-location',
+      'variables' => array(
+        'result' => NULL,
+        'module' => NULL,
+      ),
+      'template' => 'search_result_location',
     ),
   );
 }
 
 /**
- * Implementation of hook_search(). (forwarded from location.module)
+ * Implements hook_search_info().
  */
-function _location_search($op = 'search', $keys = null) {
-  switch ($op) {
-    case 'name':
-      return t('Locations');
+function location_search_search_info() {
+  return array(
+    'title' => 'Locations',
+    'path' => 'location',
+  );
+}
 
-    case 'reset':
-      db_query('DELETE FROM {location_search_work}');
-      db_query('INSERT INTO {location_search_work} (lid) (SELECT lid FROM {location})');
-      break;
+/**
+ * Implements hook_search_access().
+ */
+function location_search_search_access() {
+  return user_access('access content');
+}
 
-    case 'status':
-      $total = db_result(db_query('SELECT COUNT(lid) FROM {location}'));
-      $remaining = db_result(db_query('SELECT COUNT(lid) FROM {location_search_work}'));
-      return array('remaining' => $remaining, 'total' => $total);
+/**
+ * Implements hook_search_reset().
+ */
+function location_search_search_reset() {
+  db_delete('location_search_work')->execute();
+  $insert_select = db_select('location', 'l');
+  $insert_select->addField('l', 'lid');
 
-    case 'search':
-      $proximity = FALSE;
+  db_insert('location_search_work')
+    ->fields(array('lid'))
+    ->from($insert_select)
+    ->execute();
+}
 
-      $arguments1 = array();
-      $conditions1 = '1 = 1';
+/**
+ * Implements hook_search_status().
+ */
+function location_search_search_status() {
+  $total = db_query('SELECT COUNT(lid) FROM {location}')->fetchField();
+  $remaining = db_query('SELECT COUNT(lid) FROM {location_search_work}')->fetchField();
+  return array('remaining' => $remaining, 'total' => $total);
+}
 
-      $access_joins = array();
-      $access_conditions = array();
 
-      $has_user_location_access = user_access('access user profiles') && user_access('view all user locations');
-      $has_content_access = user_access('access content');
+/**
+ * Implements hook_search_execute().
+ */
+function location_search_search_execute($keys = NULL, $conditions = NULL) {
+  $proximity = FALSE;
 
-      if (!$has_user_location_access && !$has_content_access) {
-        // The user has access to no locations
-        $conditions1 = '1 = 0';
-      }
-      elseif ($has_user_location_access && !$has_content_access) {
-        // The user doesn't have access to nodes, so include only locations
-        // that don't belong to nodes
-        $access_joins[] = ' INNER JOIN {location_instance} li ON (l.lid = li.lid AND li.nid = 0) ';
-      }
-      elseif (!$has_user_location_access && $has_content_access) {
-        // The user doesn't have access to user locations, so include only
-        // locations that don't belong to users.
-        // Since this also means we'll need to enforce node access, we'll want
-        // to include the query fragments returned by _db_rewrite_sql()
-        $access_joins[] = ' INNER JOIN {location_instance} li ON (l.lid = li.lid AND li.uid = 0) ';
-        $access_joins[] = ' INNER JOIN {node} n ON (li.nid = n.nid AND n.status = 1) ';
-        $sql_rewrites = _db_rewrite_sql();
-        if ($sql_rewrites[0]) {
-          $access_joins[] = $sql_rewrites[0];
-        }
-        if ($sql_rewrites[1]) {
-          $access_conditions[] = $sql_rewrites[1];
-        }
-      }
-      else {
-        // The user has access to both.  However, for the locations that
-        // belong to nodes, we want to use the node access sql clauses
-        // returned by _db_rewrite_sql().  These are the ones with
-        // location_instance.nid != 0
-        // location_instance.nid = 0 means the location instance belongs
-        // to a user record.
-        $access_joins[] = ' INNER JOIN {location_instance} li ON (l.lid = li.lid) ';
-        $access_joins[] = ' LEFT JOIN {node} n ON (li.nid = n.nid AND n.status = 1) ';
-        $sql_rewrites = _db_rewrite_sql();
-        // If we have rewrite JOINs or WHEREs, restrict the results.
-        if ($sql_rewrites[0] || $sql_rewrites[1]) {
-          // The node part must use a sub-select because if the node access
-          // rewrites get added to the main query there will never be any user
-          // results because location instance will be inner joined to node
-          // access.
-          $access_conditions[] = ' (li.uid <> 0 OR (li.nid <> 0 AND li.nid IN (SELECT n.nid FROM {node} n ' . $sql_rewrites[0] . ($sql_rewrites[1] ? ' WHERE ' . $sql_rewrites[1] : '') . '))) ';
-        }
-      }
-      $access_joins = implode(' ', $access_joins);
-      $access_conditions = implode(' ', $access_conditions);
+  $lids = array();
 
-      // This gets rewritten for proximity searches.
-      $select2 = 'i.relevance AS score';
-      $join2 = '';
-      $sort_parameters = 'ORDER BY score DESC';
+  // Determine whether this is a fulltext search or not.
+  $fulltext = $keys;
+  $fulltext = search_expression_insert($fulltext, 'country');
+  $fulltext = search_expression_insert($fulltext, 'province');
+  $fulltext = search_expression_insert($fulltext, 'city');
+  $fulltext = search_expression_insert($fulltext, 'from');
+  $fulltext = empty($fulltext) ? FALSE : TRUE;
 
-      if ($country = search_query_extract($keys, 'country')) {
-        $countries = array();
-        foreach (explode(',', $country) as $c) {
-          $countries[] = "l.country = '%s'";
-          $arguments1[] = $c;
-        }
-        $conditions1 .= ' AND ('. implode(' OR ', $countries) .')';
-        $keys = search_query_insert($keys, 'country');
-      }
+  if ($fulltext) {
+    // Fuzzy search -- Use the fulltext routines against the indexed locations.
+    $query = db_select('search_index', 'i')->extend('SearchQuery')->extend('PagerDefault');
+    $query->join('location', 'l', 'l.lid = i.sid');
+    // Add access control.
+    if (!location_search_add_access_control($query)) {
+      return array();
+    }
 
-      if ($province = search_query_extract($keys, 'province')) {
-        $provinces = array();
-        foreach (explode(',', $province) as $p) {
-          $provinces[] = "l.province = '%s'";
-          $arguments1[] = $p;
-        }
-        $conditions1 .= ' AND ('. implode(' OR ', $provinces) .')';
-        $keys = search_query_insert($keys, 'province');
-      }
+    $query->searchExpression($keys, 'node');
 
-      if ($city = search_query_extract($keys, 'city')) {
-        $conditions1 .= " AND (l.city = '%s')";
-        $arguments1[] = $city;
-        $keys = search_query_insert($keys, 'city');
-      }
+    // Insert special keywords.
+    $query->setOption('country', 'l.country');
+    $query->setOption('province', 'l.province');
+    $query->setOption('city', 'l.city');
 
-      if ($from = search_query_extract($keys, 'from')) {
-        // Set up a proximity search.
+    // setOption() can't handle the complexity of this so do it manually.
+    if ($value = search_expression_extract($keys, 'from')) {
+      // Set up a proximity search.
+      $proximity = TRUE;
+      list($lat, $lon, $dist, $unit) = explode(',', $value);
+      $distance_meters = _location_convert_distance_to_meters($dist, $unit);
 
-        $proximity = TRUE;
-        list($lat, $lon, $dist, $unit) = explode(',', $from);
-        $distance_meters = _location_convert_distance_to_meters($dist, $unit);
+      // MBR query to make it easier on the database.
+      $latrange = earth_latitude_range($lon, $lat, $distance_meters);
+      $lonrange = earth_longitude_range($lon, $lat, $distance_meters);
+      $query->condition('l.latitude', array($latrange[0], $latrange[1]), 'BETWEEN');
+      $query->condition('l.longitude', array($lonrange[0], $lonrange[1]), 'BETWEEN');
 
-        // MBR query to make it easier on the database.
-        $conditions1 .= " AND l.latitude > %f AND l.latitude < %f AND l.longitude > %f AND l.longitude < %f";
-        $latrange = earth_latitude_range($lon, $lat, $distance_meters);
-        $lonrange = earth_longitude_range($lon, $lat, $distance_meters);
-        $arguments1[] = $latrange[0];
-        $arguments1[] = $latrange[1];
-        $arguments1[] = $lonrange[0];
-        $arguments1[] = $lonrange[1];
+      // Distance query to finish the job.
+      $query->where(earth_distance_sql($lon, $lat) . ' < ' . $distance_meters);
 
-        // Distance query to finish the job.
-        $conditions1 .= ' AND '. earth_distance_sql($lon, $lat) .' < %f';
-        $arguments1[] = $distance_meters;
+      // Override the scoring mechanism to use calculated distance
+      // as the scoring metric.
+      $query->addExpression(earth_distance_sql($lon, $lat, 'l'), 'distance');
+      $query->orderBy('distance', 'DESC');
 
-        // Override the scoring mechanism to use calculated distance
-        // as the scoring metric.
-        $join2 = 'INNER JOIN {location} l ON i.sid = l.lid';
-        $select2 = earth_distance_sql($lon, $lat, 'l') .' AS distance';
-        $sort_parameters = 'ORDER BY distance ASC';
+      $query->searchExpression = search_expression_insert($query->searchExpression, 'from');
+    }
 
-        $keys = search_query_insert($keys, 'from');
-      }
-
-      if (!empty($access_conditions)) {
-        $conditions1 = $access_conditions .' AND '. $conditions1;
-      }
-
-      $lids = array();
-      if (empty($keys)) {
-        // Non-fulltext search. We will be skipping the built-in logic.
-        $add = '';
-        if ($proximity) {
-          $add = ', '. earth_distance_sql($lon, $lat, 'l') .' AS distance';
-        }
-        $query = "SELECT l.lid$add FROM {location} l $access_joins WHERE $conditions1";
-        $countquery = "SELECT COUNT(*) FROM {location} l $access_joins WHERE $conditions1";
-        $result = pager_query($query, 10, 0, $countquery, $arguments1);
-        while ($row = db_fetch_object($result)) {
-          $lids[] = $row->lid;
-        }
-      }
-      else {
-        // Fuzzy search -- Use the fulltext routines against the indexed locations.
-        $find = do_search($keys, 'location', 'INNER JOIN {location} l ON l.lid = i.sid '. $access_joins, $conditions1 . (empty($where1) ? '' : ' AND '. $where1), $arguments1, $select2, $join2, array(), $sort_parameters);
-        foreach ($find as $item) {
-          $lids[] = $item->sid;
-        }
-      }
-
-      $results = array();
-      foreach ($lids as $lid) {
-        $loc = location_load_location($lid);
-
-        $result = db_query('SELECT nid, uid FROM {location_instance} WHERE lid = %d', $lid);
-        $instance_links = array();
-        while ($row = db_fetch_array($result)) {
-          $instance_links[] = $row;
-        }
-        location_invoke_locationapi($instance_links, 'instance_links');
-
-        $results[] = array(
-          'links' => $instance_links,
-          'location' => $loc,
-        );
-      }
-      return $results;
+    // Only continue if the first pass query matches.
+    if (!$query->executeFirstPass()) {
+      return array();
+    }
   }
+  else {
+    $query = db_select('location', 'l')->extend('PagerDefault');
+    // sid is the alias so that our results match the fulltext search results.
+    $query->addField('l', 'lid', 'sid');
+    // Add access control.
+    if (!location_search_add_access_control($query)) {
+      return array();
+    }
+
+    // Insert special keywords.
+    if ($value = search_expression_extract($keys, 'country')) {
+      $query->condition('l.country', $value);
+    }
+    if ($value = search_expression_extract($keys, 'province')) {
+      $query->condition('l.province', $value);
+    }
+    if ($value = search_expression_extract($keys, 'city')) {
+      $query->condition('l.city', $value);
+    }
+    // This is almost duplicated from the fulltext search above because if it
+    // were refactored out it would make the code a little less clean and a
+    // little harder to understand.
+    if ($value = search_expression_extract($keys, 'from')) {
+      // Set up a proximity search.
+      $proximity = TRUE;
+      list($lat, $lon, $dist, $unit) = explode(',', $value);
+      $distance_meters = _location_convert_distance_to_meters($dist, $unit);
+
+      // MBR query to make it easier on the database.
+      $latrange = earth_latitude_range($lon, $lat, $distance_meters);
+      $lonrange = earth_longitude_range($lon, $lat, $distance_meters);
+      $query->condition('l.latitude', array($latrange[0], $latrange[1]), 'BETWEEN');
+      $query->condition('l.longitude', array($lonrange[0], $lonrange[1]), 'BETWEEN');
+
+      // Distance query to finish the job.
+      $query->where(earth_distance_sql($lon, $lat) . ' < ' . $distance_meters);
+
+      // Override the scoring mechanism to use calculated distance
+      // as the scoring metric.
+      $query->addExpression(earth_distance_sql($lon, $lat, 'l'), 'distance');
+      $query->orderBy('distance', 'DESC');
+    }
+  }
+
+  // Load results.
+  $found = $query
+    ->limit(10)
+    ->execute();
+
+  foreach ($found as $item) {
+    $lids[] = $item->sid;
+  }
+
+  $results = array();
+  foreach ($lids as $lid) {
+    $loc = location_load_location($lid);
+
+    $result = db_query('SELECT nid, uid, genid FROM {location_instance} WHERE lid = :lid', array(':lid' => $lid), array('fetch' => PDO::FETCH_ASSOC));
+    $instance_links = array();
+    foreach ($result as $row) {
+      $instance_links[] = $row;
+    }
+    location_invoke_locationapi($instance_links, 'instance_links');
+
+    $results[] = array(
+      'links' => $instance_links,
+      'location' => $loc,
+    );
+
+  }
+  return $results;
+}
+
+/**
+ * Add access control for users & nodes to the search query.
+ *
+ * @param $query
+ *   The query object.
+ *
+ * @return
+ *   Boolean for whether or not to run a query at all.
+ */
+function location_search_add_access_control(&$query) {
+  // Add access control.
+  $has_user_location_access = user_access('access user profiles') && user_access('view all user locations');
+  $has_content_access = user_access('access content');
+
+  if (!$has_user_location_access && !$has_content_access) {
+    // The user has access to no locations.
+    return FALSE;
+  }
+  elseif ($has_user_location_access && !$has_content_access) {
+    // The user doesn't have access to nodes, so include only locations
+    // that don't belong to nodes.
+    $query->join('location_instance', 'li', 'l.lid = li.lid AND li.nid = 0');
+  }
+  elseif (!$has_user_location_access && $has_content_access) {
+    // The user doesn't have access to user locations, so include only
+    // locations that don't belong to users.
+    // This also means we'll need to enforce node access.
+    $query->join('location_instance', 'li', 'l.lid = li.lid AND li.uid = 0');
+    $query->join('node', 'n', 'li.nid = n.nid AND n.status = 1');
+    $query->addMetaData('base_table', 'node');
+    $query->addTag('node_access');
+  }
+  else {
+    // The user has access to both.  However, for the locations that
+    // belong to nodes, we need to use node access. These are the ones with
+    // location_instance.nid != 0
+    // location_instance.nid = 0 means the location instance belongs
+    // to a user record.
+    $query->join('location_instance', 'li', 'l.lid = li.lid');
+    $query->leftjoin('node', 'n', 'li.nid = n.nid AND n.status = 1');
+
+    // The node part must use a sub-select because if the node access
+    // rewrites get added to the main query there will never be any user
+    // results because location instance will be inner joined to node access.
+    $subselect = db_select('node', 'subnode');
+    $subselect->addField('subnode', 'nid');
+    $subselect->addMetaData('base_table', 'node');
+    $subselect->addTag('node_access');
+
+    // If we pass in the subselect query object then when the pager query is
+    // run later on the node_access alterations don't get applied to the
+    // subselect. So instead we pass in the array result set.
+    $query->condition(db_or()
+      ->condition('li.uid', 0, '<>')
+      ->condition(db_and()
+        ->condition('li.nid', 0, '<>')
+        ->condition('n.nid', $subselect->execute()->fetchCol(), 'IN')));
+  }
+  return TRUE;
 }
 
 function location_search_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'search_form' && arg(1) == 'location' && user_access('use advanced search')) {
     // @@@ Cache this.
-    $result = db_query('SELECT DISTINCT country FROM {location}');
+    $result = db_query('SELECT DISTINCT country FROM {location}', array(), array('fetch' => PDO::FETCH_ASSOC));
     $countries = array('' => '');
-    while ($row = db_fetch_array($result)) {
+    foreach ($result as $row) {
       if (!empty($row['country'])) {
         $country = $row['country'];
         location_standardize_country_code($country);
@@ -243,7 +296,7 @@ function location_search_form_alter(&$form, &$form_state, $form_id) {
       '#title' => t('Advanced search'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
-      '#attributes' => array('class' => 'search-advanced'),
+      '#attributes' => array('class' => array('search-advanced')),
     );
 
     $form['advanced']['country'] = array(
@@ -251,7 +304,7 @@ function location_search_form_alter(&$form, &$form_state, $form_id) {
       '#title' => t('Country'),
       '#options' => $countries,
       // Used by province autocompletion js.
-      '#attributes' => array('class' => 'location_auto_country'),
+      '#attributes' => array('class' => array('location_auto_country')),
     );
 
     $form['advanced']['province'] = array(
@@ -259,7 +312,7 @@ function location_search_form_alter(&$form, &$form_state, $form_id) {
       '#title' => t('State/Province'),
       '#autocomplete_path' => 'location/autocomplete/'. variable_get('location_default_country', 'us'),
       // Used by province autocompletion js.
-      '#attributes' => array('class' => 'location_auto_province'),
+      '#attributes' => array('class' => array('location_auto_province')),
     );
 
     $form['advanced']['city'] = array(
@@ -308,13 +361,6 @@ function location_search_form_alter(&$form, &$form_state, $form_id) {
       ),
     );
 
-    $form['advanced']['submit'] = array(
-      '#type' => 'submit',
-      '#value' => t('Advanced search'),
-      '#prefix' => '<div class="action">',
-      '#suffix' => '</div>',
-    );
-
     if (variable_get('location_search_map', 1)) {
       $map_fields = array(
         'latitude' => 'latitude',
@@ -328,6 +374,13 @@ function location_search_form_alter(&$form, &$form_state, $form_id) {
       }
     }
 
+    $form['advanced']['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Advanced search'),
+      '#prefix' => '<div class="action">',
+      '#suffix' => '</div>',
+    );
+
     $form['#validate'][] = 'location_search_validate';
   }
 }
@@ -339,63 +392,80 @@ function location_search_validate($form, &$form_state) {
   $keys = $values['processed_keys'];
 
   if (!empty($values['country'])) {
-    $keys = search_query_insert($keys, 'country', $values['country']);
+    $keys = search_expression_insert($keys, 'country', $values['country']);
 
     if (!empty($values['province'])) {
-      $keys = search_query_insert($keys, 'province', location_province_code($values['country'], $values['province']));
+      $keys = search_expression_insert($keys, 'province', location_province_code($values['country'], $values['province']));
     }
   }
 
   if (!empty($values['city'])) {
-    $keys = search_query_insert($keys, 'city', $values['city']);
+    $keys = search_expression_insert($keys, 'city', $values['city']);
   }
 
   if (!empty($values['latitude']) && !empty($values['longitude']) && !empty($values['distance'])) {
-    $keys = search_query_insert($keys, 'from', $values['latitude'] .','. $values['longitude'] .','. $values['distance'] .','. $values['units']);
+    $keys = search_expression_insert($keys, 'from', $values['latitude'] .','. $values['longitude'] .','. $values['distance'] .','. $values['units']);
   }
 
   if (!empty($keys)) {
-    form_set_value($form['basic']['inline']['processed_keys'], trim($keys), $form_state);
+    form_set_value($form['basic']['processed_keys'], trim($keys), $form_state);
   }
 }
 
 /**
- * Implementation of hook_update_index().
+ * Implements hook_update_index().
  */
 function location_update_index() {
   $limit = (int)variable_get('search_cron_limit', 100);
 
   $result = db_query_range('SELECT lid FROM {location_search_work}', 0, $limit);
-
-  while ($row = db_fetch_object($result)) {
+  foreach ($result as $row) {
     $loc = location_load_location($row->lid);
-    $text = theme('location', $loc, array()); // @@@ hide?
+    $text = theme('location', array('location' => $loc, 'hide' => array())); // @@@ hide?
 
     search_index($row->lid, 'location', $text);
-    db_query('DELETE FROM {location_search_work} WHERE lid = %d', $row->lid);
+    db_delete('location_search_work')
+      ->condition('lid', $row->lid)
+      ->execute();
   }
 }
 
 /**
- * Implementation of hook_locationapi().
+ * Implements hook_locationapi().
  */
 function location_search_locationapi(&$obj, $op, $a3 = NULL, $a4 = NULL, $a5 = NULL) {
   if ($op == 'save') {
     // Ensure the changed location is in our work list.
-    db_query('DELETE FROM {location_search_work} WHERE lid = %d', $obj['lid']);
-    db_query('INSERT INTO {location_search_work} (lid) VALUES (%d)', $obj['lid']);
+    db_delete('location_search_work')
+      ->condition('lid', $obj['lid'])
+      ->execute();
+    db_insert('location_search_work')
+      ->fields(array(
+        'lid' => $obj['lid'],
+      ))
+      ->execute();
   }
   if ($op == 'delete') {
-    search_wipe($obj['lid'], 'location');
+    search_reindex($obj['lid'], 'location');
   }
 }
 
 /**
- * Implementation of hook_search_page().
- * (It's named location_search_page because the $type is 'location'.)
+ * Implements hook_search_page().
  */
-function location_search_page($rows) {
-  return theme('search_results_location', $rows, 'location');
+function location_search_search_page($results) {
+  $output['prefix']['#markup'] = '<ol class="search-results">';
+
+  foreach ($results as $entry) {
+    $output[] = array(
+      '#theme' => 'search_result_location',
+      '#result' => $entry,
+      '#module' => 'location',
+    );
+  }
+  $output['suffix']['#markup'] = '</ol>' . theme('pager');
+
+  return $output;
 }
 
 function template_preprocess_search_result_location(&$variables) {
@@ -409,19 +479,9 @@ function template_preprocess_search_result_location(&$variables) {
   }
   $variables['location_raw'] = $result['location'];
 
-  $variables['location'] = theme('location', $result['location'], array()); // @@@ hide?
-  $variables['links'] = theme('links', $variables['links_raw']);
+  $variables['location'] = theme('location', array('location' => $result['location'], 'hide' => array())); // @@@ hide?
+  $variables['links'] = theme('links', array('links' => $variables['links_raw']));
 
   // Provide alternate search result template.
-  $variables['template_files'][] = 'search-result-'. $variables['type'];
-}
-
-function template_preprocess_search_results_location(&$variables) {
-  $variables['search_results'] = '';
-  foreach ($variables['results'] as $result) {
-    $variables['search_results'] .= theme('search_result_location', $result, $variables['type']);
-  }
-  $variables['pager'] = theme('pager', NULL, 10, 0);
-  // Provide alternate search results template.
-  $variables['template_files'][] = 'search-results-'. $variables['type'];
+  $variables['theme_hook_suggestions'][] = 'search_result_' . $variables['module'];
 }

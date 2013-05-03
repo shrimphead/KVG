@@ -1,4 +1,3 @@
-
 /**
  * @file
  * GMap Markers
@@ -16,9 +15,9 @@ Drupal.gmap.addHandler('gmap', function (elem) {
   var obj = this;
 
   obj.bind('addmarker', function (marker) {
-    if ( !obj.map.markers ) obj.map.markers = new Array();
+	if ( !obj.map.markers ) obj.map.markers = new Array();
     marker.marker.setMap(obj.map);
-    obj.map.markers.push( marker.marker );
+	obj.map.markers.push( marker.marker );
   });
 
   obj.bind('delmarker', function (marker) {
@@ -27,10 +26,10 @@ Drupal.gmap.addHandler('gmap', function (elem) {
 
   obj.bind('clearmarkers', function () {
     // @@@ Maybe don't nuke ALL overlays?
-    if ( obj.map.markers ) {
-      for(var i=0; i < obj.map.markers.length; i++){
-        obj.map.markers[i].setMap(null);
-      }
-    }
+	if ( obj.map.markers ) {
+		for(var i=0; i < obj.map.markers.length; i++){
+			obj.map.markers[i].setMap(null);
+		}
+	}
   });
 });

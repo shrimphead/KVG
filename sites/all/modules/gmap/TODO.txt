@@ -1,4 +1,11 @@
 
+Drupal 7 todo:
+
+* Finish porting
+* Migration path for people who used private method with markers.
+* Fix markermanagers.
+
+
 Drupal 6 todo:
 
 * Finish porting

@@ -34,11 +34,11 @@ function _webform_defaults_email() {
 function _webform_theme_email() {
   return array(
     'webform_email' => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'file' => 'components/email.inc',
     ),
     'webform_display_email' => array(
-      'arguments' => array('component' => NULL, 'value' => NULL, 'format' => 'plain'),
+      'render element' => 'element',
       'file' => 'components/email.inc',
     ),
   );
@@ -124,14 +124,12 @@ function _webform_render_email($component, $value = NULL, $filter = TRUE) {
     '#description' => $filter ? _webform_filter_descriptions($component['extra']['description'], $node) : $component['extra']['description'],
     '#attributes' => $component['extra']['attributes'],
     '#element_validate'  => array('_webform_validate_email'),
-    '#theme_wrappers' => array('webform_element_wrapper'),
-    '#pre_render' => array('webform_element_title_display'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => array('webform_element'),
     '#translatable' => array('title', 'description'),
   );
 
   // Add an e-mail class for identifying the difference from normal textfields.
-  $element['#attributes']['class'] = isset($element['#attributes']['class']) ? $element['#attributes']['class'] . ' email' : 'email';
+  $element['#attributes']['class'][] = 'email';
 
   // Enforce uniqueness.
   if ($component['extra']['unique']) {
@@ -160,11 +158,13 @@ function _webform_render_email($component, $value = NULL, $filter = TRUE) {
 }
 
 /**
- * Theme function to render a number component.
+ * Theme function to render an email component.
  */
-function theme_webform_email($element) {
+function theme_webform_email($variables) {
+  $element = $variables['element'];
+
   // This IF statement is mostly in place to allow our tests to set type="text"
-  // because SimpleTest does not support type="number".
+  // because SimpleTest does not support type="email".
   if (!isset($element['#attributes']['type'])) {
     $element['#attributes']['type'] = 'email';
   }
@@ -177,9 +177,7 @@ function theme_webform_email($element) {
   }
   _form_set_class($element, array('form-text', 'form-email'));
 
-  $output = '<input' . drupal_attributes($element['#attributes']) . ' />';
-
-  return theme('form_element', $element, $output);
+  return '<input' . drupal_attributes($element['#attributes']) . ' />';
 }
 
 /**
@@ -212,8 +210,7 @@ function _webform_display_email($component, $value, $format = 'html') {
     '#title' => $component['name'],
     '#weight' => $component['weight'],
     '#theme' => 'webform_display_email',
-    '#theme_wrappers' => $format == 'html' ? array('webform_element', 'webform_element_wrapper') : array('webform_element_text'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => $format == 'html' ? array('webform_element') : array('webform_element_text'),
     '#format' => $format,
     '#value' => isset($value[0]) ? $value[0] : '',
     '#translatable' => array('title'),
@@ -223,7 +220,8 @@ function _webform_display_email($component, $value, $format = 'html') {
 /**
  * Format the text output for this component.
  */
-function theme_webform_display_email($element) {
+function theme_webform_display_email($variables) {
+  $element = $variables['element'];
   $element['#value'] = empty($element['#value']) ? ' ' : $element['#value'];
   return $element['#format'] == 'html' ? check_plain($element['#value']) : $element['#value'];
 }
@@ -232,18 +230,21 @@ function theme_webform_display_email($element) {
  * Implements _webform_analysis_component().
  */
 function _webform_analysis_email($component, $sids = array()) {
-  $placeholders = count($sids) ? array_fill(0, count($sids), "'%s'") : array();
-  $sidfilter = count($sids) ? " AND sid in (" . implode(",", $placeholders) . ")" : "";
-  $query = 'SELECT data ' .
-    ' FROM {webform_submitted_data} ' .
-    ' WHERE nid = %d ' .
-    ' AND cid = %d ' . $sidfilter;
+  $query = db_select('webform_submitted_data', 'wsd', array('fetch' => PDO::FETCH_ASSOC))
+    ->fields('wsd', array('no', 'data'))
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid']);
+
+  if (count($sids)) {
+    $query->condition('sid', $sids, 'IN');
+  }
+
   $nonblanks = 0;
   $submissions = 0;
   $wordcount = 0;
 
-  $result = db_query($query, array_merge(array($component['nid'], $component['cid']), $sids));
-  while ($data = db_fetch_array($result)) {
+  $result = $query->execute();
+  foreach ($result as $data) {
     if (drupal_strlen(trim($data['data'])) > 0) {
       $nonblanks++;
       $wordcount += str_word_count(trim($data['data']));

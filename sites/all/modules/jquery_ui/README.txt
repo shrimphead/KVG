@@ -25,58 +25,25 @@ To submit bug reports and feature suggestions, or to track changes:
 * Copy the jquery_ui module directory to your sites/all/modules directory, so it
   is located in sites/all/modules/jquery_ui/.
 
-* Download the jQuery UI 1.6 release from:
-
-    http://code.google.com/p/jquery-ui/downloads/list?q=1.6
-
-* Put the downloaded archive into the directory:
-
-    /sites/all/libraries/jquery.ui-1.6.zip
-
-* Extract the archive.  This will create the following sub-directory:
-
-    /sites/all/libraries/jquery.ui-1.6/
-
-* Rename the sub-directory into "jquery.ui":
-
-    /sites/all/libraries/jquery.ui/
-
-  so the actual jQuery UI JavaScript files are located in:
-
-    /sites/all/libraries/jquery.ui/ui/*.js
-
-* Enable the module at Administer >> Site building >> Modules.
-
-
--- JQUERY UI 1.7 --
-
-The jQuery UI module uses jQuery UI 1.6 because jQuery UI 1.7 requires at least
-jQuery 1.3, which is not shipped with Drupal 6. If you absolutely need to move
-to jQuery UI 1.7, you can get around this by doing the following:
-
-* Download and install the corresponding jQuery Update module from:
-
-    http://drupal.org/project/jquery_update
-
 * Download the latest jQuery UI 1.7 release from:
 
     http://code.google.com/p/jquery-ui/downloads/list?q=1.7
 
-* Put the downloaded archive into the directory:
+* Put the downloaded archive into the module directory:
 
-    /sites/all/libraries/jquery.ui-1.7.zip
+    /sites/all/modules/jquery_ui/jquery.ui-1.7.zip
 
 * Extract the archive.  This will create the following sub-directory:
 
-    /sites/all/libraries/jquery.ui-1.7/
+    /sites/all/modules/jquery_ui/jquery.ui-1.7/
 
-* Rename the sub-directory into "jquery.ui":
+* Rename the sub-directory into "jquery.ui" within the jquery_ui module folder:
 
-    /sites/all/libraries/jquery.ui/
+    /sites/all/modules/jquery_ui/jquery.ui/
 
   so the actual jQuery UI JavaScript files are located in:
 
-    /sites/all/libraries/jquery.ui/ui/*.js
+    /sites/all/modules/jquery_ui/jquery.ui/ui/*.js
 
 * Enable the module at Administer >> Site building >> Modules.
 

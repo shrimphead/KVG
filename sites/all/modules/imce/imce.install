@@ -6,22 +6,22 @@
  */
 
 /**
- * Implementation of hook_install().
+ * Implements hook_install().
  */
 function imce_install() {
-  drupal_install_schema('imce');
   module_load_include('inc', 'imce', 'inc/imce.core.profiles');
   imce_install_profiles();
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function imce_uninstall() {
-  drupal_uninstall_schema('imce');
+  db_delete('file_usage')->condition('module', 'imce')->execute();
   variable_del('imce_profiles');
   variable_del('imce_roles_profiles');
   variable_del('imce_settings_textarea');
+  variable_del('imce_settings_absurls');
   variable_del('imce_settings_replace');
   variable_del('imce_settings_thumb_method');
   variable_del('imce_settings_disable_private');
@@ -33,88 +33,72 @@ function imce_uninstall() {
 }
 
 /**
- * Implementation of hook_schema().
+ * Updates from 6.x to 7.x.
  */
-function imce_schema() {
-  $schema['imce_files'] = array(
-    'description' => 'Stores files created by IMCE.',
-    'fields' => array(
-      'fid' => array(
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
-        'description' => 'The {files}.fid that belongs to IMCE.',
-      ),
-    ),
-    'primary key' => array('fid'),
-  );
-  return $schema;
-}
-
-/**
- * Update from 5.x to 6.x.
- */
-function imce_update_6000() {
-  module_load_include('inc', 'imce', 'inc/imce.core.profiles');
-  imce_install_profiles();
-  return array();
-}
-
-/**
- * New option: total user quota.
- */
-function imce_update_6001() {
-  $profiles = variable_get('imce_profiles', array());
-  foreach ($profiles as $id => $profile) {
-    $profiles[$id]['tuquota'] = 0;
+function imce_update_7000() {
+  // Update role-profile assignments
+  $roles_profiles = variable_get('imce_roles_profiles', array());
+  if (!empty($roles_profiles)) {
+    $scheme = variable_get('file_default_scheme', 'public');
+    foreach ($roles_profiles as $rid => &$role) {
+      $role[$scheme . '_pid'] = $role['pid'];
+      unset($role['pid']);
+    }
+    variable_set('imce_roles_profiles', $roles_profiles);
   }
-  variable_set('imce_profiles', $profiles);
-  return array();
-}
-
-/**
- * Make file browser tab optional in user profiles.
- */
-function imce_update_6002() {
-  $profiles = variable_get('imce_profiles', array());
-  foreach ($profiles as $id => $profile) {
-    $profiles[$id]['usertab'] = isset($profiles[$id]['usertab']) ? $profiles[$id]['usertab'] : 1;
+  // Update textarea ids
+  $ids = str_replace(' ', '', variable_get('imce_settings_textarea', ''));
+  if ($ids != '') {
+    $ids = explode(',', $ids);
+    foreach ($ids as &$id) {
+      $id .= '*';
+    }
+    variable_set('imce_settings_textarea', implode(', ', $ids));
   }
-  variable_set('imce_profiles', $profiles);
-  return array(array('success' => TRUE, 'query' => 'File browser tab in user profiles was made optional.'));
-}
-
-
-/**
- * Convert 6.x-1.x to 6.x-2.x
- */
-function imce_update_6200() {
-  //delete deprecated variables.cancelled!
-  return array();
 }
 
 /**
- * Introduce {imce_files} db table where IMCE files are stored.
+ * Migrates imce files from {files} to {file_managed}.
+ * Removes {imce_files} in favor of {file_usage}.
  */
-function imce_update_6201() {
-  $ret = array();
-  if (db_table_exists('imce_files')) {
-    return $ret;
+function imce_update_7001(&$sandbox) {
+  if (!db_table_exists('imce_files') || !db_table_exists('files')) {
+    return;
   }
-  $table = array(
-    'description' => 'Stores files created by IMCE.',
-    'fields' => array(
-      'fid' => array(
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
-        'description' => 'The {files}.fid that belongs to IMCE.',
-      ),
-    ),
-    'primary key' => array('fid'),
-  );
-  db_create_table($ret, 'imce_files', $table);
-  return $ret;
+  // Initiate progress
+  if (!isset($sandbox['progress'])) {
+    $sandbox['progress'] = 0;
+    $sandbox['last_fid_processed'] = 0;
+    $sandbox['max'] = db_query("SELECT COUNT(*) FROM {imce_files} i INNER JOIN {files} f ON i.fid = f.fid")->fetchField();
+  }
+  // Prepare variables
+  $limit = 250;
+  $basedir = variable_get('file_directory_path', conf_path() . '/files') . '/';
+  $baselen = strlen($basedir);
+  $scheme = file_default_scheme() . '://';
+  $result = db_query_range('SELECT f.* FROM {imce_files} i INNER JOIN {files} f ON i.fid = f.fid WHERE i.fid > :fid ORDER BY i.fid', 0, $limit, array(':fid' => $sandbox['last_fid_processed']))->fetchAll();
+  // Migrate imce files from {files} to {file_managed}
+  foreach ($result as $file) {
+    $relpath = substr($file->filepath, 0, $baselen) == $basedir ? substr($file->filepath, $baselen) : $file->filepath;
+    $file->uri = file_stream_wrapper_uri_normalize($scheme . $relpath);
+    unset($file->filepath);
+    if (!db_query("SELECT 1 FROM {file_managed} WHERE fid = :fid", array(':fid' => $file->fid))->fetchField()) {
+      // Check duplicate uri
+      if ($fid = db_query("SELECT fid FROM {file_managed} WHERE uri = :uri", array(':uri' => $file->uri))->fetchField()) {
+        $file->fid = $fid;
+      }
+      else {
+        drupal_write_record('file_managed', $file);
+      }
+    }
+    file_usage_add($file, 'imce', 'file', $file->fid);
+    $sandbox['progress']++;
+    $sandbox['last_fid_processed'] = $file->fid;
+  }
+  // Drop {imce_files} if the progress is complete.
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
+  if ($sandbox['#finished'] >= 1) {
+    db_drop_table('imce_files');
+    return t('Migrated IMCE files.');
+  }
 }

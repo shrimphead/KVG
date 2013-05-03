@@ -7,11 +7,11 @@
 
 
 /**
- * Implementation of hook_page_title_alter().
+ * Implements hook_page_title_alter().
  */
 function user_page_title_alter(&$title) {
   // If we're looking at either a user profile page, get the user title
-  if ( ($user = menu_get_object('user')) || ($user = menu_get_object('user_uid_optional')) &&
+  if ( ($user = menu_get_object('user')) &&
        variable_get('page_title_user_showfield', 0) &&
        ($user_title = page_title_load_title($user->uid, 'user')) ) {
     $title = $user_title;
@@ -20,11 +20,10 @@ function user_page_title_alter(&$title) {
 
 
 /**
- * Implementation of hook_page_title_pattern_alter().
+ * Implements hook_page_title_pattern_alter().
  */
 function user_page_title_pattern_alter(&$pattern, &$types) {
-  // User Page Pattern
-  if ( ($user = menu_get_object('user')) || ($user = menu_get_object('user_uid_optional'))) {
+  if ($user = menu_get_object('user')) {
     $types['user'] = $user;
     $pattern = variable_get('page_title_user', '');
   }
@@ -32,7 +31,7 @@ function user_page_title_pattern_alter(&$pattern, &$types) {
 
 
 /**
- * Implementation of hook_page_title_settings().
+ * Implements hook_page_title_settings().
  */
 function user_page_title_settings() {
   return array(

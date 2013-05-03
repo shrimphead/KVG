@@ -1,3 +1,25 @@
+Current state of Rubik for Drupal 7
+-----------------------------------
+Rubik has undergone a slight visual overhaul and structural refactoring to
+accommodate some key changes in D7. In particular:
+
+- Page wrapper and styles have been simplified to work both in page context
+  and overlay context.
+- New page elements like action links, removed page elements like generic
+  footer.
+- New icons for the admin path restructuring and nicer button styles for
+  indicating actions.
+
+Because these changes represent a departure from the previous visual look of
+Rubik, D7 will be using the 4.x version series. There are plans to backport
+many of these changes to D6 in a 4.x branch as well.
+
+### @TODO
+
+- Update RTL stylesheets, sprites
+- Browser testing
+
+
 Rubik
 -----
 Rubik is a clean admin theme designed for use with the admin module. It features
@@ -95,14 +117,6 @@ wrapper" or "design elements" like the site logo, navigation, etc.
 aesthetic elements. This includes the site title, tabs, navigation, breadcrumb,
 etc. **This is the file you will most likely want to override to begin your
 subtheme.**
-
-
-Issue tracking
---------------
-The code for Rubik is hosted on GitHub. Please report issues and submit
-patches/fork requests at http://github.com/developmentseed/rubik. You can
-download packages of the latest release of Rubik at
-http://code.developmentseed.org/tao.
 
 
 Maintainer

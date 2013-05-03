@@ -1,12 +1,12 @@
 name = ImageAPI
 description = ImageAPI supporting multiple toolkits.
-package = ImageCache
-core = 6.x
-php = 5.1
-
-; Information added by drupal.org packaging script on 2011-05-16
-version = "6.x-1.10"
-core = "6.x"
+package = ImageAPI
+core = 7.x
+files[] = imageapi.install
+files[] = imageapi.module
+; Information added by drupal.org packaging script on 2011-02-25
+version = "7.x-1.x-dev"
+core = "7.x"
 project = "imageapi"
-datestamp = "1305563215"
+datestamp = "1298619411"
 

@@ -1,12 +1,25 @@
 <?php
 
 /**
+ * Implements hook_hook_info().
+ */
+function xmlsitemap_engines_hook_info() {
+  $hooks['xmlsitemap_engine_info'] = array(
+    'group' => 'xmlsitemap',
+  );
+  $hooks['xmlsitemap_engine_info_alter'] = array(
+    'group' => 'xmlsitemap',
+  );
+  return $hooks;
+}
+
+/**
  * Implements hook_help().
  */
 function xmlsitemap_engines_help($path, $arg) {
   $output = '';
   switch ($path) {
-    case 'admin/settings/xmlsitemap/engines':
+    case 'admin/config/search/xmlsitemap/engines':
       if (!module_exists('site_verify')) {
         $output .= '<p>' . t('In order to verify site ownership with the search engines listed below, it is highly recommended to download and install the <a href="@site-verify">Site verification module</a>.', array('@site-verify' => 'http://drupal.org/project/site_verify')) . '</p>';
       }
@@ -20,7 +33,7 @@ function xmlsitemap_engines_help($path, $arg) {
  * Implements hook_menu().
  */
 function xmlsitemap_engines_menu() {
-  $items['admin/settings/xmlsitemap/engines'] = array(
+  $items['admin/config/search/xmlsitemap/engines'] = array(
     'title' => 'Search Engines',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xmlsitemap_engines_settings_form'),
@@ -28,7 +41,7 @@ function xmlsitemap_engines_menu() {
     'type' => MENU_LOCAL_TASK,
     'file' => 'xmlsitemap_engines.admin.inc',
   );
-  //$items['admin/settings/xmlsitemap/engines/submit'] = array(
+  //$items['admin/config/search/xmlsitemap/engines/submit'] = array(
   //  'page callback' => 'xmlsitemap_engines_submit',
   //  'access callback' => 'xmlsitemap_engines_submit_access',
   //  'type' => MENU_CALLBACK,
@@ -49,7 +62,7 @@ function xmlsitemap_engines_cron() {
 function xmlsitemap_engines_can_submit() {
   // Skip if the site is offline since search engines will not be able to
   // access the site's content.
-  if (variable_get('site_offline', 0)) {
+  if (variable_get('maintenance_mode', 0) || defined('MAINTENANCE_MODE')) {
     return FALSE;
   }
 
@@ -66,7 +79,7 @@ function xmlsitemap_engines_submit_access() {
   }
 
   // Allow manual submissions to run.
-  //if ($_GET['q'] == 'admin/settings/xmlsitemap/engines/submit' && user_access('administer xmlsitemap')) {
+  //if ($_GET['q'] == 'admin/config/search/xmlsitemap/engines/submit' && user_access('administer xmlsitemap')) {
   //  return TRUE;
   //}
 
@@ -162,7 +175,7 @@ function xmlsitemap_engines_prepare_url($url, $sitemap) {
  */
 function xmlsitemap_engines_get_engine_info($engine = NULL) {
   global $language;
-  $engines = &xmlsitemap_static(__FUNCTION__);
+  $engines = &drupal_static(__FUNCTION__);
 
   if (!isset($engines)) {
     if ($cached = cache_get('xmlsitemap:engines:' . $language->language)) {

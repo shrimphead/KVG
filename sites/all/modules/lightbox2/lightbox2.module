@@ -1,6 +1,4 @@
 <?php
-// $Id: lightbox2.module,v 1.16.2.16.2.171 2010/09/24 08:33:00 snpower Exp $
-
 /**
  * @file
  * Enables the use of lightbox2 which places images above your current page,
@@ -25,114 +23,114 @@ function lightbox2_help($path, $arg) {
       $output = t('Enables Lightbox2 for Drupal');
       break;
     case 'admin/help#lightbox2':
-      $output = '<h3>'. t('Overview') .'</h3>';
-      $output .= '<p>'. t('Lightbox2 JS is a simple, unobtrusive script used to overlay images on the current page. It\'s a snap to setup and works on all modern browsers. The module comes with a Lightbox2 Lite option which does not use the JQuery libraries; it is therefore less likely to conflict with anything else.') .'</p>';
-      $output .= '<p>'. t('Places images above your current page, not within. This frees you from the constraints of the layout, particularly column widths. Keeps users on the same page. Clicking to view an image and then having to click the back button to return to your site is bad for continuity (and no fun!).') .'</p>';
+      $output = '<h3>' . t('Overview') . '</h3>';
+      $output .= '<p>' . t('Lightbox2 JS is a simple, unobtrusive script used to overlay images on the current page. It\'s a snap to setup and works on all modern browsers. The module comes with a Lightbox2 Lite option which does not use the JQuery libraries; it is therefore less likely to conflict with anything else.') . '</p>';
+      $output .= '<p>' . t('Places images above your current page, not within. This frees you from the constraints of the layout, particularly column widths. Keeps users on the same page. Clicking to view an image and then having to click the back button to return to your site is bad for continuity (and no fun!).') . '</p>';
       // Features
-      $output .= '<h3>'. t('Features') .'</h3>';
-      $output .= '<p>'. t('The version 2 module has several benefits over the plain Lightbox module. Note, not all of these features are available when the "Lightbox2 Lite" option is enabled.') .'</p>';
+      $output .= '<h3>' . t('Features') . '</h3>';
+      $output .= '<p>' . t('The version 2 module has several benefits over the plain Lightbox module. Note, not all of these features are available when the "Lightbox2 Lite" option is enabled.') . '</p>';
       $output .= '<ul>';
-      $output .= '<li>'. t('Image Sets: group related images and navigate through them with ease - ideal for your image galleries.') .'</li>';
-      $output .= '<li>'. t('Slideshow Capability: automatically transition between grouped images, includes play/pause and previous and next buttons.') .'</li>';
-      $output .= '<li>'. t('HTML Content Support: ability to show websites or other HTML content in a lightbox.') .'</li>';
-      $output .= '<li>'. t('Video Content Support: ability to show videos in a lightbox.') .'</li>';
-      $output .= '<li>'. t('Visual Effects: fancy pre-loader and transition when you click on the image.') .'</li>';
-      $output .= '<li>'. t('Keyboard Shortcuts: useful <a href="http://drupal.org/node/249827">keyboard shortcuts</a> for switching between images, toggling play / pause, etc.') .'</li>';
-      $output .= '<li>'. t('Zoom Capability: larger images are reduced in size so they fit snugly inside the browser window.  A zoom button can then be clicked on to see it in its original size.') .'</li>';
-      $output .= '<li>'. t('Automatic Image Detection: configurable automatic re-formatting of image thumbnails, so there is no need to add \'rel="lightbox"\' to each image link on your site. ');
+      $output .= '<li>' . t('Image Sets: group related images and navigate through them with ease - ideal for your image galleries.') . '</li>';
+      $output .= '<li>' . t('Slideshow Capability: automatically transition between grouped images, includes play/pause and previous and next buttons.') . '</li>';
+      $output .= '<li>' . t('HTML Content Support: ability to show websites or other HTML content in a lightbox.') . '</li>';
+      $output .= '<li>' . t('Video Content Support: ability to show videos in a lightbox.') . '</li>';
+      $output .= '<li>' . t('Visual Effects: fancy pre-loader and transition when you click on the image.') . '</li>';
+      $output .= '<li>' . t('Keyboard Shortcuts: useful <a href="http://drupal.org/node/249827">keyboard shortcuts</a> for switching between images, toggling play / pause, etc.') . '</li>';
+      $output .= '<li>' . t('Zoom Capability: larger images are reduced in size so they fit snugly inside the browser window.  A zoom button can then be clicked on to see it in its original size.') . '</li>';
+      $output .= '<li>' . t('Automatic Image Detection: configurable automatic re-formatting of image thumbnails, so there is no need to add \'rel="lightbox"\' to each image link on your site. ');
       $output .= t('<a href="!image">Image</a>, <a href="!inline">Inline</a>, <a href="!flickr">Flickr</a>, <a href="!img_assist">Image Assist</a> and <a href="!imagefield">CCK Imagefield</a> modules are all supported. ', array('!image' => 'http://drupal.org/project/image', '!inline' => 'http://drupal.org/project/inline', '!flickr' => 'http://drupal.org/project/flickr', '!img_assist' => 'http://drupal.org/project/img_assist', '!imagefield' => 'http://drupal.org/project/imagefield'));
       $output .= t('It\'s also possible to configure a custom list of image classes which should trigger the lightbox functionality.');
       $output .='</li>';
-      $output .= '<li>'. t('<a href="!imagecache">Imagecache</a> Support: adds a Lightbox2 field formatter for <a href="!imagefield">CCK imagefields</a> for your custom <a href="!views">views</a>.', array('!imagecache' => 'http://drupal.org/project/imagecache', '!imagefield' => 'http://drupal.org/project/imagefield', '!views' => 'http://drupal.org/project/views')). '</li>';
-      $output .= '<li>'. t('Image Page Link: a link to the image node can be provided within the lightbox itself.') .'</li>';
-      $output .= '<li>'. t('Page Exclusion Capability: exclude certain pages on your site from having the lightbox2 functionality.') .'</li>';
-      $output .= '<li>'. t('Login Support: ability to modify all user/login links so the login form appears in a lightbox.') .'</li>';
-      $output .= '<li>'. t('Skin and Animation Configuration: configure the order and speed of the lightbox animations, along with the lightbox colors, border size and overlay opacity.') .'</li>';
-      $output .= '<li>'. t('Gallery 2 Support: support for Gallery 2 images via the <a href="!gallery">Gallery</a> module (beta).', array('!gallery' => 'http://drupal.org/project/gallery')) .'</li>';
+      $output .= '<li>' . t('<a href="!imagecache">Imagecache</a> Support: adds a Lightbox2 field formatter for <a href="!imagefield">CCK imagefields</a> for your custom <a href="!views">views</a>.', array('!imagecache' => 'http://drupal.org/project/imagecache', '!imagefield' => 'http://drupal.org/project/imagefield', '!views' => 'http://drupal.org/project/views')) . '</li>';
+      $output .= '<li>' . t('Image Page Link: a link to the image node can be provided within the lightbox itself.') . '</li>';
+      $output .= '<li>' . t('Page Exclusion Capability: exclude certain pages on your site from having the lightbox2 functionality.') . '</li>';
+      $output .= '<li>' . t('Login Support: ability to modify all user/login links so the login form appears in a lightbox.') . '</li>';
+      $output .= '<li>' . t('Skin and Animation Configuration: configure the order and speed of the lightbox animations, along with the lightbox colors, border size and overlay opacity.') . '</li>';
+      $output .= '<li>' . t('Gallery 2 Support: support for Gallery 2 images via the <a href="!gallery">Gallery</a> module (beta).', array('!gallery' => 'http://drupal.org/project/gallery')) . '</li>';
       $output .= '</ul>';
       // Usage
-      $output .= '<h3>'. t('Usage') .'</h3>';
-      $output .= '<h5 style="text-decoration: underline;">'. t('Adding a Basic Lightbox') .'</h5>';
-      $output .= '<p>'. t('Add rel=&quot;lightbox&quot; attribute to any link tag to activate the lightbox. For example:') .'</p>';
-      $output .= '<code>'. t('&lt;a href=&quot;image-1.jpg&quot; rel=&quot;lightbox&quot;&gt;image #1&lt;/a&gt;<br />
-                              &lt;a href=&quot;image-1.jpg&quot; rel=&quot;lightbox[][my caption]&quot;&gt;image #1&lt;/a&gt;') .'</code>';
-      $output .= '<p>'. t('Optional: To show a caption either use the title attribute or put in the second set of [] of the rel attribute.') .'</p>';
+      $output .= '<h3>' . t('Usage') . '</h3>';
+      $output .= '<h5 style="text-decoration: underline;">' . t('Adding a Basic Lightbox') . '</h5>';
+      $output .= '<p>' . t('Add rel=&quot;lightbox&quot; attribute to any link tag to activate the lightbox. For example:') . '</p>';
+      $output .= '<code>' . t('&lt;a href=&quot;image-1.jpg&quot; rel=&quot;lightbox&quot;&gt;image #1&lt;/a&gt;<br />
+                              &lt;a href=&quot;image-1.jpg&quot; rel=&quot;lightbox[][my caption]&quot;&gt;image #1&lt;/a&gt;') . '</code>';
+      $output .= '<p>' . t('Optional: To show a caption either use the title attribute or put in the second set of [] of the rel attribute.') . '</p>';
       // Grouping Images
-      $output .= '<h5 style="text-decoration: underline;">'. t('Grouping Images') .'</h5>';
-      $output .= '<p>'. t('If you have a set of related images that you would like to group, follow step one but additionally include a group name between square brackets in the rel attribute. For example:') .'</p>';
-      $output .= '<code>'. t('&lt;a href="images/image-1.jpg" rel="lightbox[roadtrip]"&gt;image #1&lt;/a&gt;<br />
+      $output .= '<h5 style="text-decoration: underline;">' . t('Grouping Images') . '</h5>';
+      $output .= '<p>' . t('If you have a set of related images that you would like to group, follow step one but additionally include a group name between square brackets in the rel attribute. For example:') . '</p>';
+      $output .= '<code>' . t('&lt;a href="images/image-1.jpg" rel="lightbox[roadtrip]"&gt;image #1&lt;/a&gt;<br />
                               &lt;a href="images/image-2.jpg" rel="lightbox[roadtrip][caption 2]"&gt;image#2&lt;/a&gt;<br />
-                              &lt;a href="images/image-3.jpg" rel="lightbox[roadtrip][caption 3]"&gt;image#3&lt;/a&gt;') .'</code>';
-      $output .= '<p>'. t('No limits to the number of image sets per page or how many images are allowed in each set.') .'</p>';
-      $output .= '<p>'. t('If you have a set of images that you would like to group together in a lightbox, but only wish for one of these images to be visible on your page, you can assign the "lightbox_hide_image" class to hide the additional images. For example:') .'</p>';
-      $output .= '<p><code>'. t('&lt;a href="images/image-1.jpg" rel="lightbox[roadtrip]"&gt;image #1&lt;/a&gt;<br />
+                              &lt;a href="images/image-3.jpg" rel="lightbox[roadtrip][caption 3]"&gt;image#3&lt;/a&gt;') . '</code>';
+      $output .= '<p>' . t('No limits to the number of image sets per page or how many images are allowed in each set.') . '</p>';
+      $output .= '<p>' . t('If you have a set of images that you would like to group together in a lightbox, but only wish for one of these images to be visible on your page, you can assign the "lightbox_hide_image" class to hide the additional images. For example:') . '</p>';
+      $output .= '<p><code>' . t('&lt;a href="images/image-1.jpg" rel="lightbox[roadtrip]"&gt;image #1&lt;/a&gt;<br />
                               &lt;a href="images/image-2.jpg" rel="lightbox[roadtrip]" class="lightbox_hide_image"&gt;image #2&lt;/a&gt;<br />
-                              &lt;a href="images/image-3.jpg" rel="lightbox[roadtrip][caption 3]" class="lightbox_hide_image"&gt;image #3&lt;/a&gt;') .'</code></p>';
+                              &lt;a href="images/image-3.jpg" rel="lightbox[roadtrip][caption 3]" class="lightbox_hide_image"&gt;image #3&lt;/a&gt;') . '</code></p>';
       // Slideshow
-      $output .= '<h5 style="text-decoration: underline;">'. t('Slideshow') .'</h5>';
-      $output .= '<p>'. t('This is very similar to the grouping functionality described above. The only difference is that "rel" attribute should be set to "lightshow" instead of "lightbox". Using the same example as above, we could launch the images in a slideshow by doing:') .'</p>';
-      $output .= '<p><code>'. t('&lt;a href="images/image-1.jpg" rel="lightshow[roadtrip]"&gt;image #1&lt;/a&gt;<br />
+      $output .= '<h5 style="text-decoration: underline;">' . t('Slideshow') . '</h5>';
+      $output .= '<p>' . t('This is very similar to the grouping functionality described above. The only difference is that "rel" attribute should be set to "lightshow" instead of "lightbox". Using the same example as above, we could launch the images in a slideshow by doing:') . '</p>';
+      $output .= '<p><code>' . t('&lt;a href="images/image-1.jpg" rel="lightshow[roadtrip]"&gt;image #1&lt;/a&gt;<br />
                               &lt;a href="images/image-2.jpg" rel="lightshow[roadtrip][caption 2]"&gt;image #2&lt;/a&gt;<br />
-                              &lt;a href="images/image-3.jpg" rel="lightshow[roadtrip][caption 3]"&gt;image #3&lt;/a&gt;') .'</code></p>';
+                              &lt;a href="images/image-3.jpg" rel="lightshow[roadtrip][caption 3]"&gt;image #3&lt;/a&gt;') . '</code></p>';
       // Video Content
-      $output .= '<h5 style="text-decoration: underline;">'. t('Video Content') .'</h5>';
-      $output .= '<p>'. t('It\'s possible to show video content in the lightbox. In this case the "rel" attribute should be set to <code>lightvideo</code>. It\'s possible to group videos and to control the size of the lightbox by setting the \'width\' and \'height\' properties. The properties can be configured like <code>lightvideo[group|width:300px; height: 200px;]</code> and <code>lightvideo[|width:300px; height: 200px;][my caption]</code>. The properties should all be of the format "property: value;" - note the closing semi-colon. If no properties are set, then the default width and height of 400px will be used. See below for more detailed examples.') .'</p>';
-      $output .= '<p>'. t('Basic example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="http://video.google.com/videoplay?docid=1811233136844420765" rel="lightvideo"&gt;Google video example - default size&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Basic example with caption:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="http://video.google.com/videoplay?docid=1811233136844420765" rel="lightvideo[][my caption]"&gt;Google video example - default size&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Grouped example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="http://video.google.com/videoplay?docid=29023498723974239479" rel="lightvideo[group][my caption]"&gt;Grouped example 1&lt;/a&gt;<br />
-                              &lt;a href="http://video.google.com/videoplay?docid=1811233136844420765" rel="lightvideo[group][my caption]"&gt;Grouped example 2&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Controlling lightbox size example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="http://video.google.com/videoplay?docid=1811233136844420765" rel="lightvideo[|width:400px; height:300px;][my caption]"&gt;Google video example - custom size&lt;/a&gt;') .'<br /></code></p>';
-      $output .= '<p>'. t('Supported Video Formats:') .'<br />';
-      $output .= t('asx, wmv, mov and swf videos should all be supported. A number of video providers are also supported, for example YouTube and Google Video. For full details on how to integrate these with lightbox, please see the online documentation.') .'</p>';
+      $output .= '<h5 style="text-decoration: underline;">' . t('Video Content') . '</h5>';
+      $output .= '<p>' . t('It\'s possible to show video content in the lightbox. In this case the "rel" attribute should be set to <code>lightvideo</code>. It\'s possible to group videos and to control the size of the lightbox by setting the \'width\' and \'height\' properties. The properties can be configured like <code>lightvideo[group|width:300px; height: 200px;]</code> and <code>lightvideo[|width:300px; height: 200px;][my caption]</code>. The properties should all be of the format "property: value;" - note the closing semi-colon. If no properties are set, then the default width and height of 400px will be used. See below for more detailed examples.') . '</p>';
+      $output .= '<p>' . t('Basic example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="http://video.google.com/videoplay?docid=1811233136844420765" rel="lightvideo"&gt;Google video example - default size&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Basic example with caption:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="http://video.google.com/videoplay?docid=1811233136844420765" rel="lightvideo[][my caption]"&gt;Google video example - default size&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Grouped example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="http://video.google.com/videoplay?docid=29023498723974239479" rel="lightvideo[group][my caption]"&gt;Grouped example 1&lt;/a&gt;<br />
+                              &lt;a href="http://video.google.com/videoplay?docid=1811233136844420765" rel="lightvideo[group][my caption]"&gt;Grouped example 2&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Controlling lightbox size example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="http://video.google.com/videoplay?docid=1811233136844420765" rel="lightvideo[|width:400px; height:300px;][my caption]"&gt;Google video example - custom size&lt;/a&gt;') . '<br /></code></p>';
+      $output .= '<p>' . t('Supported Video Formats:') . '<br />';
+      $output .= t('asx, wmv, mov and swf videos should all be supported. A number of video providers are also supported, for example YouTube and Google Video. For full details on how to integrate these with lightbox, please see the online documentation.') . '</p>';
       // HTML Content
-      $output .= '<h5 style="text-decoration: underline;">'. t('HTML Content') .'</h5>';
-      $output .= '<p>'. t('It\'s possible to show webpage content in the lightbox, using iframes. In this case the "rel" attribute should be set to <code>lightframe</code>. Again it\'s possible to group the items, (e.g. <code>lightframe[search]</code>) but in addition to that, it\'s possible to control some of the iframe properties. It\'s possible to set the \'width\', \'height\' and \'scrolling\' properties of the iframe. The properties are separated from the group name by a <code>|</code>, for example <code>lightframe[search|width:100px;]</code> and <code>lightframe[search|width:120px][my caption]</code>. If no grouping is being used, then the <code>|</code> is still used and the format would be <code>lightframe[|width:100px;]</code>. The properties should all be of the format "property: value;" - note the closing semi-colon.  If no iframe properties are set, then the default width and height of 400px will be used.  See below for more detailed examples.') .'</p>';
-      $output .= '<p>'. t('Basic example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="http://www.google.com" rel="lightframe[][Search Google]"&gt;Search google&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Grouped example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="http://www.google.com" rel="lightframe[search]"&gt;Search google&lt;/a&gt;<br />
-                              &lt;a href="http://www.yahoo.com" rel="lightframe[search][Search Yahoo]"&gt;Search yahoo&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Controlling iframe property example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="http://www.google.com" rel="lightframe[|width:400px; height:300px; scrolling: auto;]"&gt;Search google&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Controlling iframe property when grouped example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="http://www.google.com" rel="lightframe[search|width:400px; height:300px; scrolling: auto;]"&gt;Search google&lt;/a&gt;<br />
-                              &lt;a href="http://www.yahoo.com" rel="lightframe[search|width:400px; height:300px;][Search Yahoo]"&gt;Search yahoo&lt;/a&gt;') .'</code></p>';
+      $output .= '<h5 style="text-decoration: underline;">' . t('HTML Content') . '</h5>';
+      $output .= '<p>' . t('It\'s possible to show webpage content in the lightbox, using iframes. In this case the "rel" attribute should be set to <code>lightframe</code>. Again it\'s possible to group the items, (e.g. <code>lightframe[search]</code>) but in addition to that, it\'s possible to control some of the iframe properties. It\'s possible to set the \'width\', \'height\' and \'scrolling\' properties of the iframe. The properties are separated from the group name by a <code>|</code>, for example <code>lightframe[search|width:100px;]</code> and <code>lightframe[search|width:120px][my caption]</code>. If no grouping is being used, then the <code>|</code> is still used and the format would be <code>lightframe[|width:100px;]</code>. The properties should all be of the format "property: value;" - note the closing semi-colon.  If no iframe properties are set, then the default width and height of 400px will be used.  See below for more detailed examples.') . '</p>';
+      $output .= '<p>' . t('Basic example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="http://www.google.com" rel="lightframe[][Search Google]"&gt;Search google&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Grouped example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="http://www.google.com" rel="lightframe[search]"&gt;Search google&lt;/a&gt;<br />
+                              &lt;a href="http://www.yahoo.com" rel="lightframe[search][Search Yahoo]"&gt;Search yahoo&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Controlling iframe property example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="http://www.google.com" rel="lightframe[|width:400px; height:300px; scrolling: auto;]"&gt;Search google&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Controlling iframe property when grouped example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="http://www.google.com" rel="lightframe[search|width:400px; height:300px; scrolling: auto;]"&gt;Search google&lt;/a&gt;<br />
+                              &lt;a href="http://www.yahoo.com" rel="lightframe[search|width:400px; height:300px;][Search Yahoo]"&gt;Search yahoo&lt;/a&gt;') . '</code></p>';
       // Inline Content Support
-      $output .= '<h5 style="text-decoration: underline;">'. t('Inline Content Support') .'</h5>';
-      $output .= '<p>'. t('It\'s possible to show HTML snippets in the lightbox, that is on the same domain. In this case the "rel" attribute should be set to <code>lightmodal</code>. Again it\'s possible to group the content, (e.g. <code>lightmodal[search]</code>) but in addition to that, it\'s possible to control some of the inline / modal properties. It\'s possible to set the \'width\', \'height\' and \'scrolling\' properties of the inline content. The properties are separated from the group name by a <code>|</code>, for example <code>lightmodal[search|width:100px;]</code> and <code>lightmodal[search|width:100px;][my caption]</code>. If no grouping is being used, then the <code>|</code> is still used and the format would be <code>lightmodal[|width:100px;]</code>. The properties should all be of the format "property: value;" - note the closing semi-colon. If no properties are set, then the default width and height of 400px will be used. See below for more detailed examples.') .'</p>';
-      $output .= '<p>'. t('Basic example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="search.php" rel="lightmodal"&gt;Search&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Basic example with caption:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="search.php" rel="lightmodal[][my caption]"&gt;Search&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Grouped example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="search.php" rel="lightmodal[search]"&gt;Search&lt;/a&gt;<br />
-                              &lt;a href="search.php?status=1" rel="lightmodal[search][published]"&gt;Search published content&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Controlling modal property example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="search.php" rel="lightmodal[|width:400px; height:300px; scrolling: auto;]"&gt;Search&lt;/a&gt;') .'</code></p>';
-      $output .= '<p>'. t('Controlling modal property when grouped example:') .'<br />';
-      $output .= '<code>'. t('&lt;a href="search.php" rel="lightmodal[search|width:400px; height:300px; scrolling: auto;]"&gt;Search&lt;/a&gt;<br />
+      $output .= '<h5 style="text-decoration: underline;">' . t('Inline Content Support') . '</h5>';
+      $output .= '<p>' . t('It\'s possible to show HTML snippets in the lightbox, that is on the same domain. In this case the "rel" attribute should be set to <code>lightmodal</code>. Again it\'s possible to group the content, (e.g. <code>lightmodal[search]</code>) but in addition to that, it\'s possible to control some of the inline / modal properties. It\'s possible to set the \'width\', \'height\' and \'scrolling\' properties of the inline content. The properties are separated from the group name by a <code>|</code>, for example <code>lightmodal[search|width:100px;]</code> and <code>lightmodal[search|width:100px;][my caption]</code>. If no grouping is being used, then the <code>|</code> is still used and the format would be <code>lightmodal[|width:100px;]</code>. The properties should all be of the format "property: value;" - note the closing semi-colon. If no properties are set, then the default width and height of 400px will be used. See below for more detailed examples.') . '</p>';
+      $output .= '<p>' . t('Basic example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="search.php" rel="lightmodal"&gt;Search&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Basic example with caption:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="search.php" rel="lightmodal[][my caption]"&gt;Search&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Grouped example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="search.php" rel="lightmodal[search]"&gt;Search&lt;/a&gt;<br />
+                              &lt;a href="search.php?status=1" rel="lightmodal[search][published]"&gt;Search published content&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Controlling modal property example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="search.php" rel="lightmodal[|width:400px; height:300px; scrolling: auto;]"&gt;Search&lt;/a&gt;') . '</code></p>';
+      $output .= '<p>' . t('Controlling modal property when grouped example:') . '<br />';
+      $output .= '<code>' . t('&lt;a href="search.php" rel="lightmodal[search|width:400px; height:300px; scrolling: auto;]"&gt;Search&lt;/a&gt;<br />
                               &lt;a href="search.php?status=1" rel="lightmodal[search|width:400px; height:300px;][Search published]"&gt;Search published content&lt;/a&gt;<br />
-                              &lt;a href="search.php?status=0" rel="lightmodal[search|width:400px; height:300px;][Search Unpublished]"&gt;Search unpublished content&lt;/a&gt;') .'</code></p>';
+                              &lt;a href="search.php?status=0" rel="lightmodal[search|width:400px; height:300px;][Search Unpublished]"&gt;Search unpublished content&lt;/a&gt;') . '</code></p>';
       // Keyboard Shortcuts
-      $output .= '<h3>'. t('Keyboard Shortcuts') .'</h3>';
-      $output .= '<p>'. t('The default keyboard shortcuts are listed below. You can override these on the admin page.') .'</p>';
+      $output .= '<h3>' . t('Keyboard Shortcuts') . '</h3>';
+      $output .= '<p>' . t('The default keyboard shortcuts are listed below. You can override these on the admin page.') . '</p>';
       $output .= '<table>';
-      $output .= '<tr><td>'. t('Close Lightbox') .'</td><td>x</td></tr>';
+      $output .= '<tr><td>' . t('Close Lightbox') . '</td><td>x</td></tr>';
       $output .= '<tr><td></td><td>o</td></tr>
                   <tr><td></td><td>c</td></tr>
                   <tr><td></td><td>ESC</td></tr>';
-      $output .= '<tr><td>'. t('Previous Image') .'</td><td>p</td></tr>';
-      $output .= '<tr><td></td><td>'. t('Left Arrow') .'</td></tr>';
-      $output .= '<tr><td>'. t('Next Image') .'</td><td>n</td></tr>';
-      $output .= '<tr><td></td><td>'. t('Right Arrow') .'</td></tr>';
-      $output .= '<tr><td>'. t('Toggle Zoom') .'</td><td>'. t('z (not available in slideshow)') .'</td></tr>';
-      $output .= '<tr><td>'. t('Toggle Play / Pause') .'</td><td>'. t('Spacebar (slideshow only)'). '</td></tr>';
+      $output .= '<tr><td>' . t('Previous Image') . '</td><td>p</td></tr>';
+      $output .= '<tr><td></td><td>' . t('Left Arrow') . '</td></tr>';
+      $output .= '<tr><td>' . t('Next Image') . '</td><td>n</td></tr>';
+      $output .= '<tr><td></td><td>' . t('Right Arrow') . '</td></tr>';
+      $output .= '<tr><td>' . t('Toggle Zoom') . '</td><td>' . t('z (not available in slideshow)') . '</td></tr>';
+      $output .= '<tr><td>' . t('Toggle Play / Pause') . '</td><td>' . t('Spacebar (slideshow only)') . '</td></tr>';
       $output .= '</table>';
-      $output .= '<p>'. t('Not all of the keyboard shortcuts work in the Opera browser, for example "z" for toggling the zoom and "spacebar" for toggling play / pause in slideshows. This can be overcome by updating your shortcut settings in the Opera preferences editor.') .'</p>';
+      $output .= '<p>' . t('Not all of the keyboard shortcuts work in the Opera browser, for example "z" for toggling the zoom and "spacebar" for toggling play / pause in slideshows. This can be overcome by updating your shortcut settings in the Opera preferences editor.') . '</p>';
 
       break;
   }
@@ -140,10 +138,19 @@ function lightbox2_help($path, $arg) {
 }
 
 /**
- * Implementation of hook_perm().
+ * Implementation of hook_permission().
  */
-function lightbox2_perm() {
-  return array('administer lightbox2', 'download original image');
+function lightbox2_permission() {
+  return array(
+  'administer lightbox2' => array(
+    'title' => t('Administer Lightbox2'),
+    'description' => t('Allow the user administer Lightbox2 settings'),
+  ),
+  'download original image' => array(
+    'title' => t('Download Original'),
+    'description' => t('Create a link that allow the user download the original image'),
+  ),
+  );
 }
 
 
@@ -160,7 +167,7 @@ function lightbox2_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  $items['admin/settings/lightbox2'] = array(
+  $items['admin/config/user-interface/lightbox2'] = array(
     'title' => 'Lightbox2',
     'description' => 'Allows the user to configure the lightbox2 settings',
     'file' => 'lightbox2.admin.inc',
@@ -168,7 +175,7 @@ function lightbox2_menu() {
     'access callback' => 'user_access',
     'access arguments' => array('administer lightbox2'),
   );
-  $items['admin/settings/lightbox2/general'] = array(
+  $items['admin/config/user-interface/lightbox2/general'] = array(
     'title' => 'General',
     'description' => 'Allows the user to configure the lightbox2 settings',
     'file' => 'lightbox2.admin.inc',
@@ -179,7 +186,7 @@ function lightbox2_menu() {
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => 0,
   );
-  $items['admin/settings/lightbox2/slideshow'] = array(
+  $items['admin/config/user-interface/lightbox2/slideshow'] = array(
     'title' => 'Slideshow',
     'description' => 'Allows the user to configure the lightbox2 slideshow functionality',
     'file' => 'lightbox2.admin.inc',
@@ -190,7 +197,7 @@ function lightbox2_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => 1,
   );
-  $items['admin/settings/lightbox2/html_content'] = array(
+  $items['admin/config/user-interface/lightbox2/html_content'] = array(
     'title' => 'HTML Content',
     'file' => 'lightbox2.admin.inc',
     'page callback' => 'drupal_get_form',
@@ -201,7 +208,7 @@ function lightbox2_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => 2,
   );
-  $items['admin/settings/lightbox2/automatic'] = array(
+  $items['admin/config/user-interface/lightbox2/automatic'] = array(
     'title' => 'Automatic image handling',
     'description' => 'Allows the user to configure the lightbox2 automatic image handling settings',
     'file' => 'lightbox2.admin.inc',
@@ -212,6 +219,8 @@ function lightbox2_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => 3,
   );
+
+  /**
   if (module_exists('emfield') && module_exists('emvideo')) {
     $items['video-cck/lightbox2/%node'] = array(
       'page callback' => 'lightbox2_emvideo',
@@ -221,6 +230,9 @@ function lightbox2_menu() {
       'type' => MENU_CALLBACK,
     );
   }
+  */
+  /**
+   * There is not a version from acidfree to drupal 7
   if (module_exists('acidfree') && module_exists('video')) {
     $items['node/%node/lightframevideo'] = array(
       'page callback' => 'lightbox2_acidfree_video',
@@ -230,6 +242,7 @@ function lightbox2_menu() {
       'type' => MENU_CALLBACK,
     );
   }
+   */
   $items['user/login/lightbox2'] = array(
     'title' => 'Login',
     'page callback' => 'lightbox2_login',
@@ -249,22 +262,19 @@ function lightbox2_menu() {
 /**
  * Acidfree video access control.
  */
-function lightbox2_acidfree_video_access($node) {
+/**
+ * No acidvideo for drupal 7
+ * function lightbox2_acidfree_video_access($node) {
   if (user_access('play video') && node_access('view', $node)) {
     return TRUE;
   }
   return FALSE;
 }
-
+*/
 /**
  * Implementation of hook_init().
  */
 function lightbox2_init() {
-  // Insert support
-  if (module_exists('insert')) {
-    module_load_include('inc', 'lightbox2', 'lightbox2.insert');
-  }
-
   if (lightbox2_exclude_these_paths() != 1) {
     lightbox2_add_files();
   }
@@ -274,6 +284,9 @@ function lightbox2_init() {
 /**
  * Implementation of hook_filter_tips().
  */
+/*
+ * This is not used any more on drupal 7, keep here only to help with the
+ * conversion, when there is a drupal 7 port, delete this function
 function lightbox2_filter_tips($delta, $format, $long = FALSE) {
   if ($delta == 0) {
     if (!$long) {
@@ -366,6 +379,9 @@ function lightbox2_filter_tips($delta, $format, $long = FALSE) {
 /**
  * Implementation of hook_filter().
  */
+/*
+ * This is not used any more on drupal 7, keep here only to help with the
+ * conversion, when there is a drupal 7 port, delete this function
 function lightbox2_filter($op, $delta = 0, $format = -1, $text = '') {
   switch ($op) {
     case 'list':
@@ -417,6 +433,63 @@ function lightbox2_filter($op, $delta = 0, $format = -1, $text = '') {
     default:
       return $text;
   }
+}
+*/
+/**
+ * Process callback for Lightbox G2 filter.
+ */
+function _lightbox2_process_filter($text, $format) {
+  $text = ' ' . $text . ' ';
+  $text = preg_replace('/ShowItem/', 'DownloadItem', $text);
+  $text = preg_replace('/src="/', 'rel="lightbox" src="', $text);
+  $text = drupal_substr($text, 1, -1);
+  return $text;
+}
+
+/**
+ * Process callback for Disable Lightbox iframe filter.
+ */
+function _lightbox2_process_disable_filter($text, $format) {
+  $text = preg_replace('/<a([^>]*?)(rel=[\'"]*lightframe[\'"]*)([^>]*?)>/i', '<a\1\3>', $text);
+  return $text;
+}
+
+/**
+ * Implements hook_filter_info().
+ */
+function lightbox2_filter_info() {
+  $filters = array();
+  $filters['lightbox2_filter'] = array(
+    'title' => t('Lightbox filter'),
+    'description' => t('Image links with \'rel="lightbox"\' in the &lt;a&gt; tag will appear in a Lightbox when clicked on.'),
+  );
+  $filters['lightbox2_gd_filter'] = array(
+    'title' => t('Lightbox GD filter'),
+    'description' => t('Turns g2_filter links into Lightbox2 appropriate links'),
+    'process callback' => '_lightbox2_process_filter',
+  );
+  $filters['lightbox_slideshow_filter'] = array(
+    'title' => t('Lightbox slideshow filter'),
+    'description' => t('Image links with \'rel="lightshow"\' in the &lt;a&gt; tag will appear in a Lightbox slideshow when clicked on.'),
+  );
+  $filters['lightbox_iframe_filter'] = array(
+    'title' => t('Lightbox iframe filter'),
+    'description' => t('Links to HTML content with \'rel="lightframe"\' in the &lt;a&gt; tag will appear in a Lightbox when clicked on.'),
+  );
+  $filters['lightbox_video_filter'] = array(
+    'title' => t('Lightbox video filter'),
+    'description' => t('Links to video content with \'rel="lightvideo"\' in the &lt;a&gt; tag will appear in a Lightbox when clicked on.'),
+  );
+  $filters['lightbox_modal_filter'] = array(
+    'title' => t('Lightbox modal filter'),
+    'description' => t('Links to inline or modal content with \'rel="lightmodal"\' in the &lt;a&gt; tag will appear in a Lightbox when clicked on.'),
+  );
+  $filters['lightbox_disable_iframe_filter'] = array(
+    'title' => t('Disable Lightbox iframe filter'),
+    'description' => t('It\'s possible to show webpage content in the lightbox, using iframes.  In this case the "rel" attribute should be set to "lightframe".  However, users can do this without any filters to be enabled.  To prevent users from adding iframes to the site in this manner, then please enable this option.'),
+    'process callback' => '_lightbox2_process_disable_filter',
+  );
+  return ($filters);
 }
 
 /**
@@ -596,7 +669,7 @@ function lightbox2_add_files() {
   $trigger_lightframe_classes = rtrim($trigger_lightframe_classes, ",");
   $trigger_lightframe_group_classes = rtrim($trigger_lightframe_group_classes, ",");
   $custom_trigger_classes = rtrim($custom_trigger_classes, ",");
-  $image_node_sizes = '('. rtrim($image_node_sizes, "|") .')';
+  $image_node_sizes = '(' . rtrim($image_node_sizes, "|") . ')';
 
   $enable_video = variable_get('lightbox2_enable_video', FALSE);
   $enable_login = $user->uid == 0 && variable_get('lightbox2_enable_login', FALSE);
@@ -608,16 +681,16 @@ function lightbox2_add_files() {
   $font_color = variable_get('lightbox2_font_color', '000');
   $box_color = variable_get('lightbox2_box_color', 'fff');
 
-  $file_path = base_path() .'(\w\w/)'. file_directory_path();
-  if ( variable_get('file_downloads', FILE_DOWNLOADS_PUBLIC) == FILE_DOWNLOADS_PRIVATE ) {
-    $file_path = base_path() .'(\w\w/)system/files';
+  $file_path = base_path() . '(\w\w/)' . file_default_scheme() . ':/';
+  if ( variable_get('file_downloads', 'FILE_DOWNLOADS_PUBLIC') == 'FILE_DOWNLOADS_PRIVATE' ) {
+    $file_path = base_path() . '(\w\w/)system/files';
   }
 
   // Load the javascript settings.
   $js_settings = array(
     'rtl' => $language->direction,
     'file_path' => $file_path,
-    'default_image' => base_path() . $path .'/images/brokenimage.jpg',
+    'default_image' => base_path() . $path . '/images/brokenimage.jpg',
     'border_size' => (int) variable_get('lightbox2_border_size', 10),
     'font_color' => !empty($font_color) ? $font_color : '000',
     'box_color' => !empty($box_color) ? $box_color : '000',
@@ -687,7 +760,7 @@ function lightbox2_add_files() {
     $js_settings['download_link_text'] = check_plain(variable_get('lightbox2_download_link_text', 'Download Original'));
   }
 
-  drupal_add_js(array('lightbox2' => $js_settings), 'setting');
+  drupal_add_js(array('lightbox2' => $js_settings), array( 'type' => 'setting' ) );
 
 
   // Check where we should load the javascript files - header or footer.
@@ -695,30 +768,32 @@ function lightbox2_add_files() {
 
   // Lightbox2 Plus.
   if (!variable_get('lightbox2_lite', FALSE)) {
-    $css = $path .'/css/lightbox.css';
+    $css = $path . '/css/lightbox.css';
     if (variable_get('lightbox2_use_alt_layout', FALSE)) {
-      $css = $path .'/css/lightbox_alt.css';
+      $css = $path . '/css/lightbox_alt.css';
     }
     drupal_add_css($css);
 
     // Check to see if any automatic image handling options are enabled.
     if ($image_node_handler || $flickr_image_handler || $gallery2_block_handler || $inline_image_handler || $image_assist_handler || $custom_triggers != '') {
-      drupal_add_js($path .'/js/auto_image_handling.js', 'module', $js_location);
+      drupal_add_js($path . '/js/auto_image_handling.js', array( 'scope' => $js_location ) );
     }
     if (variable_get('lightbox2_enable_video', FALSE)) {
-      drupal_add_js($path .'/js/lightbox_video.js', 'module', $js_location);
+      drupal_add_js($path . '/js/lightbox_video.js', array( 'scope' => $js_location ) );
     }
     if ($enable_login || $enable_contact) {
-      drupal_add_js($path .'/js/lightbox_modal.js', 'module', $js_location);
+      drupal_add_js($path . '/js/lightbox_modal.js', array( 'scope' => $js_location ) );
     }
-    drupal_add_js($path .'/js/lightbox.js', 'module', $js_location);
+    //drupal_add_js($path .'/js/prototype.js', array( 'scope' => $js_location, 'cache' => false ) );
+    //drupal_add_js($path .'/js/scriptaculous.js', array( 'scope' => $js_location, 'cache' => false ) );
+    drupal_add_js($path . '/js/lightbox.js', array( 'scope' => $js_location , 'cache' => FALSE) );
 
   }
   // Lightbox Lite.
   else {
-    $css = $path .'/css/lightbox_lite.css';
+    $css = $path . '/css/lightbox_lite.css';
     drupal_add_css($css);
-    drupal_add_js($path .'/js/lightbox_lite.js', 'module', $js_location);
+    drupal_add_js($path . '/js/lightbox_lite.js', array( 'scope' => $js_location ) );
   }
 }
 
@@ -731,59 +806,75 @@ function lightbox2_add_files() {
  */
 function lightbox2_field_formatter_info() {
   $formatters = array();
-  $lightbox = $slideshow = $iframe = array();
-  // Handle imagefield and filefield images.
-  if (module_exists('imagecache') && (module_exists('imagefield') || module_exists('filefield'))) {
-    $rules = array();
-    if (function_exists('imagecache_presets')) {
-      $presets = imagecache_presets();
-      foreach ($presets as $preset_id => $preset_info) {
-        $rules[$preset_id] = $preset_info['presetname'];
+  if (module_exists('image')) {
+    $image = $lightbox = image_styles();
+    $types = array('lightbox', 'lightshow');
+    foreach ($types as $type) {
+      foreach ($image as $image_key => $image_value ) {
+        $formatters['lightbox2__' . $type . '__' . $image_key . '__original'] = array(
+          'label' => 'Lightbox2: ' . $type . ': ' . $image_key . '->original',
+          'field types' => array('image'),
+        );
+        foreach ($lightbox as $lightbox_key => $lightbox_value ) {
+          $formatters['lightbox2__' . $type . '__' . $image_key . "__" . $lightbox_key] = array(
+            'label' => 'Lightbox2: ' . $type . ': ' . $image_key . '->' . $lightbox_key,
+            'field types' => array('image'),
+          );
+        }
       }
     }
-    else {
-      $rules = _imagecache_get_presets();
+  }
+  return $formatters;
+  /*
+  // Handle imagefield and filefield images.
+  if (module_exists('image')) {
+  	$rules = array();
+    if (function_exists('image_styles')) {
+      $presets = image_styles();
+      foreach ($presets as $preset_id => $preset_info) {
+        $rules[$preset_id] = $preset_info['name'];
+      }
     }
-    $iframe['imagefield__lightframe2__original__node'] = array(
+    $iframe['image__lightframe2__original__node'] = array(
       'label' => 'Lightbox2 iframe: original->node page',
-      'field types' => array('image', 'filefield'),
+      'field types' => array('image', 'file'),
     );
     $iframe['imagefield__lightframe2__link__node'] = array(
       'label' => 'Lightbox2 iframe: link->node page',
-      'field types' => array('image', 'filefield'),
+      'field types' => array('image', 'file'),
     );
-    foreach ($rules as $ruleid => $view_rule) {
-      $lightbox['imagefield__lightbox2__original__'. $view_rule] = array(
+    foreach ($rules as $view_rule) {
+      $lightbox['image__lightbox2__original__'. $view_rule] = array(
         'label' => 'Lightbox2: original->'. $view_rule,
-        'field types' => array('image', 'filefield'),
+        'field types' => array('image', 'file'),
       );
       $lightbox['imagefield__lightbox2_compact__original__'. $view_rule] = array(
         'label' => 'Lightbox2: original->'. $view_rule . ' compact',
-        'field types' => array('image', 'filefield'),
+        'field types' => array('image', 'file'),
       );
-      $lightbox['imagefield__lightbox2__'. $view_rule .'__original'] = array(
+      $lightbox['image__lightbox2__'. $view_rule .'__original'] = array(
         'label' => 'Lightbox2: '. $view_rule .'->original',
-        'field types' => array('image', 'filefield'),
+        'field types' => array('image', 'file'),
       );
       $lightbox['imagefield__lightbox2_compact__'. $view_rule .'__original'] = array(
         'label' => 'Lightbox2: '. $view_rule .'->original compact',
-        'field types' => array('image', 'filefield'),
+        'field types' => array('image', 'file'),
       );
       $lightbox['imagefield__lightbox2__link__'. $view_rule] = array(
         'label' => 'Lightbox2: link->'. $view_rule,
-        'field types' => array('image', 'filefield'),
+        'field types' => array('image', 'file'),
       );
-      $slideshow['imagefield__lightshow2__original__'. $view_rule] = array(
+      $slideshow['image__lightshow2__original__'. $view_rule] = array(
         'label' => 'Lightbox2 slideshow: original->'. $view_rule,
-        'field types' => array('image', 'filefield'),
+        'field types' => array('image', 'file'),
       );
       $slideshow['imagefield__lightshow2_compact__original__'. $view_rule] = array(
         'label' => 'Lightbox2 slideshow: original->'. $view_rule . ' compact',
         'field types' => array('image', 'filefield'),
       );
-      $slideshow['imagefield__lightshow2__'. $view_rule .'__original'] = array(
+      $slideshow['image__lightshow2__'. $view_rule .'__original'] = array(
         'label' => 'Lightbox2 slideshow: '. $view_rule .'->original',
-        'field types' => array('image', 'filefield'),
+        'field types' => array('image', 'file'),
       );
       $slideshow['imagefield__lightshow2_compact__'. $view_rule .'__original'] = array(
         'label' => 'Lightbox2 slideshow: '. $view_rule .'->original compact',
@@ -793,22 +884,22 @@ function lightbox2_field_formatter_info() {
         'label' => 'Lightbox2 slideshow: link->'. $view_rule,
         'field types' => array('image', 'filefield'),
       );
-      $iframe['imagefield__lightframe2__'. $view_rule .'__node'] = array(
+      $iframe['image__lightframe2__'. $view_rule .'__node'] = array(
         'label' => 'Lightbox2 iframe: '. $view_rule .'->node page',
-        'field types' => array('image', 'filefield'),
+        'field types' => array('image', 'file'),
       );
-      foreach ($rules as $rid => $lightbox_rule) {
-        $lightbox['imagefield__lightbox2__'. $view_rule .'__'. $lightbox_rule] = array(
-          'label' => 'Lightbox2: '. $view_rule .'->'. $lightbox_rule,
-          'field types' => array('image', 'filefield'),
+	foreach ($rules as $lightbox_rule) {
+        $lightbox['image__lightbox2__'. $view_rule .'__'. $lightbox_rule] = array(
+	 'label' => 'Lightbox2: '. $view_rule .'->'. $lightbox_rule,
+          'field types' => array('image', 'file'),
         );
         $lightbox['imagefield__lightbox2_compact__'. $view_rule .'__'. $lightbox_rule] = array(
           'label' => 'Lightbox2: '. $view_rule .'->'. $lightbox_rule . ' compact',
           'field types' => array('image', 'filefield'),
         );
-        $slideshow['imagefield__lightshow2__'. $view_rule .'__'. $lightbox_rule] = array(
+        $slideshow['image__lightshow2__'. $view_rule .'__'. $lightbox_rule] = array(
           'label' => 'Lightbox2 slideshow: '. $view_rule .'->'. $lightbox_rule,
-          'field types' => array('image', 'filefield'),
+          'field types' => array('image', 'file'),
         );
         $slideshow['imagefield__lightshow2_compact__'. $view_rule .'__'. $lightbox_rule] = array(
           'label' => 'Lightbox2 slideshow: '. $view_rule .'->'. $lightbox_rule . ' compact',
@@ -839,85 +930,185 @@ function lightbox2_field_formatter_info() {
       'field types' => array('emvideo'),
     );
   }
-  if (module_exists('filefield')) {
-    $formatters['filefield_lightframe'] = array(
+  if (module_exists('file')) {
+    $formatters['file_lightframe'] = array(
       'label' => t('Lightbox2 iframe'),
-      'field types' => array('filefield'),
+      'field types' => array('file'),
+    );
+  }
+  */
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ * 
+ * Temporarily a (pretty much) straight copy of image's
+ */
+function lightbox2_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  $pieces = explode('__', $display['type']);
+  $lightbox_type = $pieces[1];
+  $image_style = $pieces[2];
+  $lightbox_style = $pieces[3];
+
+  if ($image_style == 'original') {
+    $image_style = NULL;
+  }
+  if ($lightbox_style == 'original') {
+    $lightbox_style = NULL;
+  }
+
+  if ($entity_type == 'node') {
+    $node_id = $entity->nid;
+  }
+
+  foreach ($items as $delta => $item) {
+    $uri = array(
+      'path' => file_create_url($item['uri']),
+      'options' => array(),
+    );
+    $element[$delta] = array(
+      '#theme' => 'lightbox2_image',
+      '#item' => $item,
+      '#lightbox_type' => $lightbox_type,
+      '#image_style' => $image_style,
+      '#lightbox_style' => $lightbox_style,
+      '#path' => $uri,
+      '#node_id' => $node_id,
+      '#field_name' => $field['field_name'],
+    );
+  }
+  return ($element);
+  /*$element = array();
+
+  // Check if the formatter involves a particular image style.
+  //$matches = array();
+  //if (preg_match('/__([a-z0-9_]+)/', $display['type'], $matches)) {
+  //  $image_style = $matches[1];
+  //}
+
+  $pieces = explode('__', $display);
+  $image_style = $pieces[2];
+  // Temporary hardcoding link_file and image_style for debugging
+  //$image_style = 'thumbnail';
+  $link_file = TRUE;
+
+  foreach ($items as $delta => $item) {
+    if (isset($link_file)) {
+      $uri = array(
+        'path' => file_create_url($item['uri']),
+        'options' => array(),
+      );
+    }
+    $element[$delta] = array(
+      '#theme' => 'lightbox2_image',
+      '#item' => $item,
+      '#image_style' => isset($image_style) ? $image_style : '',
+      '#path' => isset($uri) ? $uri : '',
     );
   }
 
-  return $formatters;
+  return $element;*/
 }
 
 
 /**
  * Implementation of hook_theme().
  */
-function lightbox2_theme() {
+function lightbox2_theme($existing, $type, $theme, $path) {
+  $theme = array();
+  $theme['lightbox2_image'] = array(
+    'variables' => array(
+      'item' => NULL,
+      'path' => NULL,
+      'lightbox_type' => NULL,
+      'image_style' => NULL,
+      'lightbox_style' => NULL,
+      'node_id' => NULL,
+      'field_name' => NULL,
+     ),
+    //'variables' => array(),
+  );
+  //return($theme);
+
+  /*
   $theme = array(
     'lightbox2_image' => array(
-      'arguments' => array('path' => NULL, 'alt' => '', 'title' => '', 'attributes' => array()),
-      'file' => 'lightbox2.formatter.inc',
+    'variables' => array(
+     'item' => NULL,
+     'path' => NULL,
+     'image_style' => NULL
+     ),
     ),
     // Emfield theme functions.
     'lightbox2_emimage' => array(
-      'arguments' => array('field' => NULL, 'item' => NULL, 'formatter' => NULL, 'node' => NULL, 'args' => array()),
-      'file' => 'lightbox2.formatter.inc',
+      'variables' => array(
+        'field' => NULL,
+        'item' => NULL,
+        'formatter' => NULL,
+        'node' => NULL,
+        'args' => array()
+      ),
     ),
     'lightbox2_formatter_emimage' => array(
-      'arguments' => array('element' => NULL),
-      'file' => 'lightbox2.formatter.inc',
+      'render element' => 'element',
     ),
     'lightbox2_formatter_emimage_lightbox2' => array(
-      'arguments' => array('element' => NULL),
-      'file' => 'lightbox2.formatter.inc',
+      'render element' => 'element',
       'function' => 'theme_lightbox2_formatter_emimage',
     ),
     'lightbox2_formatter_emimage_lightshow2' => array(
-      'arguments' => array('element' => NULL),
-      'file' => 'lightbox2.formatter.inc',
+      'render element' => 'element',
       'function' => 'theme_lightbox2_formatter_emimage',
     ),
     'lightbox2_formatter_emimage_lightframe2' => array(
-      'arguments' => array('element' => NULL),
-      'file' => 'lightbox2.formatter.inc',
+      'render element' => 'element',
       'function' => 'theme_lightbox2_formatter_emimage',
     ),
     'lightbox2_formatter_emvideo_lightvideo' => array(
-      'arguments' => array('element' => NULL),
-      'file' => 'lightbox2.formatter.inc',
+      'render element' => 'element',
     ),
     'lightbox2_emvideo' => array(
-      'arguments' => array('field' => NULL, 'item' => NULL, 'formatter' => NULL, 'node' => NULL),
-      'file' => 'lightbox2.formatter.inc',
+      'variables' => array(
+        'field' => NULL,
+        'item' => NULL,
+        'formatter' => NULL,
+        'node' => NULL
+      ),
     ),
     // Filefield theme functions.
     'lightbox2_formatter_filefield_lightframe' => array(
-      'arguments' => array('element' => NULL),
-      'file' => 'lightbox2.formatter.inc',
+      'render element' => 'element',
     ),
     'lightbox2_file_formatter_lightbox2_iframe' => array(
-      'arguments' => array('file' => NULL, 'field' => NULL, 'file_formatter_settings' => NULL),
-      'file' => 'lightbox2.formatter.inc',
+      'variables' => array(
+        'file' => NULL,
+        'field' => NULL,
+        'file_formatter_settings' => NULL
+	  ),
     ),
     // Global imagecache + imagefield theme functions.
     'lightbox2_formatter_imagefield' => array(
-      'arguments' => array('element' => NULL),
-      'file' => 'lightbox2.formatter.inc',
+       'render element' => 'element',
     ),
     'imagefield_image_imagecache_lightbox2' => array(
-      'arguments' => array('view_preset' => NULL, 'field_name' => NULL, 'item' => NULL, 'node' => NULL, 'rel' => 'lightbox', 'args' => array()),
-      'file' => 'lightbox2.formatter.inc',
+      'variables' => array(
+        'view_preset' => NULL,
+        'field_name' => NULL,
+        'item' => NULL,
+        'node' => NULL,
+        'rel' => 'lightbox',
+        'args' => array()
+      ),
     ),
   );
 
-  // Additional imagecache + imagefield theme functions, by preset.
-  if (module_exists("imagecache")) {
+   // Additional imagecache + imagefield theme functions, by preset.
+  if (module_exists("image")) {
 
     $theme['lightbox2_formatter_imagefield__lightframe2__original__node'] = array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'function' => 'theme_lightbox2_formatter_imagefield',
-      'file' => 'lightbox2.formatter.inc',
     );
     $theme['lightbox2_formatter_imagefield__lightframe2__link__node'] = array(
       'arguments' => array('element' => NULL),
@@ -925,80 +1116,75 @@ function lightbox2_theme() {
       'file' => 'lightbox2.formatter.inc',
     );
 
-    foreach (imagecache_presets() as $src) {
-      $theme['lightbox2_formatter_imagefield__lightbox2__'. $src['presetname'] .'__original'] = array(
+    foreach (image_styles() as $src) {
+      $theme['lightbox2_formatter_imagefield__lightbox2__'. $src['name'] .'__original'] = array(
+        'render element' => 'element',
+        'function' => 'theme_lightbox2_formatter_imagefield',
+        'file' => 'lightbox2.formatter.inc',
+      );
+      $theme['lightbox2_formatter_imagefield__lightbox2_compact__'. $src['name'] .'__original'] = array(
         'arguments' => array('element' => NULL),
         'function' => 'theme_lightbox2_formatter_imagefield',
         'file' => 'lightbox2.formatter.inc',
       );
-      $theme['lightbox2_formatter_imagefield__lightbox2_compact__'. $src['presetname'] .'__original'] = array(
+      $theme['lightbox2_formatter_imagefield__lightshow2__'. $src['name'] .'__original'] = array(
+        'render element' => 'element',
+        'function' => 'theme_lightbox2_formatter_imagefield',
+      );
+      $theme['lightbox2_formatter_imagefield__lightshow2_compact__'. $src['name'] .'__original'] = array(
         'arguments' => array('element' => NULL),
         'function' => 'theme_lightbox2_formatter_imagefield',
         'file' => 'lightbox2.formatter.inc',
       );
-      $theme['lightbox2_formatter_imagefield__lightshow2__'. $src['presetname'] .'__original'] = array(
+      $theme['lightbox2_formatter_imagefield__lightbox2__original__'. $src['name']] = array(
+        'render element' => 'element',
+        'function' => 'theme_lightbox2_formatter_imagefield',
+      );
+      $theme['lightbox2_formatter_imagefield__lightbox2_compact__original__'. $src['name']] = array(
         'arguments' => array('element' => NULL),
         'function' => 'theme_lightbox2_formatter_imagefield',
         'file' => 'lightbox2.formatter.inc',
       );
-      $theme['lightbox2_formatter_imagefield__lightshow2_compact__'. $src['presetname'] .'__original'] = array(
+    	$theme['lightbox2_formatter_imagefield__lightshow2__original__'. $src['name']] = array(
+        'render element' => 'element',
+        'function' => 'theme_lightbox2_formatter_imagefield',
+
+      );
+      $theme['lightbox2_formatter_imagefield__lightshow2_compact__original__'. $src['name']] = array(
         'arguments' => array('element' => NULL),
         'function' => 'theme_lightbox2_formatter_imagefield',
         'file' => 'lightbox2.formatter.inc',
       );
-      $theme['lightbox2_formatter_imagefield__lightbox2__original__'. $src['presetname']] = array(
+      $theme['lightbox2_formatter_imagefield__lightframe2__'. $src['name'] .'__node'] = array(
+        'render element' => 'element',
+        'function' => 'theme_lightbox2_formatter_imagefield',
+      );
+      $theme['lightbox2_formatter_imagefield__lightbox2__link__'. $src['name']] = array(
         'arguments' => array('element' => NULL),
         'function' => 'theme_lightbox2_formatter_imagefield',
         'file' => 'lightbox2.formatter.inc',
       );
-      $theme['lightbox2_formatter_imagefield__lightbox2_compact__original__'. $src['presetname']] = array(
-        'arguments' => array('element' => NULL),
-        'function' => 'theme_lightbox2_formatter_imagefield',
-        'file' => 'lightbox2.formatter.inc',
-      );
-      $theme['lightbox2_formatter_imagefield__lightshow2__original__'. $src['presetname']] = array(
-        'arguments' => array('element' => NULL),
-        'function' => 'theme_lightbox2_formatter_imagefield',
-        'file' => 'lightbox2.formatter.inc',
-      );
-      $theme['lightbox2_formatter_imagefield__lightshow2_compact__original__'. $src['presetname']] = array(
-        'arguments' => array('element' => NULL),
-        'function' => 'theme_lightbox2_formatter_imagefield',
-        'file' => 'lightbox2.formatter.inc',
-      );
-      $theme['lightbox2_formatter_imagefield__lightframe2__'. $src['presetname'] .'__node'] = array(
-        'arguments' => array('element' => NULL),
-        'function' => 'theme_lightbox2_formatter_imagefield',
-        'file' => 'lightbox2.formatter.inc',
-      );
-      $theme['lightbox2_formatter_imagefield__lightbox2__link__'. $src['presetname']] = array(
-        'arguments' => array('element' => NULL),
-        'function' => 'theme_lightbox2_formatter_imagefield',
-        'file' => 'lightbox2.formatter.inc',
-      );
-      $theme['lightbox2_formatter_imagefield__lightshow2__link__'. $src['presetname']] = array(
+      $theme['lightbox2_formatter_imagefield__lightshow2__link__'. $src['name']] = array(
         'arguments' => array('element' => NULL),
         'function' => 'theme_lightbox2_formatter_imagefield',
         'file' => 'lightbox2.formatter.inc',
       );
 
-      foreach (imagecache_presets() as $dest) {
-        $theme['lightbox2_formatter_imagefield__lightbox2__'. $src['presetname'] .'__'. $dest['presetname']] = array(
+      foreach (image_styles() as $dest) {
+        $theme['lightbox2_formatter_imagefield__lightbox2__'. $src['name'] .'__'. $dest['name']] = array(
+          'render element' => 'element',
+          'function' => 'theme_lightbox2_formatter_imagefield',
+        );
+        $theme['lightbox2_formatter_imagefield__lightbox2_compact__'. $src['name'] .'__'. $dest['name']] = array(
           'arguments' => array('element' => NULL),
           'function' => 'theme_lightbox2_formatter_imagefield',
           'file' => 'lightbox2.formatter.inc',
         );
-        $theme['lightbox2_formatter_imagefield__lightbox2_compact__'. $src['presetname'] .'__'. $dest['presetname']] = array(
-          'arguments' => array('element' => NULL),
+        $theme['lightbox2_formatter_imagefield__lightshow2__'. $src['name'] .'__'. $dest['name']] = array(
+          'render element' => 'element',
           'function' => 'theme_lightbox2_formatter_imagefield',
-          'file' => 'lightbox2.formatter.inc',
         );
-        $theme['lightbox2_formatter_imagefield__lightshow2__'. $src['presetname'] .'__'. $dest['presetname']] = array(
-          'arguments' => array('element' => NULL),
-          'function' => 'theme_lightbox2_formatter_imagefield',
-          'file' => 'lightbox2.formatter.inc',
-        );
-        $theme['lightbox2_formatter_imagefield__lightshow2_compact__'. $src['presetname'] .'__'. $dest['presetname']] = array(
+        $theme['lightbox2_formatter_imagefield__lightshow2_compact__'. $src['name'] .'__'. $dest['name']] = array(
           'arguments' => array('element' => NULL),
           'function' => 'theme_lightbox2_formatter_imagefield',
           'file' => 'lightbox2.formatter.inc',
@@ -1006,7 +1192,7 @@ function lightbox2_theme() {
       }
     }
   }
-
+  
   // Additional Insert theme functions.
   if (module_exists('insert')) {
     // Theme functions in lightbox2.insert.inc.
@@ -1014,8 +1200,10 @@ function lightbox2_theme() {
       'arguments' => array('item' => NULL, 'widget' => NULL, 'type' => NULL, 'image_preset_name' => NULL, 'link_preset_name' => NULL),
       'template' => 'lightbox2-insert-image',
     );
+  }*/
+  foreach ($theme as &$array) {
+    $array['file'] = 'lightbox2.formatter.inc';
   }
-
   return $theme;
 }
 
@@ -1035,6 +1223,7 @@ function lightbox2_theme() {
  * @param id
  *   The video id.
  */
+/*
 function lightbox2_emvideo($node, $width, $height, $field_name, $provider, $id) {
   $field = content_fields($field_name);
   $field['widget']['video_width'] = $width;
@@ -1054,7 +1243,7 @@ function lightbox2_emvideo($node, $width, $height, $field_name, $provider, $id) 
     }
   }
   print theme('emvideo_video_video', $field, $item, 'video_video', $node);
-}
+}*/
 
 /**
  * Return TRUE if current path is disabled for lightbox according to
@@ -1108,10 +1297,11 @@ function lightbox2_preprocess_page(&$variables) {
  * @param $node
  *   The $node object.
  */
+/*
 function lightbox2_acidfree_video($node) {
-  print theme('video_player', $node);
+print theme('video_player', array( 'node' => $node ) );
 }
-
+*/
 /**
  * Implementation of filefield's hook_file_formatter_info().
  */
@@ -1233,23 +1423,23 @@ function lightbox2_login() {
     return drupal_get_form('user_login_block');
   }
   else {
-    print drupal_get_form('user_login_block');
+    print drupal_render(drupal_get_form('user_login_block'));
     // If the OpenID module is enabled, the javascript and css may not exist
     // on the page, so add them dynamically.
     if (module_exists('openid')) {
       $path = drupal_get_path('module', 'openid');
-      $js_file = base_path() . $path .'/openid.js';
-      $css_file = base_path() . $path .'/openid.css';
+      $js_file = base_path() . $path . '/openid.js';
+      $css_file = base_path() . $path . '/openid.css';
 
       // Load the javascript dynamically.
-      print '<script type="text/javascript">$.getScript("'. $js_file .'", function () {if ($.isFunction(Drupal.behaviors.openid)) { Drupal.behaviors.openid(document); } });</script>';
+      print '<script type="text/javascript">$.getScript("' . $js_file . '", function () {if ($.isFunction(Drupal.behaviors.openid)) { Drupal.behaviors.openid(document); } });</script>';
 
       // Load the css file dynamically.
       print '<script type="text/javascript">
         var fileref=document.createElement("link");
         fileref.setAttribute("rel", "stylesheet");
         fileref.setAttribute("type", "text/css");
-        fileref.setAttribute("href", "'. $css_file .'");
+        fileref.setAttribute("href", "'. $css_file . '");
         document.getElementsByTagName("head")[0].appendChild(fileref);
         </script>';
     }
@@ -1267,8 +1457,8 @@ function lightbox2_login() {
 function lightbox2_contact() {
   if (module_exists('contact') && variable_get('lightbox2_enable_contact', FALSE) && user_access('access site-wide contact form')) {
     $path = drupal_get_path('module', 'contact');
-    include_once($path .'/contact.pages.inc');
-    print drupal_get_form('contact_mail_page');
+    include_once($path . '/contact.pages.inc');
+    print drupal_render(drupal_get_form('contact_site_form'));
     // drupal_add_js() with 'inline' didn't seem to work, possibly because this is
     // AJAX loaded content.
     print '<script type="text/javascript">Drupal.attachBehaviors();</script>';
@@ -1294,7 +1484,13 @@ function lightbox2_contact() {
  */
 function lightbox2_form_user_login_block_alter(&$form, $form_state, $form_id = "user_login_block") {
   if ($form_id == 'user_login_block' && arg(0) == 'user' && arg(1) == 'login' && arg(2) == 'lightbox2') {
-    $form['#action'] = url('user/login/lightbox2', array('query' => 'destination='. $_GET['destination']));
+    $form['#action'] = url('user/login/lightbox2', array('query' => array('destination' => $_GET['destination'])));
+  }
+}
+
+function lightbox2_form_contact_site_form_alter(&$form, $form_state, $form_id = "contact_site_form") {
+  if ($form_id == 'contact_site_form' && arg(0) == 'contact' && arg(1) == 'lightbox2') {
+    $form['#action'] = url('contact', array('query' => array('destination' => $_GET['destination'])));
   }
 }
 
@@ -1331,12 +1527,12 @@ function lightbox2_link_alter(&$links, $node) {
       $rel = 'lightframe';
       break;
   }
-  $rel = $rel .'[]['. $node->title .']';
+  $rel = $rel . '[][' . $node->title . ']';
   foreach ($trigger_sizes as $size) {
-    if (isset($links['image_size_'. $size])) {
-      $links['image_size_'. $size]['attributes']['rel'] = $rel;
-      $links['image_size_'. $size]['href'] = $node->images[$size];
-      unset($links['image_size_'. $size]['query']);
+    if (isset($links['image_size_' . $size])) {
+      $links['image_size_' . $size]['attributes']['rel'] = $rel;
+      $links['image_size_' . $size]['href'] = $node->images[$size];
+      unset($links['image_size_' . $size]['query']);
     }
   }
 }
@@ -1346,12 +1542,12 @@ function lightbox2_link_alter(&$links, $node) {
  */
 function lightbox2_views_api() {
   return array(
-    'api' => '2.0',
+    'api' => '3.0',
   );
 }
 
 function lightbox2_filter_xss() {
-  $allowed_tags = trim(variable_get('lightbox2_filter_xss_allowed_tags', 'p, br, a, em, strong, cite, code, ul, ol, li, dl, dt, dd'));
+  $allowed_tags = trim(variable_get('lightbox2_filter_xss_allowed_tags', 'p, br, a, em, strong, cite, code, ul, ol, li, dl, dt, dd, '));
   $allowed_tags = (empty($allowed_tags) ? array() : preg_split('/[,\s]+/', $allowed_tags));
   if (!empty($_POST['allowed_tags']) && $_POST['allowed_tags'] != 'undefined') {
     $allowed_tags = explode(',', $_POST['allowed_tags']);
@@ -1360,6 +1556,6 @@ function lightbox2_filter_xss() {
   else {
     $output = filter_xss($_POST['string'], $allowed_tags);
   }
-  drupal_json($output);
+  drupal_json_output($output);
 }
 

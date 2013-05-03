@@ -17,7 +17,9 @@
  * Slideshow, iframe and video functionality added by Stella Power.
  */
 
-var Lightbox = {
+var Lightbox;
+(function($) {
+Lightbox = {
   auto_modal : false,
   overlayOpacity : 0.8, // Controls transparency of shadow overlay.
   overlayColor : '000', // Controls colour of shadow overlay.
@@ -1177,7 +1179,9 @@ var Lightbox = {
 };
 
 // Initialize the lightbox.
-Drupal.behaviors.initLightbox = function (context) {
+Drupal.behaviors.initLightbox = {
+  attach: function(context) {
+
   $('body:not(.lightbox-processed)', context).addClass('lightbox-processed').each(function() {
     Lightbox.initialize();
     return false; // Break the each loop.
@@ -1186,5 +1190,6 @@ Drupal.behaviors.initLightbox = function (context) {
   // Attach lightbox to any links with lightbox rels.
   Lightbox.initList(context);
   $('#lightboxAutoModal', context).triggerHandler('click');
+  }
 };
-
+})(jQuery);

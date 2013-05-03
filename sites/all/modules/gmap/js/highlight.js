@@ -14,13 +14,17 @@
  * 
  * Original code "Google Maps JavaScript API Example"
  */
-highlightMarker = function (map, currentMarker, highlightID, color) {
-  var markerPoint = currentMarker.marker.getPoint();
+highlightMarker = function (gmap, currentMarker, highlightID, color) {
+
+  var map = gmap.map;
+
+  var markerPoint = currentMarker.marker.getPosition();
   var polyPoints = Array();
 
-  var mapNormalProj = G_NORMAL_MAP.getProjection();
+  var mapNormalProj = gmap.highlight.overlay.getProjection();
+
   var mapZoom = map.getZoom();
-  var clickedPixel = mapNormalProj.fromLatLngToPixel(markerPoint, mapZoom);
+  var clickedPixel = mapNormalProj.fromLatLngToDivPixel(markerPoint, mapZoom);
 
   var polySmallRadius = 20;
   var polyNumSides = 20;
@@ -31,18 +35,47 @@ highlightMarker = function (map, currentMarker, highlightID, color) {
     var polyRadius = polySmallRadius; 
     var pixelX = clickedPixel.x + polyRadius * Math.cos(aRad);
     var pixelY = clickedPixel.y + polyRadius * Math.sin(aRad);
-    var polyPixel = new GPoint(pixelX, pixelY);
-    var polyPoint = mapNormalProj.fromPixelToLatLng(polyPixel, mapZoom);
+    var polyPixel = new google.maps.Point(pixelX, pixelY);
+    var polyPoint = mapNormalProj.fromDivPixelToLatLng(polyPixel, mapZoom);
     polyPoints.push(polyPoint);
   }
   // Using GPolygon(points,  strokeColor?,  strokeWeight?,  strokeOpacity?,  fillColor?,  fillOpacity?)
-  map.highlightID = new GPolygon(polyPoints, color, 2, 0, color, 0.5);
-  map.addOverlay(map.highlightID);
+  gmap.highlight.polygon = new google.maps.Polygon( {
+    paths: polyPoints,
+    strokeColor: color,
+    strokeWeight: 2,
+    strokeOpacity: 0,
+    fillColor: color,
+    fillOpacity: 0.5
+  } );
+  gmap.highlight.polygon.setMap( map );
+
 };
 
-unHighlightMarker = function (map, currentMarker, highlightID) {
-  if (map.highlightID) {
-    map.removeOverlay(map.highlightID);
-    delete map.highlightID;
+unHighlightMarker = function (gmap, currentMarker, highlightID) {
+  if (gmap.highlight.polygon) {
+    gmap.highlight.polygon.setMap( null );
+    delete gmap.highlight.polygon;
   }
 };
+
+Drupal.gmap.addHandler('gmap', function (elem) {
+
+  var obj = this;
+
+  function HighlightOverlay(m) { this.setMap(m); }
+
+  HighlightOverlay.prototype = new google.maps.OverlayView();
+
+  HighlightOverlay.prototype.onAdd = function() { }
+  HighlightOverlay.prototype.onRemove = function() { }
+  HighlightOverlay.prototype.draw = function() { }
+
+  obj.bind('init', function () {
+
+    obj.highlight = {};
+    obj.highlight.overlay = new HighlightOverlay( obj.map );
+
+  });
+
+} );

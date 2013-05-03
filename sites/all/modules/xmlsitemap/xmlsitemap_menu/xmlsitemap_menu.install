@@ -36,7 +36,6 @@ function xmlsitemap_menu_update_6200() {
   }
   variable_del('xmlsitemap_menu_menus');
   variable_del('xmlsitemap_menu_calculate_priority');
-  return array();
 }
 
 /**
@@ -45,5 +44,4 @@ function xmlsitemap_menu_update_6200() {
 function xmlsitemap_menu_update_6201() {
   drupal_load('module', 'xmlsitemap');
   xmlsitemap_link_type_rename('menu', 'menu_link');
-  return array();
 }

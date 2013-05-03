@@ -16,4 +16,4 @@
  */
 ?>
 
-<?php print drupal_render($renderable); ?>
+<?php print drupal_render_children($renderable); ?>

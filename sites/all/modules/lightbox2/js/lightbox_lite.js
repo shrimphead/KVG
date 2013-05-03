@@ -12,6 +12,8 @@
  *    Mailto: bugzie@gmail.com
  */
 
+// start jQuery block
+(function ($) {
 //
 // getPageScroll()
 // Returns array with x,y page scroll values.
@@ -380,10 +382,13 @@ function initLightbox() {
   objKeyboardMsg.setAttribute('id', 'keyboardMsg');
   objKeyboardMsg.innerHTML = settings.lite_press_x_close;
   objLightboxDetails.appendChild(objKeyboardMsg);
-
-
 }
 
-Drupal.behaviors.initLightbox2 = function (context) {
-  initLightbox();
+Drupal.behaviors.initLightbox2 = {
+  attach: function(context) {
+    initLightbox();
+  }
 };
+
+//End jQuery block
+}(jQuery));

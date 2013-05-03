@@ -21,10 +21,10 @@ hr { display:none; }
  * Console ============================================================
  */
 div.messages {
-  padding:15px;
   color:#036;
   background-color:#f8f8f8;
-  border:5px solid #fff;
+  border:1px solid #ccc;
+  margin:0px 0px 10px;
   }
 
 table tr.warning th,
@@ -46,9 +46,9 @@ div.status {
   background-color:#ecf8f4;
   }
 
-  div.error   { border-color:#fff8f4; }
-  div.warning { border-color:#fffce4; }
-  div.status  { border-color:#f8fffc; }
+  div.error   { border-color:#ffd4d0; }
+  div.warning { border-color:#ffe4b0; }
+  div.status  { border-color:#dce8e4; }
 
 /**
  * Pagers =============================================================
@@ -64,6 +64,7 @@ div.status {
 /**
  * Menus, lists =======================================================
  */
+.admin-block-description,
 .help-items ul li,
 .confirmation ul li,
 .item-list ul li,
@@ -75,6 +76,7 @@ div.status {
   border-bottom:1px solid #f4f4f4;
   }
 
+  .admin-block-description,
   .help-items ul li:last-child,
   .confirmation ul li:last-child,
   .item-list ul li:last-child,
@@ -84,6 +86,7 @@ div.status {
     padding-bottom:5px;
     }
 
+.admin-panel h3 span.icon,
 .admin-list li a span.icon {
   position:absolute;
   left:10px;
@@ -92,34 +95,54 @@ div.status {
 
   .admin-list-compact li a span.icon { top:5px; }
 
+.admin-panel h3,
 .node-type-list li,
 .admin-list li {
   position:relative;
   padding:10px 5px 9px 50px;
   margin:0px;
+  min-height:30px;
   border-bottom:1px solid #e8e8e8;
   }
 
-  .node-type-list li:last-child,
-  .admin-list li:last-child {
-    padding-bottom:10px;
-    border:0px;
+  .admin-panel h3 {
+    background:#f4f4f4;
+    line-height:30px;
     }
 
-  ul.node-type-list label { font-size:15px; }
+  .admin-list-compact li { min-height:20px; }
+
+  .node-type-list li:last-child,
+  .admin-list li:last-child { border:0px; }
 
 /**
  * Tables =============================================================
  */
+.tabledrag-toggle-weight-wrapper {
+  float:right;
+  font-size:11px;
+  margin-bottom:-30px;
+  height:20px;
+  padding:5px;
+  }
+
+.tabledrag-toggle-weight-wrapper a {
+  display:block;
+  width:20px;
+  height:20px;
+  text-indent:-999px;
+  overflow:hidden;
+  background:url(images/bleeds.png) -40px -120px no-repeat;
+  }
+
+
 table {
   width:100%;
-  font-size:11px;
-  line-height:15px;
   margin:0px 0px 10px;
   background-color:#fff;
 
   border-collapse:collapse;
-  border-color:#ccc #ddd #eee;
+  border-color:#ddd;
   border-width:1px;
   border-style:solid;
   }
@@ -136,6 +159,7 @@ table th {
   }
 
 table th {
+  font-size:11px;
   text-align:left;
   font-weight:normal;
   color:#666;
@@ -158,7 +182,12 @@ table tr.region td { background:#f8f8f8; }
 
 /* Hide tabledrag markers */
 table tr.draggable span.tabledrag-changed { display:none; }
-
+ 
+/* Stripe administrative tables */
+.page-admin table tr.even, .page-admin table tr.even td {
+  background: #f9f9f9;
+}
+               
 /**
  * Forms ==============================================================
  */
@@ -175,7 +204,7 @@ table tr.draggable span.tabledrag-changed { display:none; }
 
   border-width:1px;
   border-style:solid;
-  border-color:#ccc #ddd #eee;
+  border-color:#ddd;
   }
 
   .form-item {
@@ -185,27 +214,50 @@ table tr.draggable span.tabledrag-changed { display:none; }
 
   .admin-list { margin:0px; }
 
-.block .item-list,
+table .form-item,
+table .item-list,
 .block .form-item,
+.block .item-list,
+.admin-panel .item-list,
 .admin-panel .admin-list,
-.teaser-checkbox .form-item,
-.form-item .form-item,
 .fieldset .form-item,
-table .form-item {
-  background:transparent;
-  padding:5px;
-  margin:0px;
-  border:0px;
-  }
+.fieldset .form-type-radio,
+.fieldset .form-type-checkbox,
+.form-item .form-item,
+.form-item .form-type-radio,
+.form.item .form-type-checkbox,
+.form-checkboxes .form-type-checkbox,
+.text-format-wrapper .fieldset .form-item {
+    background:transparent;
+    padding:0px;
+    border:0px;
+    }
 
+  table .form-item,
+  table .item-list,
   .block .item-list,
+  .admin-panel .item-list,
   .admin-panel .admin-list,
-  .form-item .form-item-filter { padding:0px; }
+  .fieldset .form-type-radio,
+  .fieldset .form-type-checkbox,
+  .form-item .form-type-radio,
+  .form.item .form-type-checkbox,
+  .form-checkboxes .form-type-checkbox { margin-bottom:0px; }
+
+.text-format-wrapper .form-item {
+  background:#fff;
+  margin:0px 0px 10px;
+
+  border-width:1px;
+  border-style:solid;
+  border-color:#ddd;
+  padding: 9px;
+  }
 
 .form-item label {
   margin:0px;
   padding:0px;
-  color:#999;
+  color:#666;
   font-weight:bold;
   font-size:10px;
   text-transform:uppercase;
@@ -274,54 +326,43 @@ input.form-submit {
   border-width:1px;
   border-style:solid;
   border-color:#ddd #ddd #ccc;
-  background:#f4f4f4 url(images/bleeds.png) 0px -41px repeat-x;
+  background:#fff url(images/buttons.png) -1px 50% no-repeat;
   }
 
   input.form-submit:hover {
-    border-color:#999 #999 #888;
-    background:#888 url(images/bleeds.png) 0px 0px repeat-x;
-    color:#fff;
+    border-color:#ace;
+    -webkit-box-shadow:#ace 0px 0px 5px;
     }
 
   input.form-submit:active {
-    background:#666;
-    color:#fff;
+    border-color:#666 #666 #555;
+    background:#666 url(images/buttons.png) -401px 50% no-repeat;
+    color:#222;
+    text-shadow:#999 0px 1px 0px;
     }
 
-  /* Teaser splitter */
-  .teaser-checkbox {
-    position:relative;
-    z-index:2;
+  input.button-yes {
+    background-position:-2401px 50%;
+    padding-left:25px;
     }
 
-  .teaser-checkbox div { margin:5px 0px 0px; }
+  input.button-yes:active { background-position:-2801px 50%; }
 
-  input.teaser-button {
-    padding:0px 5px;
-    font-size:11px;
+  input.button-no {
+    background-position:-3201px 50%;
+    padding-left:25px;
     }
 
-  form input#edit-delete { color:#ccc; }
-
-/* Filter form */
-.filter-options .form-item,
-.filter-options .filter-help {
-  font-size:11px;
-  margin:10px 10px 0px 0px;
-  padding:0px;
-  float:left;
-  }
-
-  .filter-options .form-item:hover > .description { display:none; }
+  input.button-no:active { background-position:-3601px 50%; }
 
 input.form-autocomplete,
 input.form-text,
 textarea.form-textarea,
 select.form-select {
-  padding:2px;
-  border-width:2px;
+  padding:3px;
+  border-width:1px;
   border-style:solid;
-  border-color:#e8e8e8 #f0f0f0 #f8f8f8;
+  border-color:#ccc;
   background:#fff;
   color:#666;
   max-width:100%;
@@ -337,6 +378,7 @@ select.form-select {
   select.form-select:focus {
     color:#333;
     border-color:#ace;
+    -webkit-box-shadow:#ace 0px 0px 5px;
     }
 
   input.fluid {
@@ -350,36 +392,33 @@ select.form-select {
   html.js input.form-autocomplete { background-position:100% 7px; }
   html.js input.throbbing { background-position:100% -13px; }
 
-  /* Exceptions */
-  #diff-inline-form select,
-  #content .filter-options select { padding:0px; }
-
 /* Fieldsets */
 .fieldset,
 .fieldset-title,
 .fieldset-title a,
 .fieldset-content { display:block; }
 
-.fieldset { margin:0px 0px 10px; }
-
-.fieldset.titled {
+.fieldset {
+  margin:0px 0px 10px;
   display:block;
   position:relative;
-  min-height:30px;
+  min-height:28px;
+  border: 1px solid #CCCCCC;
   }
+fieldset legend {
+  display: block;
+  float: left;
+  width: 100%;
+}
+body.page-admin div.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane fieldset {
+  padding:0;
+}
 
-.fieldset-title {
+.fieldset-legend {
   display:block;
-  position:absolute;
-  left:0px;
-  right:0px;
-  top:0px;
-  border-width:1px;
-  border-style:solid;
-  border-color:#ccc #ddd #eee;
   }
 
-.container-inline .fieldset-title .fieldset-content,
+.container-inline .fieldset-legend .fieldset-content,
 .fieldset.titled .fieldset-content {
   display:block;
   padding-top:40px;
@@ -387,53 +426,50 @@ select.form-select {
 
 .item-list h3,
 .block .block-title,
-.admin-panel h3,
 .fieldset-title,
-.collapsible .fieldset-title a {
+.collapsible .fieldset-legend a {
   display:block;
   font-size:11px;
   margin:0px;
   padding:4px 9px 5px;
   color:#333;
-  background:#f4f4f4;
+  background:#f6f6f6;
   }
 
-  .fieldset-title,
-  .collapsible .fieldset-title a { padding-bottom:4px; }
+  .fieldset-legend,
+  .collapsible .fieldset-legend a { padding-bottom:4px; }
 
   /* Explicit height for IE */
-  .collapsible .fieldset-title a { height:20px; }
+  .collapsible .fieldset-legend a { height:20px; }
 
-  .admin-panel h3 { background:#eee; }
-
-  .collapsible .fieldset-title span.icon {
+  .collapsible .fieldset-legend span.icon {
     position:absolute;
     left:-20px;
     top:4px;
-    background:url(images/sprite.png) 0px -20px no-repeat;
+    background:url(images/bleeds.png) -20px -180px no-repeat;
     width:20px;
     height:20px;
     display:block;
     cursor:pointer;
     }
 
-    html.js .collapsed .fieldset-title span.icon { background-position:0px 0px; }
+    html.js .collapsed .fieldset-legend span.icon { background-position:0px -180px; }
 
-    .fieldset .collapsible .fieldset-title span.icon { display:none; }
+    .fieldset .collapsible .fieldset-legend span.icon { display:none; }
 
-  .collapsed .fieldset-title a {
+  .collapsed .fieldset-legend a {
     background:#eee;
-    color:#999;
+    color:#484848;
     }
 
-  .collapsed .fieldset-title a:hover { color:#666; }
+  .collapsed .fieldset-legend a:hover { color:#666; }
 
-  .collapsible .fieldset-title {
+  .collapsible .fieldset-legend {
     padding:0px;
     background:transparent;
     }
 
-  .collapsed .fieldset-title a { padding-bottom:4px; }
+  .collapsed .fieldset-legend a { padding-bottom:4px; }
 
 .block .block-content,
 .container-inline .fieldset-content,
@@ -442,18 +478,42 @@ select.form-select {
   background:#fff;
   }
 
-  .container-inline .fieldset-content,
-  .fieldset-content {
-    border-width:1px;
-    border-style:solid;
-    border-color:#ccc #ddd #eee;
-    }
-
-  .titled .fieldset-content { border-width:0px 1px 1px; }
 
   html.js .collapsed .fieldset-content { display:none; }
 
   .fieldset .fieldset .fieldset-content { background:#fff; }
+
+/* Filter form */
+.filter-wrapper {
+  font-size:11px;
+  margin-top:-10px;
+  border-top:none; 
+  }
+
+.filter-wrapper .fieldset-content,
+.fieldset .fieldset.filter-wrapper .fieldset-content  {
+  background:#f8f8f8;
+  border-top:0px;
+  height:20px;
+  padding:5px 9px 4px;
+  }
+
+.filter-wrapper .form-type-select { padding:0px; }
+.filter-wrapper .form-type-select * {
+  float:left;
+  margin-right:5px;
+  }
+
+.filter-wrapper select {
+  padding:0px;
+  font-size:11px;
+  }
+
+.filter-wrapper .filter-help {
+  float:right;
+  font-size:11px;
+  padding:0px;
+  }
 
 /**
  * Form layout: Default ===============================================
@@ -476,15 +536,23 @@ select.form-select {
 
 .column-footer { clear:both; }
 
-form .buttons {
+form .form-actions {
   background:#eee;
   border:1px solid #ddd;
   padding:9px;
   }
 
-  .form-layout-default .column-main .buttons { display:none; }
-  .form-layout-default .column-side .buttons { margin:0px 0px 10px; }
-  .form-layout-default .column-side .buttons input.form-submit { margin:1px 0px; }
+  form .form-actions.container-inline {
+    background:transparent;
+    border:0px;
+    padding:0px;
+    }
+
+  form .form-actions input.form-submit { margin-right:5px; }
+
+  .form-layout-default .column-main .form-actions { display:none; }
+  .form-layout-default .column-side .form-actions { margin:0px 0px 10px; }
+  .form-layout-default .column-side .form-actions input.form-submit { margin:1px 5px 1px 0px; }
 
 /**
  * "Boxes" aka generic wrappers =======================================
@@ -522,17 +590,41 @@ form .buttons {
   margin:0px;
   }
 
-/* admin/content/node & admin/user/user */
-#content dl.multiselect,
-#content dl.multiselect dt,
-#content dl.multiselect dd { margin:0px 10px 0px 0px; }
+/* admin/appearance */
+.theme-selector {
+  position:relative;
+  padding:9px 9px 9px 139px;
+  border:1px solid #ddd;
+  margin:10px 0px;
+  min-height:80px;
+  text-shadow:#fff 0px 1px 0px;
+  }
 
-#content dl.multiselect select {
+.theme-selector img {
+  left:10px;
+  top:10px;
+  position:absolute;
+  clip:rect(0px 120px 80px 0px); /* IE6, IE7 */
+  clip:rect(0px,120px,80px,0px);
+  }
+
+.theme-selector .operations a { margin-right:20px; }
+
+.system-themes-list-disabled .theme-selector {
+  background:#eee;
+  color:#676767;
+  }
+
+/* admin/content/node & admin/user/user */
+.exposed-filters .form-item label {
+  float:left;
+  width:120px;
+  }
+
+.exposed-filters .additional-filters {
+  padding:5px;
   font-size:11px;
-  background:#fff;
-  border-style:solid;
-  border-width:2px;
-  border-color:#e8e8e8 #f0f0f0 #f8f8f8;
+  color:#666;
   }
 
 /* update options */
@@ -563,6 +655,16 @@ form .buttons {
 .admin-enabled { color: #099; }
 .admin-missing { color: #c30; }
 
+/* progressbar styles */
+.progress .bar {
+  -webkit-box-shadow:inset #ddd 0px 1px 3px;
+  -moz-box-shadow:inset #ddd 0px 1px 3px;
+  background:#eee;
+  border:1px solid #ccc;
+  }
+
+.progress .filled { background:#666; }
+
 /**
  * Help pages =========================================================
  */
@@ -572,9 +674,9 @@ form .buttons {
 /**
  * Admin toolbar ======================================================
  */
-body.rubik #admin-toolbar a.menu-hover span.menu-description { padding-left:50px; }
+body.tao #admin-toolbar a.menu-hover span.menu-description { padding-left:50px; }
 
-body.rubik #admin-toolbar a.menu-hover span.menu-description span.icon {
+body.tao #admin-toolbar a.menu-hover span.menu-description span.icon {
   position:absolute;
   left:10px;
   top:0px;
@@ -588,6 +690,8 @@ body.rubik #admin-toolbar a.menu-hover span.menu-description span.icon {
  * Some form elements are either too weirdly positioned or really benefit
  * from persistent descriptions. Reset for all of these.
  */
+.page-content .form-item-files-feeds,
+.page-content .form-item-files-feeds .description,
 .ctools-export-ui-row .form-item,
 .ctools-export-ui-row .form-item .description,
 .multiselect .form-item,
@@ -607,11 +711,13 @@ body.rubik #admin-toolbar a.menu-hover span.menu-description span.icon {
   display:block;
   }
 
+.page-content .form-item-files-feeds:hover,
 .ctools-export-ui-row .form-item:hover,
 .multiselect .form-item:hover,
 .page-content table .form-item:hover,
 #views-ajax-pad .form-item:hover { position:static; }
 
+.page-content .form-item-files-feeds .description,
 .page-content table .form-item .description,
 #upload-attachments .description,
 #views-ajax-pad .form-item .description {
@@ -633,7 +739,61 @@ body.rubik #admin-toolbar a.menu-hover span.menu-description span.icon {
 
 .container-inline { margin:0px 0px 10px; }
 
-.buttons .container-inline { margin:0px; }
+/**
+ * Vertical tabs=======================================================
+ */
+.vertical-tabs {
+  background:#fff url(images/vtabs.png) 0px 0px repeat-y;
+  border:1px solid #ddd;
+  margin:0px 0px 10px;
+  position:relative;
+  }
+
+.vertical-tabs .fieldset-content,
+.vertical-tabs fieldset.titled .fieldset-content {
+  border:0px;
+  padding:10px;
+  }
+.vertical-tabs .fieldset-content .fieldset-content {
+  margin-top: 20px;
+}
+
+.vertical-tabs-list li a {
+  display:block;
+  text-shadow:#fff 0px 1px 0px;
+  padding:5px 10px 4px 10px;
+  border-bottom:1px solid #ddd;
+  color:#666;
+  }
+
+.vertical-tabs-list .selected a {
+  background:#fff;
+  color:#333;
+  }
+
+.vertical-tabs-list .summary { font-size:11px; }
+
+/**
+ * Action links =======================================================
+ */
+.action-links a {
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border-radius:5px;
+
+  margin:0px 5px 0px 0px;
+  padding:0px 5px 0px 25px;
+  background:#999 url(images/buttons.png) -800px 50% no-repeat;
+  color:#fff;
+  text-shadow:#666 0px 1px 0px;
+  }
+
+  .action-links a:active {
+    color:#222;
+    background-color:#666;
+    background-position:-1200px 50%;
+    text-shadow:#999 0px 1px 0px;
+    }
 
 /**
  * ORPHANED MARKUP ====================================================
@@ -643,12 +803,15 @@ body.rubik #admin-toolbar a.menu-hover span.menu-description span.icon {
  */
 .compact-link {
   font-size:11px;
+  height:20px;
   margin:0px 0px 10px;
   }
 
 .compact-link a {
+  float:left;
+  line-height:18px;
+  padding:0px 9px;
   border:1px solid #ddd;
-  padding:4px 9px;
   color:#666;
   background:#fff;
   }

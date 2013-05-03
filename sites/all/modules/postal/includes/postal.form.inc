@@ -1,25 +1,26 @@
-<?php // $Id: postal.form.inc,v 1.4 2009/09/25 20:10:25 jerdavis Exp $
+<?php
 
 /**
  * An element #process callback for postal elements.
  */
-function postal_form_process_postal($element, $edit, &$form_state, $form) {
+function postal_form_process_postal($element, &$form_state, $form) {
   if (!$settings = $element['#postal_settings']) $settings = array();
-
+/* @todo not sure what this does/did.
   $id = is_object($address) ? $address->id : $address;
   $id = check_plain($id);
-
-  if (isset($element['#postal_address'])) {
-    $address = postal_address($element['#postal_address']);
+*/
+  if (isset($element['#value'])) {
+    $address = postal_address($element['#value']);
   }
   elseif (isset($element['#default_value'])) {
     $address = postal_address($element['#default_value']);
   }
+  else {
+    $address = new stdClass();
+  }
 
   $country = $address->country;
 
-  $element['#prefix'] = '<div class="postal-form">';
-  $element['#suffix'] = '</div>';
   $element['street1'] = array(
     '#type' => 'textfield',
     '#title' => $element['#title'] ? $element['#title'] : t('Street Address'),
@@ -36,8 +37,6 @@ function postal_form_process_postal($element, $edit, &$form_state, $form) {
     '#maxlength' => 75,
   );
   $element['locale'] = array(
-    '#prefix' => '<div class="postal-locale">',
-    '#suffix' => '</div><div style="clear: both"></div>',
   );
   $element['locale']['city'] = array(
     '#type' => 'textfield',
@@ -50,7 +49,7 @@ function postal_form_process_postal($element, $edit, &$form_state, $form) {
   );
 
   // We don't know if country has states.
-  if (is_null($country->children)) {
+  if (!is_object($country)) {
     $element['locale']['state'] = array(
       '#type' => 'textfield',
       '#title' => t('State/Province'),
@@ -61,7 +60,7 @@ function postal_form_process_postal($element, $edit, &$form_state, $form) {
       '#required' => $element['#required'],
     );
   }
-  elseif ($country->children > 0) {
+  elseif (is_object($country) && $country->children > 0) {
     $element['locale']['state'] = array(
       '#type' => 'select',
       '#title' => t('State/Province'),
@@ -103,23 +102,23 @@ function postal_form_process_postal($element, $edit, &$form_state, $form) {
 /**
  * An element #process callback for postal_general elements.
  */
-function postal_form_process_postal_general($element, $edit, &$form_state, $form) {
+function postal_form_process_postal_general($element, &$form_state, $form) {
   if (!$o = $element['#postal_settings']) $o = array();
   $id = $element['#id'];
   $none = array('' => t('- None -'));
 
   // During an AHAH callback, $edit will have our values on the first pass.
   // Store this value so it's available for the second call.
-  if ($edit) $form_state[$id] = postal_element_value($element, $edit);
+  // if ($edit) $form_state[$id] = postal_element_value($element, $edit);
 
   // If the stored value exists, set the element's value accordingly.
-  if (isset($form_state[$id])) $element['#value'] = $form_state[$id];
+  // @todo legacy?
+  // if (isset($form_state[$id])) $element['#value'] = $form_state[$id];
 
   $address = postal_address($element['#value']);
-
   // Respect any user-configured labels for these elements.
   $labels = $o['labels'];
-  $type_label = $labels['type'] ? $labels['type'] : $element['#title'];
+  $type_label = isset($labels['type']) ? $labels['type'] : $element['#title'];
   $country = $labels ? $labels['country'] : t('Country');
   $state   = $labels ? $labels['state'] : t('State/Province');
   $city    = $labels ? $labels['city'] : t('City');
@@ -132,6 +131,7 @@ function postal_form_process_postal_general($element, $edit, &$form_state, $form
     'city'    => $city,
     'zip'     => $zip,
   );
+
 
   // Limit the granularity selection based on configuration settings.
   if (isset($o['selection_types'])) {
@@ -164,6 +164,7 @@ function postal_form_process_postal_general($element, $edit, &$form_state, $form
     if ($type_label == $element['#title']) unset($element['#title']);
 
     // Hide the non-pertinent inputs.
+    /*
     $js = 'Drupal.behaviors.postalGeneral = function(context) {
       $("#'. $id .'-type").change( function() {
         var typeValue = $(this).val();
@@ -175,6 +176,7 @@ function postal_form_process_postal_general($element, $edit, &$form_state, $form
       $("#'. $id .'-type").trigger("change");
     }';
     drupal_add_js($js, 'inline');
+    */
   }
 
   if ($address->country && $o['force_country']) {
@@ -191,10 +193,10 @@ function postal_form_process_postal_general($element, $edit, &$form_state, $form
       '#title' => t('Country'),
       '#default_value' => $address->country,
       '#required' => $element['#required'],
-      '#ahah' => array(
-        'path' => 'postal/js/ahah/'. join('/', $element['#array_parents']),
-        'wrapper' => $element['#id'] .'-wrapper',
-        'method' => 'replace',
+      '#ajax' => array(
+        'callback' => 'postal_form_ajax',
+        'wrapper' => 'edit-' . str_replace('_', '-', $element['#array_parents'][0]),
+        'method' => 'replaceWith',
         'effect' => 'fade',
       ),
     );
@@ -250,11 +252,11 @@ function postal_form_process_postal_general($element, $edit, &$form_state, $form
       '#access' => isset($types['zip']),
     );
   }
- 
+
   // How many elements do we have visible?
   $visible = array();
   foreach (element_children($element) as $key) {
-    if ($element[$key]['#type'] != 'value' && ($element[$key]['#access'] !== FALSE)) {
+    if ($element[$key]['#type'] != 'value' && (isset($element[$key]['#access']) && $element[$key]['#access'] !== FALSE)) {
       $visible[] = $key;
     }
   }
@@ -305,7 +307,7 @@ function postal_form_postal_general_settings($settings = array()) {
   $form['force_state'] = array(
     '#type' => 'checkbox',
     '#title' => t('Restrict state selection'),
-    '#default_value' => $settings ? $settings['force_country'] : FALSE,
+    '#default_value' => $settings ? $settings['force_state'] : FALSE,
     '#description' => t('Hide the state/province selector and use the default value'),
   );
 
@@ -339,46 +341,8 @@ function postal_form_postal_general_settings($settings = array()) {
 }
 
 /**
- * An AHAH callback for the postal element.
+ * An AJAX callback for the postal element.
  */
-function postal_form_ahah() {
-  // This hack ensures that node forms will work.  YMMV for other forms!
-  if (substr($_POST['form_id'], -9) == 'node_form') {
-    module_load_include('pages.inc', 'node', 'node');
-  }
-  elseif ($_POST['form_id'] == 'content_field_edit_form') {
-    module_load_include('admin.inc', 'content', 'includes/content');
-  }
-
-  $form_build_id = $_POST['form_build_id'];
-  $form_state = array('storage' => NULL, 'submitted' => FALSE, 'rebuild' => TRUE);
-  // Step #4.
-  $form = form_get_cache($form_build_id, $form_state);
-
-  // Preparing for #5.
-  $args = $form['#parameters'];
-  $form_id = array_shift($args);
-  $form_state['post'] = $form['#post'] = $_POST;
-  $form['#programmed'] = $form['#redirect'] = FALSE;
-
-  // Step #5.
-  drupal_process_form($form_id, $form, $form_state);
-
-  // Step #6 and #7 and #8.
-  $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
-
-  // Clear out the form_errors array.  We're not here for validation.
-  drupal_get_messages('error', TRUE);
-
-  // Get the #array_parents value that was passed in to locate the element.
-  $parents = func_get_args();
-  foreach ($parents as $key) {
-    if (isset($form[$key])) $form = $form[$key];
-  }
-  drupal_render($form);
-
-  $output = theme('status_messages') . $form['#children'];
-
-  // Final rendering callback.
-  drupal_json(array('status' => TRUE, 'data' => $output));
+function postal_form_ajax($form, $form_state) {
+  return $form['field_address_component'];
 }

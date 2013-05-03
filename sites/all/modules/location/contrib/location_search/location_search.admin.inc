@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Administration related forms.
+ *   Administration related forms for the location_search module.
  */
 
 /**
@@ -10,7 +10,7 @@
  *
  * @ingroup form
  */
-function location_search_admin_settings() {
+function location_search_admin_settings($form, &$form_state) {
   $gmap = module_exists('gmap');
   $form['location_search_map'] = array(
     '#type' => 'checkbox',

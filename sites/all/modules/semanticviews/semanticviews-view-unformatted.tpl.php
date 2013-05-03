@@ -1,5 +1,4 @@
 <?php
-// $Id: semanticviews-view-unformatted.tpl.php,v 1.1.2.3 2009/09/19 22:33:48 bangpound Exp $
 /**
  * @file views-view-unformatted.tpl.php
  * Default simple view template to display a list of rows.

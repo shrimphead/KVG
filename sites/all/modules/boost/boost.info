@@ -1,12 +1,15 @@
 name = Boost
-description = Caches text (html, ajax, xml) outputted by Drupal as static files for performance and scalability purposes.
-recommends[] = nodereferrer
+description = Caches generated output as a static file to be served directly from the webserver.
 package = Performance and scalability
-core = 6.x
+core = 7.x
+files[] = boost.module
+files[] = boost.admin.inc
+files[] = boost.blocks.inc
+configure = admin/config/system/boost
 
-; Information added by drupal.org packaging script on 2012-10-08
-version = "6.x-1.21"
-core = "6.x"
+; Information added by drupal.org packaging script on 2012-08-17
+version = "7.x-1.0-beta2"
+core = "7.x"
 project = "boost"
-datestamp = "1349667069"
+datestamp = "1345176104"
 

@@ -1,6 +1,0 @@
-; $id: $
-
-name = nitobe based PW theme
-
-core = 6.x
-base theme = nitobe

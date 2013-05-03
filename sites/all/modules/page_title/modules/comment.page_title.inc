@@ -7,22 +7,22 @@
 
 
 /**
- * Implementation of hook_page_title_alter().
+ * Implements hook_page_title_alter().
  */
 function comment_page_title_alter(&$title) {
   // Get the current menu item and compare the path to the comment reply path.
   $menu_item = menu_get_item();
-
   if ( !strncmp($menu_item['path'], 'comment/reply/%', 15) &&
        ($node = menu_get_object('node', 2)) ) {
     // If the node has a custom page title and the node type is configured
     // to have a custom page title (ie, it's not a leftover from a previous
     // setting), then use it.
     if ( !empty($node->page_title) &&
-         variable_get('page_title_type_'. $node->type .'_showfield', 0) ) {
+         variable_get('page_title_type_' . $node->type . '_showfield', 0) ) {
       $title = $node->page_title;
     }
-    // otherwise set the page-title token to the parent node title. Makes more sense than "Reply to comment"...
+    // Otherwise set the page-title token to the parent node title. Makes more
+    // sense than "Reply to comment".
     else {
       $title = $node->title;
     }
@@ -31,7 +31,7 @@ function comment_page_title_alter(&$title) {
 
 
 /**
- * Implementation of hook_page_title_pattern_alter().
+ * Implements hook_page_title_pattern_alter().
  */
 function comment_page_title_pattern_alter(&$pattern, &$types) {
   $menu_item = menu_get_item();
@@ -50,9 +50,8 @@ function comment_page_title_pattern_alter(&$pattern, &$types) {
       $types['taxonomy'] = current($types['node']->taxonomy);
     }
 
-    // Is this a root comment or a child comment (top level or nested)...
-    if (($pid = arg(3)) && $comment = _comment_load($pid)) {
-      // Reply to comment...
+    if (is_numeric(arg(3)) && ($comment = menu_get_object('comment', 3))) {
+      // Comment Reply...
       $types['comment'] = $comment;
       $pattern = variable_get('page_title_comment_child_reply', '');
     }
@@ -65,7 +64,7 @@ function comment_page_title_pattern_alter(&$pattern, &$types) {
 
 
 /**
- * Implementation of hook_page_title_settings().
+ * Implements hook_page_title_settings().
  */
 function comment_page_title_settings() {
   return array(

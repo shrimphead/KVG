@@ -62,7 +62,7 @@ function _webform_render_fieldset($component, $value = NULL, $filter = TRUE) {
     '#description' => $filter ? _webform_filter_descriptions($component['extra']['description'], $node) : $component['extra']['description'],
     '#collapsible' => $component['extra']['collapsible'],
     '#collapsed' => $component['extra']['collapsed'],
-    '#attributes' => array('class' => 'webform-component-fieldset'),
+    '#attributes' => array('class' => array('webform-component-fieldset'), 'id' => 'webform-component-' . $component['form_key']),
     '#pre_render' => array('webform_fieldset_prerender', 'webform_element_title_display'),
     '#translatable' => array('title', 'description'),
   );
@@ -86,7 +86,6 @@ function _webform_display_fieldset($component, $value, $format = 'html') {
     $element = array(
       '#title' => $component['name'],
       '#weight' => $component['weight'],
-      '#post_render' => array('webform_element_wrapper'),
       '#theme_wrappers' => array('webform_element_text'),
       '#translatable' => array('title'),
     );

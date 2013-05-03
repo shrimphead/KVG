@@ -1,14 +1,16 @@
-; $Id: phone.info,v 1.37 2011/01/03 14:40:32 thierrygd Exp $
-name = Phone - CCK
-description = "The phone module allows administrators to define a CCK field type for phone numbers."
-package = CCK
-dependencies[] = content
-core = 6.x
+name = Phone
+description = The phone module lets administrators use a phone number field type and provides a validated FAPI phone element.
+package = Fields
+dependencies[] = field
+dependencies[] = libraries (>=2.x)
+files[] = phone.migrate.inc
+files[] = phone.content_migrate.inc
+core = 7.x
+php = 5.3
 
-
-; Information added by drupal.org packaging script on 2011-01-03
-version = "6.x-2.18"
-core = "6.x"
+; Information added by drupal.org packaging script on 2013-04-11
+version = "7.x-2.x-dev"
+core = "7.x"
 project = "phone"
-datestamp = "1294067495"
+datestamp = "1365644082"
 

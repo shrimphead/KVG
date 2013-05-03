@@ -12,12 +12,13 @@
  *   array A structured array for use with Forms API.
  */
 function page_title_admin_settings() {
+  // Set the page title - the page is a local task now.
+  drupal_set_title(t('Page titles'));
+
+
   // Set the theme callback for the patterns section
   $form['patterns'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Page Title Patterns'),
-    '#collapsible' => FALSE,
-    '#theme' => 'page_title_admin_settings'
+    '#theme' => 'page_title_admin_settings',
   );
 
   $all_settings = page_title_get_settings();
@@ -37,27 +38,34 @@ function page_title_admin_settings() {
     );
 
     $form['patterns']['scope'][$key] = array(
-      '#type' => 'markup',
-      '#value' => implode('<br />', array_map('_page_title_scope_t', $settings['scopes'])),
+      '#markup' => implode('<br />', array_map('_page_title_scope_t', $settings['scopes'])),
     );
 
     if ($settings['show field']) {
-      $form['patterns']['showfield'][$key .'_showfield'] = array(
+      $form['patterns']['showfield'][$key . '_showfield'] = array(
         '#type' => 'checkbox',
-        '#default_value' => variable_get($key .'_showfield', 0),
+        '#default_value' => variable_get($key . '_showfield', 0),
       );
     }
   }
 
-  // Add the token tree at the end of the configuration page.
+
+  // Add the token help to a collapsed fieldset at the end of the configuration page.
   $form['token_help'] = array(
-    '#type' => 'markup',
-    '#value' => theme('token_tree', 'all', TRUE),
+    '#type' => 'fieldset',
+    '#title' => t('Available Tokens List'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  $form['token_help']['content'] = array(
+    '#theme' => 'token_tree',
+    '#token_types' => array('node', 'comment', 'term', 'vocabulary', 'user'),
   );
 
-  // Return the form with the system buttons & action added to it
-  return system_settings_form($form);
+  $form = system_settings_form($form);
+  return $form;
 }
+
 
 
 function _page_title_scope_t($item) {

@@ -28,7 +28,7 @@ function _webform_defaults_hidden() {
 function _webform_theme_hidden() {
   return array(
     'webform_display_hidden' => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'file' => 'components/hidden.inc',
     ),
   );
@@ -80,7 +80,6 @@ function _webform_render_hidden($component, $value = NULL, $filter = TRUE) {
   }
 
   $element = array(
-    '#type' => 'hidden',
     '#title' => $filter ? _webform_filter_xss($component['name']) : $component['name'],
     '#weight' => $component['weight'],
     '#translatable' => array('title'),
@@ -104,38 +103,42 @@ function _webform_render_hidden($component, $value = NULL, $filter = TRUE) {
 function _webform_display_hidden($component, $value, $format = 'html') {
   $element = array(
     '#title' => $component['name'],
-    '#value' => isset($value[0]) ? $value[0] : NULL,
+    '#markup' => isset($value[0]) ? $value[0] : NULL,
     '#weight' => $component['weight'],
     '#format' => $format,
     '#theme' => 'webform_display_hidden',
-    '#theme_wrappers' => $format == 'html' ? array('webform_element', 'webform_element_wrapper') : array('webform_element_text'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => $format == 'text' ? array('webform_element_text') : array('webform_element'),
     '#translatable' => array('title'),
   );
 
   return $element;
 }
 
-function theme_webform_display_hidden($element) {
-  return $element['#format'] == 'html' ? check_plain($element['#value']) : $element['#value'];
+function theme_webform_display_hidden($variables) {
+  $element = $variables['element'];
+
+  return $element['#format'] == 'html' ? check_plain($element['#markup']) : $element['#markup'];
 }
 
 /**
  * Implements _webform_analysis_component().
  */
 function _webform_analysis_hidden($component, $sids = array()) {
-  $placeholders = count($sids) ? array_fill(0, count($sids), "'%s'") : array();
-  $sidfilter = count($sids) ? " AND sid in (" . implode(",", $placeholders) . ")" : "";
-  $query = 'SELECT data ' .
-    ' FROM {webform_submitted_data} ' .
-    ' WHERE nid = %d ' .
-    ' AND cid = %d ' . $sidfilter;
+  $query = db_select('webform_submitted_data', 'wsd', array('fetch' => PDO::FETCH_ASSOC))
+    ->fields('wsd', array('no', 'data'))
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid']);
+
+  if (count($sids)) {
+    $query->condition('sid', $sids, 'IN');
+  }
+
   $nonblanks = 0;
   $submissions = 0;
   $wordcount = 0;
 
-  $result = db_query($query, array_merge(array($component['nid'], $component['cid']), $sids));
-  while ($data = db_fetch_array($result)) {
+  $result = $query->execute();
+  foreach ($result as $data) {
     if (strlen(trim($data['data'])) > 0) {
       $nonblanks++;
       $wordcount += str_word_count(trim($data['data']));

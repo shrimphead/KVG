@@ -6,6 +6,31 @@
  */
 
 /**
+ * Implements hook_entity_info().
+ */
+function mollom_test_entity_info() {
+  $info['mollom_test'] = array(
+    'label' => 'Mollom test record',
+    'base table' => 'mollom_test',
+    'uri callback' => 'mollom_test_uri',
+    'entity keys' => array(
+      'id' => 'mid',
+      'label' => 'title',
+    ),
+  );
+  return $info;
+}
+
+/**
+ * Entity URI callback.
+ */
+function mollom_test_uri($record) {
+  return array(
+    'path' => 'mollom-test/form/' . $record->mid,
+  );
+}
+
+/**
  * Implements hook_menu().
  */
 function mollom_test_menu() {
@@ -106,70 +131,64 @@ function mollom_test_views_reset() {
 /**
  * Form builder for Mollom test form.
  */
-function mollom_test_form(&$form_state, $mid = NULL) {
-  if (!empty($form_state['storage'])) {
-    $values = $form_state['storage'];
+function mollom_test_form($form, &$form_state, $mid = NULL) {
+  // Due to #limit_validation_errors, submitting the form with the "Add" button
+  // will only expose validated values in the submit handler, so our storage may
+  // be incomplete. Therefore, the default values always have to be overloaded.
+  $form_state += array('storage' => array());
+  if (isset($mid) && ($record = mollom_test_load($mid))) {
+    $form_state['storage'] = (array) $record;
   }
-  else {
-    $values = array();
-    if (isset($mid) && ($record = mollom_test_load($mid))) {
-      $values = (array) $record;
-    }
-    $values += array(
-      'mid' => $mid,
-      'title' => '',
-      'body' => '',
-      'exclude' => '',
-      'parent' => array('child' => ''),
-      'field' => array(),
-      'status' => 1,
-    );
-  }
+  $form_state['storage'] += array(
+    'mid' => $mid,
+    'title' => '',
+    'body' => '',
+    'exclude' => '',
+    'parent' => array('child' => ''),
+    'field' => array(),
+    'status' => 1,
+  );
   // Always add an empty field the user can submit.
-  $values['field']['new'] = '';
+  $form_state['storage']['field']['new'] = '';
 
   // Output a page view counter for page/form cache testing purposes.
   $count = variable_get('mollom_test.form.views', 1);
   $reset_link = l('Reset', 'mollom-test/form/views/reset', array('query' => drupal_get_destination()));
   $form['views'] = array(
-    '#value' => '<p>' . 'Views: ' . $count++ . ' ' . $reset_link . '</p>',
+    '#markup' => '<p>' . 'Views: ' . $count++ . ' ' . $reset_link . '</p>',
   );
   variable_set('mollom_test.form.views', $count);
 
   // Conditionally enable form caching.
   if (variable_get('mollom_test.form.cache', FALSE)) {
-    // D6 auto-enables form caching and rebuilding if 'storage' is non-empty.
-    if (!isset($form_state['storage'])) {
-      $form_state['storage'] = $values;
-    }
-    $form['#cache'] = TRUE;
+    $form_state['cache'] = TRUE;
   }
 
   $form['#tree'] = TRUE;
   $form['mid'] = array(
     '#type' => 'hidden',
-    '#value' => $values['mid'],
+    '#value' => $form_state['storage']['mid'],
   );
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => 'Title',
-    '#default_value' => $values['title'],
+    '#default_value' => $form_state['storage']['title'],
     '#required' => TRUE,
   );
   $form['body'] = array(
     '#type' => 'textfield',
     '#title' => 'Body',
-    '#default_value' => $values['body'],
+    '#default_value' => $form_state['storage']['body'],
   );
   $form['exclude'] = array(
     '#type' => 'textfield',
     '#title' => 'Some other field',
-    '#default_value' => $values['exclude'],
+    '#default_value' => $form_state['storage']['exclude'],
   );
   $form['parent']['child'] = array(
     '#type' => 'textfield',
     '#title' => 'Nested element',
-    '#default_value' => $values['parent']['child'],
+    '#default_value' => $form_state['storage']['parent']['child'],
   );
 
   $form['field'] = array(
@@ -177,7 +196,7 @@ function mollom_test_form(&$form_state, $mid = NULL) {
     '#title' => 'Field',
   );
   $weight = 0;
-  foreach ($values['field'] as $delta => $value) {
+  foreach ($form_state['storage']['field'] as $delta => $value) {
     $form['field'][$delta] = array(
       '#type' => 'textfield',
       '#title' => 'Field ' . $delta,
@@ -189,6 +208,7 @@ function mollom_test_form(&$form_state, $mid = NULL) {
   $form['field']['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Add',
+    '#limit_validation_errors' => array(array('field')),
     '#submit' => array('mollom_test_form_field_submit'),
     '#weight' => 1000,
   );
@@ -196,12 +216,13 @@ function mollom_test_form(&$form_state, $mid = NULL) {
   $form['status'] = array(
     '#type' => 'checkbox',
     '#title' => 'Published',
-    '#default_value' => $values['status'],
+    '#default_value' => $form_state['storage']['status'],
     // For simplicity, re-use Mollom module's administration permission.
     '#access' => user_access('administer mollom'),
   );
 
-  $form['submit'] = array('#type' => 'submit', '#value' => 'Submit');
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => 'Submit');
 
   return $form;
 }
@@ -210,6 +231,8 @@ function mollom_test_form(&$form_state, $mid = NULL) {
  * Form element submit handler for mollom_test_form().
  */
 function mollom_test_form_field_submit($form, &$form_state) {
+  // Remove internal Form API values.
+  form_state_values_clean($form_state);
   // Remove all empty values of the multiple value field.
   $form_state['values']['field'] = array_filter($form_state['values']['field']);
   // Update the storage with submitted values.
@@ -227,14 +250,11 @@ function mollom_test_form_field_submit($form, &$form_state) {
  * Form submit handler for mollom_test_form().
  */
 function mollom_test_form_submit($form, &$form_state) {
-  $form_state['rebuild'] = FALSE;
-  unset($form_state['storage']);
-
   $form_state['values']['field'][] = $form_state['values']['field']['new'];
   unset($form_state['values']['field']['new']);
 
   // Store submission.
-  _mollom_form_state_values_clean($form_state);
+  form_state_values_clean($form_state);
   $record = (object) $form_state['values'];
   mollom_test_save($record);
   $form_state['values']['mid'] = $record->mid;
@@ -264,31 +284,20 @@ function mollom_test_mollom_form_moderation(&$form, &$form_state) {
 }
 
 /**
- * Implements hook_mollom_test_presave() on behalf of mollom.module.
- */
-function mollom_mollom_test_presave($record) {
-  // If an existing record is published and we have session data stored for it,
-  // mark the data as moderated.
-  if (!empty($record->mid) && $record->status) {
-    mollom_data_moderate('mollom_test', $record->mid);
-  }
-}
-
-/**
  * Loads a {mollom_test} data record by id.
  */
 function mollom_test_load($mid) {
-  return db_fetch_object(db_query('SELECT * FROM {mollom_test} WHERE mid = %d', array($mid)));
+  return db_query('SELECT * FROM {mollom_test} WHERE mid = :mid', array(':mid' => $mid))->fetch();
 }
 
 /**
  * Saves a {mollom_test} data record.
  */
 function mollom_test_save($record) {
-  // Allow modules to alter the record before saving. This is done for code
-  // consistency only.
-  // @see mollom_mollom_test_presave()
-  module_invoke_all('mollom_test_presave', $record);
+  // Load the stored entity, if any.
+  if (!empty($record->mid) && !isset($record->original)) {
+    $record->original = entity_load_unchanged('mollom_test', $record->mid);
+  }
 
   $update = !empty($record->mid) ? array('mid') : array();
   $status = drupal_write_record('mollom_test', $record, $update);
@@ -312,26 +321,21 @@ function mollom_test_save($record) {
  */
 function mollom_test_delete_multiple(array $mids) {
   foreach ($mids as $mid) {
-    if ($record = mollom_test_load($mid)) {
+    $record = mollom_test_load($mid);
+    if ($record) {
       module_invoke_all('entity_delete', $record, 'mollom_test');
     }
   }
 
-  $placeholders = db_placeholders($mids);
-  db_query("DELETE FROM {mollom_test} WHERE mid IN ($placeholders)", $mids);
-}
-
-/**
- * Implements non-existing hook_entity_delete() on behalf of Mollom module.
- */
-function mollom_test_entity_delete($entity, $type) {
-  mollom_data_delete('mollom_test', $entity->mid);
+  db_delete('mollom_test')
+    ->condition('mid', $mids)
+    ->execute();
 }
 
 /**
  * Form constructor for deleting a Mollom test item.
  */
-function mollom_test_delete_form(&$form_state, $record) {
+function mollom_test_delete_form($form, &$form_state, $record) {
   $form['mid'] = array('#type' => 'value', '#value' => $record->mid);
   return confirm_form($form,
     t('Are you sure you want to delete the %title?', array('%title' => $record->title)),

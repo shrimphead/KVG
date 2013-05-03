@@ -29,7 +29,9 @@ DEFINE('GMAP_ZOOM_FACTOR', 2);
  */
 function gmap_polyutil_encode_latlon($x) {
   $x = round($x * 1e5) << 1;
-  if ($x < 0) { $x = ~ $x; }
+  if ($x < 0) {
+    $x = ~ $x;
+  }
   return _gmap_polyutil_encode($x);
 }
 

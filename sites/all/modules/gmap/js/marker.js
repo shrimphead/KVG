@@ -1,14 +1,15 @@
 
+
 /**
  * @file
  * Common marker routines.
  */
 
-/*global $, Drupal, GEvent, GInfoWindowTab, GLatLng, GLatLngBounds */
+/*global jQuery, Drupal, GEvent, GInfoWindowTab, GLatLng, GLatLngBounds */
 
 Drupal.gmap.addHandler('gmap', function (elem) {
   var obj = this;
-  
+
   var infowindow = null;
 
   obj.bind('init', function () {
@@ -28,10 +29,10 @@ Drupal.gmap.addHandler('gmap', function (elem) {
     if (obj.vars.behavior.highlight) {
       google.maps.event.addListener(m, 'mouseover', function () {
         var highlightColor = '#' + obj.vars.styles.highlight_color;
-        highlightMarker(obj.map, marker, 'hoverHighlight', highlightColor);
+        highlightMarker(obj, marker, 'hoverHighlight', highlightColor);
       });
       google.maps.event.addListener(m, 'mouseout', function () {
-        unHighlightMarker(obj.map, marker, 'hoverHighlight');
+        unHighlightMarker(obj, marker, 'hoverHighlight');
       });
     }
     if (obj.vars.behavior.extramarkerevents) {
@@ -56,7 +57,9 @@ Drupal.gmap.addHandler('gmap', function (elem) {
     }
     // If the highlight arg option is used in views highlight the marker.
     if (marker.opts.highlight == 1) {
-      highlightMarker(obj.map, marker, 'viewHighlight', marker.opts.highlightcolor);
+      google.maps.event.addListener( obj.mm, 'loaded', function() {
+        highlightMarker(obj, marker, 'viewHighlight', marker.opts.highlightcolor);
+      } );
     }
   });
 
@@ -68,7 +71,7 @@ Drupal.gmap.addHandler('gmap', function (elem) {
     }
     infowindow = new google.maps.InfoWindow();
     if (marker.text) {
-      infowindow.setContent(marker.text);
+	  infowindow.setContent(marker.text);
       infowindow.open(obj.map, marker.marker);
     }
     // Info Window Query / Info Window Offset
@@ -88,46 +91,37 @@ Drupal.gmap.addHandler('gmap', function (elem) {
       var el = document.createElement('div');
       // Clone the matched object, run through the clone, stripping off ids, and move the clone into the container.
       jQuery(iwq).eq(iwo).clone(false).find('*').removeAttr('id').appendTo(jQuery(el));
-      marker.setContent(el);
+	  marker.setContent(el);
       infowindow.open(obj.map, marker.marker);
     }
     // AJAX content
     else if (marker.rmt) {
-      obj.rmtcache = obj.rmtcache || {};
-      
-      // Cached RMT.
-      if (obj.rmtcache[marker.rmt]) {
-        infowindow.setContent(data);
+      var uri = marker.rmt;
+      // If there was a callback, prefix that.
+      // (If there wasn't, marker.rmt was the FULL path.)
+      if (obj.vars.rmtcallback) {
+        uri = obj.vars.rmtcallback + '/' + marker.rmt;
+      }
+      // @Bevan: I think it makes more sense to do it in this order.
+      // @Bevan: I don't like your choice of variable btw, seems to me like
+      // @Bevan: it belongs in the map object, or at *least* somewhere in
+      // @Bevan: the gmap settings proper...
+      //if (!marker.text && Drupal.settings.loadingImage) {
+      //  marker.marker.openInfoWindowHtml(Drupal.settings.loadingImage);
+      //}
+      jQuery.get(uri, {}, function (data) {
+		infowindow.setContent(data);
         infowindow.open(obj.map, marker.marker);
-      }
-      else {
-        var uri = marker.rmt;
-        // If there was a callback, prefix that.
-        // (If there wasn't, marker.rmt was the FULL path.)
-        if (obj.vars.rmtcallback) {
-          uri = obj.vars.rmtcallback + '/' + marker.rmt;
-        }
-        // @Bevan: I think it makes more sense to do it in this order.
-        // @Bevan: I don't like your choice of variable btw, seems to me like
-        // @Bevan: it belongs in the map object, or at *least* somewhere in
-        // @Bevan: the gmap settings proper...
-        //if (!marker.text && Drupal.settings.loadingImage) {
-        //  marker.marker.openInfoWindowHtml(Drupal.settings.loadingImage);
-        //}
-        $.get(uri, {}, function (data) {
-          obj.rmtcache[marker.rmt] = data;
-          marker.marker.openInfoWindowHtml(data);
-        });
-      }
+      });
     }
     // Tabbed content
     else if (marker.tabs) {
       var data = "";
-      //tabs in an infowindow is no longer supported in API ver3. 
+      //tabs in an infowindow is no longer supported in API ver3.  
       for (var m in marker.tabs) {
         data += marker.tabs[m];
       }
-      infowindow.setContent(data);
+	  infowindow.setContent(data);
       infowindow.open(obj.map, marker.marker);
     }
     // No content -- marker is a link

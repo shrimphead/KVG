@@ -1,4 +1,4 @@
-<?php // $Id: postal.theme.inc,v 1.1 2009/08/16 18:59:56 vauxia Exp $
+<?php
 
 /**
  * Implementation of hook_theme().
@@ -18,6 +18,7 @@ function postal_theme_theme() {
     ),
     'postal_address' => array(
       'arguments' => array('address' => NULL),
+      'template' => 'postal-address',
       'file' => 'postal.theme.inc',
       'path' => $path,
     ),
@@ -53,19 +54,27 @@ function theme_postal_general($element) {
   return theme('form_element', $element, $element['#children']);
 }
 
-function theme_postal_address($address) {
-  $address = postal_set_names(postal_address($address));
-  $out = '';
-  if ($address->name)        $out .= $address->name;
-  if ($address->street1)     $out .= '<br />'. $address->street1;
-  if ($address->street2)     $out .= '<br />'. $address->street2;
-  if ($out && ($address->city || $address->state || $address->zip)) $out .= '<br />';
-  if ($address->city)        $out .= $address->city .', ';
-  if ($address->state)       $out .= $address->state .' ';
-  if ($address->zip)         $out .= $address->zip;
-  if ($address->country)     $out .= '<br />'. $address->country;
+function template_preprocess_postal_address(&$vars) {
+  // Cleanup postal object. 
+  $vars['address'] = postal_address($vars['address']);
 
-  return $out;
+  // Clone the postal object to preserve raw values.
+  $address_raw = clone $vars['address'];
+  
+  // Set the country and state to name values.
+  $address = postal_set_names($vars['address']);
+  $vars['name'] = $address->name;
+  $vars['street_address'] = $address->street1;
+  $vars['extended_address'] = $address->street2;
+  $vars['city'] = $address->city;
+  $vars['state'] = $address->state;
+  $vars['zip'] = $address->zip;
+  $vars['country'] = $address->country;
+
+  // Allow for per-country template overrides.
+  // @TODO: Add country and state selectors ala the component widget.
+  //  Till that is done this won't actually work.
+  $vars['template_files'][] = 'postal-address-' . $address_raw->country;
 }
 
 function theme_postal_country($address) {

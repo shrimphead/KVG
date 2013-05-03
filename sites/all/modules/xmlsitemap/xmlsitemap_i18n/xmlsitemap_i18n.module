@@ -39,7 +39,7 @@ function xmlsitemap_i18n_form_xmlsitemap_sitemap_edit_form_alter(&$form, $form_s
     '#type' => 'select',
     '#title' => t('Language'),
     '#options' => locale_language_list(),
-    '#default_value' => isset($form['#sitemap']->context['language']) ? $form['#sitemap']->context['language'] : '',
+    '#default_value' => isset($form['#sitemap']->context['language']) ? $form['#sitemap']->context['language'] : LANGUAGE_NONE,
   );
 }
 
@@ -62,12 +62,13 @@ function xmlsitemap_i18n_form_i18n_admin_settings_alter(&$form, $form_state) {
 }
 
 /**
- * Implements hook_query_xmlsitemap_generate_alter().
+ * Implements hook_query_TAG_alter().
  *
  * @see i18n_db_rewrite_where()
  */
-function xmlsitemap_i18n_query_xmlsitemap_generate_alter(array &$query, array &$args, stdClass $sitemap) {
+function xmlsitemap_i18n_query_xmlsitemap_generate_alter(QueryAlterableInterface $query) {
   $mode = variable_get('i18n_selection_mode', 'simple');
+  $sitemap = $query->getMetaData('sitemap');
 
   if (!isset($sitemap->context['language']) || $mode == 'off') {
     return;
@@ -75,7 +76,7 @@ function xmlsitemap_i18n_query_xmlsitemap_generate_alter(array &$query, array &$
 
   // Get languages to simplify query building.
   $current = $sitemap->context['language'];
-  $default = i18n_default_language();
+  $default = language_default();
 
   if ($mode == 'mixed' && $current == $default) {
     // If mode is mixed but current = default, is the same as 'simple'.
@@ -85,29 +86,31 @@ function xmlsitemap_i18n_query_xmlsitemap_generate_alter(array &$query, array &$
   switch ($mode) {
     case 'simple':
       // Current language and language neutral.
-      $query['WHERE'] .= " AND x.language IN ('%s', '')";
-      $args[] = $current;
+      $query->condition('language', array($current, LANGUAGE_NONE));
       break;
     case 'mixed':
       // Mixed current language (if available) or default language (if not) and language neutral.
-      $query['WHERE'] .= " AND x.language IN ('%s', '%s', '')";
-      $args[] = $current;
-      $args[] = $default;
+      $query->condition('language', array($current, $default, LANGUAGE_NONE));
       break;
     case 'default':
       // Only default language and language neutral.
-      $query['WHERE'] .= " AND x.language IN ('%s', '')";
-      $args[] = $default;
+      $query->condition('language', array($default, LANGUAGE_NONE));
       break;
     case 'strict':
       // Only current language (for nodes), simple for all other types.
-      $query['WHERE'] .= " AND ((x.type = 'node' AND x.language = '%s') OR (x.type <> 'node' AND x.language IN ('%s', '')))";
-      $args[] = $current;
-      $args[] = $current;
+      $node_condition = db_and();
+      $node_condition->condition('type', 'node');
+      $node_condition->condition('language', $current);
+      $normal_condition = db_and();
+      $normal_condition->condition('type', 'node', '<>');
+      $normal_condition->condition('language', array($current, LANGUAGE_NONE));
+      $condition = db_or();
+      $condition->condition($node_condition);
+      $condition->condition($normal_condition);
+      $query->condition($condition);
       break;
     case 'off':
-      // All content. No language conditions apply. Handled by if statement
-      // above.
+      // All content. No language conditions apply.
       break;
   }
 }

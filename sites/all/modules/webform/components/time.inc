@@ -36,11 +36,11 @@ function _webform_defaults_time() {
 function _webform_theme_time() {
   return array(
     'webform_time' => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'file' => 'components/time.inc',
     ),
     'webform_display_time' => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'file' => 'components/time.inc',
     ),
   );
@@ -67,7 +67,7 @@ function _webform_edit_time($component) {
     '#description' => t('If using relative dates for a default value (e.g. "now") base the current time on this timezone.'),
     '#options' => array('user' => t('User timezone'), 'site' => t('Website timezone')),
     '#weight' => 2,
-    '#access' => variable_get('configurable_timezones', 1) && module_exists('date_timezone'),
+    '#access' => variable_get('configurable_timezones', 1),
   );
   $form['display']['hourformat'] = array(
     '#type' => 'radios',
@@ -114,9 +114,7 @@ function _webform_render_time($component, $value = NULL, $filter = TRUE) {
     '#timezone' => $component['extra']['timezone'],
     '#process' => array('webform_expand_time'),
     '#theme' => 'webform_time',
-    '#theme_wrappers' => array('webform_element_wrapper'),
-    '#pre_render' => array('webform_element_title_display'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => array('webform_element'),
     '#translatable' => array('title', 'description'),
   );
 
@@ -135,20 +133,14 @@ function webform_expand_time($element) {
   // Expand the default value from a string into an array.
   if (!empty($element['#default_value'])) {
     // Adjust the time based on the user or site timezone.
-    // The "timezone_name" variable is provided by DateAPI in Drupal 6.
     if (variable_get('configurable_timezones', 1) && $element['#timezone'] == 'user') {
-      $timezone_name = isset($GLOBALS['user']->timezone_name) ? $GLOBALS['user']->timezone_name : NULL;
+      $timezone_name = isset($GLOBALS['user']->timezone) ? $GLOBALS['user']->timezone : 'UTC';
     }
     else {
-      $timezone_name = variable_get('date_default_timezone_name', NULL);
+      $timezone_name = variable_get('date_default_timezone', 'UTC');
     }
 
-    if (!empty($timezone_name) && class_exists('DateTimeZone')) {
-      $default_values = webform_date_array(webform_strtodate('c', $element['#default_value'], $timezone_name), 'time');
-    }
-    else {
-      $default_values = webform_date_array(date('c', strtotime($element['#default_value'])), 'time');
-    }
+    $default_values = webform_date_array(webform_strtodate('c', $element['#default_value'], $timezone_name), 'time');
   }
   else {
     $default_values = array(
@@ -238,17 +230,18 @@ function webform_expand_time($element) {
 /**
  * Theme a webform time element.
  */
-function theme_webform_time($element) {
+function theme_webform_time($variables) {
+  $element = $variables['element'];
+
   // Add error classes to all items within the element.
   if (form_get_error($element)) {
-    $element['hour']['#attributes']['class'] = 'error';
-    $element['minute']['#attributes']['class'] = 'error';
+    $element['hour']['#attributes']['class'] = array('error');
+    $element['minute']['#attributes']['class'] = array('error');
   }
 
   $output = '<div class="webform-container-inline">' . drupal_render($element['hour']) . drupal_render($element['minute']) . drupal_render($element['ampm']) . '</div>';
 
-  $element['#type'] = 'element';
-  return theme('form_element', $element, $output);
+  return $output;
 }
 
 function webform_validate_time($element, $form_state) {
@@ -298,12 +291,10 @@ function _webform_display_time($component, $value, $format = 'html') {
     '#title' => $component['name'],
     '#weight' => $component['weight'],
     '#theme' => 'webform_display_time',
-    '#theme_wrappers' => $format == 'html' ? array('webform_element', 'webform_element_wrapper') : array('webform_element_text'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => $format == 'html' ? array('webform_element') : array('webform_element_text'),
     '#format' => $format,
     '#hourformat' => $component['extra']['hourformat'],
     '#value' => $value,
-    '#pre_render' => array('webform_element_title_display'),
     '#translatable' => array('title'),
   );
 }
@@ -311,7 +302,8 @@ function _webform_display_time($component, $value, $format = 'html') {
 /**
  * Format the output of data for this component.
  */
-function theme_webform_display_time($element) {
+function theme_webform_display_time($variables) {
+  $element = $variables['element'];
   $output = ' ';
   if (isset($element['#value']['hour']) && $element['#value']['hour'] !== '' && isset($element['#value']['minute']) && $element['#value']['minute'] !== '') {
     if ($element['#hourformat'] == '24-hour') {
@@ -328,19 +320,21 @@ function theme_webform_display_time($element) {
  * Implements _webform_analysis_component().
  */
 function _webform_analysis_time($component, $sids = array()) {
-  $placeholders = count($sids) ? array_fill(0, count($sids), "'%s'") : array();
-  $sidfilter = count($sids) ? " AND sid in (" . implode(",", $placeholders) . ")" : "";
-  $query = 'SELECT no,data ' .
-    ' FROM {webform_submitted_data} ' .
-    ' WHERE nid = %d ' .
-    ' AND  cid = %d ' . $sidfilter .
-    ' ORDER BY sid ASC ';
+  $query = db_select('webform_submitted_data', 'wsd', array('fetch' => PDO::FETCH_ASSOC))
+    ->fields('wsd', array('no', 'data'))
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid'])
+    ->orderBy('sid');
 
-  $result = db_query($query, array_merge(array($component['nid'], $component['cid']), $sids));
+  if (count($sids)) {
+    $query->condition('sid', $sids, 'IN');
+  }
+
+  $result = $query->execute();
 
   $times = array();
   $submissions = 0;
-  while ($row = db_fetch_array($result)) {
+  foreach ($result as $row) {
     $submissions++;
     if ($row['data']) {
       $times[] = webform_date_array($row['data']);

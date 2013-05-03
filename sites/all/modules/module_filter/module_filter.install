@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * @file
+ */
+
+/**
  * Implementation of hook_uninstall().
  */
 function module_filter_uninstall() {
@@ -11,22 +15,8 @@ function module_filter_uninstall() {
 }
 
 /**
- * Force the menu system to rebuild.
+ * Remove the 'module_filter_autocomplete' variable.
  */
-function module_filter_update_6000() {
-  $ret = array();
-  $ret[] = array('success' => TRUE, 'query' => t('Force menu to rebuild.'));
-  return $ret;
-}
-
-/**
- * Delete variable 'module_filter_autocomplete'.
- */
-function module_filter_update_6100() {
-  $ret = array();
-
+function module_filter_update_7100() {
   variable_del('module_filter_autocomplete');
-  $ret[] = array('success' => TRUE, 'query' => t('Delete variable "module_filter_autocomplete".'));
-
-  return $ret;
 }

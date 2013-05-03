@@ -14,7 +14,7 @@
  * some options are configured through an interface provided by location.module.
  */
 
-include_once drupal_get_path('module', 'location') .'/earth.inc';
+include_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'location') . '/earth.inc');
 
 /**
  * Get a deep-link to a mapping service such as Yahoo! Maps or MapPoint given an location.  The
@@ -265,8 +265,8 @@ function location_latlon_rough($location = array()) {
   location_load_country($location['country']);
 
   $latlon_function = 'location_latlon_rough_'. $location['country'];
-  if (function_exists($latlon_function)) {
-    return $latlon_function($location);
+  if (function_exists($latlon_function) && $result = $latlon_function($location)) {
+    return $result;
   }
   else {
     return location_latlon_rough_default($location);
@@ -296,9 +296,16 @@ function location_latlon_rough_default($location = array()) {
     return NULL;
   }
 
-  $result = db_query("SELECT latitude, longitude FROM {zipcodes} WHERE country = '%s' AND zip = '%s'", $location['country'], $location['postal_code']);
-  if ($row = db_fetch_object($result)) {
-    return array('lat' => $row->latitude, 'lon' => $row->longitude);
+  $query = db_select('zipcodes', 'z');
+  $query->addField('z', 'latitude', 'lat');
+  $query->addField('z', 'longitude', 'lon');
+  $coords = $query->condition('country', $location['country'])
+    ->condition('zip', $location['postal_code'])
+    ->execute()
+    ->fetchAssoc();
+
+  if ($coords) {
+    return $coords;
   }
   // if nothing found internally (new zipcode, or incomplete zipcodes table)
   elseif (($newlatlong = location_latlon_exact($location)) != NULL) {
@@ -306,8 +313,14 @@ function location_latlon_rough_default($location = array()) {
     if ($newlatlong['lat']) {
       // and store results in zipcodes table for next lookups being internally handled
       // (yeah this is missing city/state info a.t.m., but is way better than nothing!)
-      $result = db_query("INSERT INTO {zipcodes} (latitude, longitude, country, zip) values ('%s', '%s', '%s', '%s')",
-        $newlatlong['lat'], $newlatlong['lon'], $location['country'], $location['postal_code']);
+      db_insert('zipcodes')
+        ->fields(array(
+          'latitude' => $newlatlong['lat'],
+          'longitude' => $newlatlong['lon'],
+          'country' => $location['country'],
+          'zip' => $location['postal_code'],
+        ))
+        ->execute();
     }
     return $newlatlong;
   }
@@ -418,7 +431,8 @@ function location_latlon_exact($location = array()) {
  * @ingroup Location
  */
 function _location_supported_countries() {
-  static $supported_countries = array();
+  $supported_countries = &drupal_static(__FUNCTION__, array());
+
 
   // If this function has already been called this request, we can avoid a DB hit.
   if (!empty($supported_countries)) {
@@ -448,7 +462,8 @@ function _location_supported_countries() {
  * Fetch the provinces for a country.
  */
 function location_get_provinces($country = 'us') {
-  static $provinces = array();
+  $provinces = &drupal_static(__FUNCTION__, array());
+
   location_standardize_country_code($country);
   if (isset($provinces[$country])) {
     return $provinces[$country];
@@ -553,7 +568,7 @@ function location_standardize_country_code(&$country) {
 function location_load_country($country) {
   location_standardize_country_code($country);
 
-  $file = drupal_get_path('module', 'location') . '/supported/location.' . $country . '.inc';
+  $file = DRUPAL_ROOT . '/' . drupal_get_path('module', 'location') . '/supported/location.' . $country . '.inc';
   if (file_exists($file)) {
     include_once($file);
     return TRUE;
@@ -566,7 +581,7 @@ function location_load_country($country) {
  * Load a general geocoding service.
  */
 function location_load_geocoder($geocoder) {
-  include_once drupal_get_path('module', 'location') .'/geocoding/'. $geocoder .'.inc';
+  include_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'location') . '/geocoding/' . $geocoder . '.inc');
 }
 
 /**
@@ -626,10 +641,10 @@ function location_address2singleline($location = array()) {
 }
 
 function location_get_general_geocoder_list() {
-  static $list;
+  $list = &drupal_static(__FUNCTION__, array());
 
   if (!count($list)) {
-    $files = file_scan_directory(drupal_get_path('module', 'location') .'/geocoding', '\.inc$', array('.', '..', 'CVS', '.svn'));
+    $files = file_scan_directory(drupal_get_path('module', 'location') . '/geocoding', '/\.inc$/', array('nomask' => '/(\.\.?|CVS|\.svn)$/'));
     foreach ($files as $full_path_name => $fileinfo) {
       $list[] = $fileinfo->name;
     }
@@ -644,274 +659,21 @@ function location_get_general_geocoder_list() {
  * ISO 3166-1 alpha-2
  */
 function location_get_iso3166_list($upper = FALSE) {
-  static $countries;
+  include_once DRUPAL_ROOT . '/includes/locale.inc';
 
-  if (isset($countries)) {
-    // In fact, the ISO codes for countries are all Upper Case.
-    // So, if someone needs the list as the official records,
-    // it will convert.
-    if (!empty($upper)) {
-      return array_change_key_case($countries, CASE_UPPER);
-    }
-    return $countries;
+  // Statically cache a version of the core Drupal list of countries
+  // with lower case country codes for use by this module.
+  $countries = &drupal_static(__FUNCTION__);
+
+  if ($upper) {
+    // Drupal core stores ISO 3166-1 alpha2 codes in upper case, as
+    // per the ISO standard.
+    return country_get_list();
   }
-
-  $countries = array(
-    'ad' => t('Andorra'),
-    'ae' => t('United Arab Emirates'),
-    'af' => t('Afghanistan'),
-    'ag' => t('Antigua and Barbuda'),
-    'ai' => t('Anguilla'),
-    'al' => t('Albania'),
-    'am' => t('Armenia'),
-    'an' => t('Netherlands Antilles'),
-    'ao' => t('Angola'),
-    'aq' => t('Antarctica'),
-    'ar' => t('Argentina'),
-    'as' => t('American Samoa'),
-    'at' => t('Austria'),
-    'au' => t('Australia'),
-    'aw' => t('Aruba'),
-    'ax' => t('Aland Islands'),
-    'az' => t('Azerbaijan'),
-    'ba' => t('Bosnia and Herzegovina'),
-    'bb' => t('Barbados'),
-    'bd' => t('Bangladesh'),
-    'be' => t('Belgium'),
-    'bf' => t('Burkina Faso'),
-    'bg' => t('Bulgaria'),
-    'bh' => t('Bahrain'),
-    'bi' => t('Burundi'),
-    'bj' => t('Benin'),
-    'bm' => t('Bermuda'),
-    'bn' => t('Brunei'),
-    'bo' => t('Bolivia'),
-    'br' => t('Brazil'),
-    'bs' => t('Bahamas'),
-    'bt' => t('Bhutan'),
-    'bv' => t('Bouvet Island'),
-    'bw' => t('Botswana'),
-    'by' => t('Belarus'),
-    'bz' => t('Belize'),
-    'ca' => t('Canada'),
-    'cc' => t('Cocos (Keeling) Islands'),
-    'cd' => t('Congo (Kinshasa)'),
-    'cf' => t('Central African Republic'),
-    'cg' => t('Congo (Brazzaville)'),
-    'ch' => t('Switzerland'),
-    'ci' => t('Ivory Coast'),
-    'ck' => t('Cook Islands'),
-    'cl' => t('Chile'),
-    'cm' => t('Cameroon'),
-    'cn' => t('China'),
-    'co' => t('Colombia'),
-    'cr' => t('Costa Rica'),
-    'cs' => t('Serbia And Montenegro'), // Transitional reservation
-    'cu' => t('Cuba'),
-    'cv' => t('Cape Verde'),
-    'cx' => t('Christmas Island'),
-    'cy' => t('Cyprus'),
-    'cz' => t('Czech Republic'),
-    'de' => t('Germany'),
-    'dj' => t('Djibouti'),
-    'dk' => t('Denmark'),
-    'dm' => t('Dominica'),
-    'do' => t('Dominican Republic'),
-    'dz' => t('Algeria'),
-    'ec' => t('Ecuador'),
-    'ee' => t('Estonia'),
-    'eg' => t('Egypt'),
-    'eh' => t('Western Sahara'),
-    'er' => t('Eritrea'),
-    'es' => t('Spain'),
-    'et' => t('Ethiopia'),
-    'fi' => t('Finland'),
-    'fj' => t('Fiji'),
-    'fk' => t('Falkland Islands'),
-    'fm' => t('Micronesia'),
-    'fo' => t('Faroe Islands'),
-    'fr' => t('France'),
-    'ga' => t('Gabon'),
-    'gd' => t('Grenada'),
-    'ge' => t('Georgia'),
-    'gf' => t('French Guiana'),
-    'gg' => t('Guernsey'),
-    'gh' => t('Ghana'),
-    'gi' => t('Gibraltar'),
-    'gl' => t('Greenland'),
-    'gm' => t('Gambia'),
-    'gn' => t('Guinea'),
-    'gp' => t('Guadeloupe'),
-    'gq' => t('Equatorial Guinea'),
-    'gr' => t('Greece'),
-    'gs' => t('South Georgia and the South Sandwich Islands'),
-    'gt' => t('Guatemala'),
-    'gu' => t('Guam'),
-    'gw' => t('Guinea-Bissau'),
-    'gy' => t('Guyana'),
-    'hk' => t('Hong Kong S.A.R., China'),
-    'hm' => t('Heard Island and McDonald Islands'),
-    'hn' => t('Honduras'),
-    'hr' => t('Croatia'),
-    'ht' => t('Haiti'),
-    'hu' => t('Hungary'),
-    'id' => t('Indonesia'),
-    'ie' => t('Ireland'),
-    'il' => t('Israel'),
-    'im' => t('Isle of Man'),
-    'in' => t('India'),
-    'io' => t('British Indian Ocean Territory'),
-    'iq' => t('Iraq'),
-    'ir' => t('Iran'),
-    'is' => t('Iceland'),
-    'it' => t('Italy'),
-    'je' => t('Jersey'),
-    'jm' => t('Jamaica'),
-    'jo' => t('Jordan'),
-    'jp' => t('Japan'),
-    'ke' => t('Kenya'),
-    'kg' => t('Kyrgyzstan'),
-    'kh' => t('Cambodia'),
-    'ki' => t('Kiribati'),
-    'km' => t('Comoros'),
-    'kn' => t('Saint Kitts and Nevis'),
-    'kp' => t('North Korea'),
-    'kr' => t('South Korea'),
-    'kw' => t('Kuwait'),
-    'ky' => t('Cayman Islands'),
-    'kz' => t('Kazakhstan'),
-    'la' => t('Laos'),
-    'lb' => t('Lebanon'),
-    'lc' => t('Saint Lucia'),
-    'li' => t('Liechtenstein'),
-    'lk' => t('Sri Lanka'),
-    'lr' => t('Liberia'),
-    'ls' => t('Lesotho'),
-    'lt' => t('Lithuania'),
-    'lu' => t('Luxembourg'),
-    'lv' => t('Latvia'),
-    'ly' => t('Libya'),
-    'ma' => t('Morocco'),
-    'mc' => t('Monaco'),
-    'md' => t('Moldova'),
-    'me' => t('Montenegro'),
-    'mg' => t('Madagascar'),
-    'mh' => t('Marshall Islands'),
-    'mk' => t('Macedonia'),
-    'ml' => t('Mali'),
-    'mm' => t('Myanmar'),
-    'mn' => t('Mongolia'),
-    'mo' => t('Macao S.A.R., China'),
-    'mp' => t('Northern Mariana Islands'),
-    'mq' => t('Martinique'),
-    'mr' => t('Mauritania'),
-    'ms' => t('Montserrat'),
-    'mt' => t('Malta'),
-    'mu' => t('Mauritius'),
-    'mv' => t('Maldives'),
-    'mw' => t('Malawi'),
-    'mx' => t('Mexico'),
-    'my' => t('Malaysia'),
-    'mz' => t('Mozambique'),
-    'na' => t('Namibia'),
-    'nc' => t('New Caledonia'),
-    'ne' => t('Niger'),
-    'nf' => t('Norfolk Island'),
-    'ng' => t('Nigeria'),
-    'ni' => t('Nicaragua'),
-    'nl' => t('Netherlands'),
-    'no' => t('Norway'),
-    'np' => t('Nepal'),
-    'nr' => t('Nauru'),
-    'nu' => t('Niue'),
-    'nz' => t('New Zealand'),
-    'om' => t('Oman'),
-    'pa' => t('Panama'),
-    'pe' => t('Peru'),
-    'pf' => t('French Polynesia'),
-    'pg' => t('Papua New Guinea'),
-    'ph' => t('Philippines'),
-    'pk' => t('Pakistan'),
-    'pl' => t('Poland'),
-    'pm' => t('Saint Pierre and Miquelon'),
-    'pn' => t('Pitcairn'),
-    'pr' => t('Puerto Rico'),
-    'ps' => t('Palestinian Territory'),
-    'pt' => t('Portugal'),
-    'pw' => t('Palau'),
-    'py' => t('Paraguay'),
-    'qa' => t('Qatar'),
-    're' => t('Reunion'),
-    'ro' => t('Romania'),
-    'rs' => t('Serbia'),
-    'ru' => t('Russia'),
-    'rw' => t('Rwanda'),
-    'sa' => t('Saudi Arabia'),
-    'sb' => t('Solomon Islands'),
-    'sc' => t('Seychelles'),
-    'sd' => t('Sudan'),
-    'se' => t('Sweden'),
-    'sg' => t('Singapore'),
-    'sh' => t('Saint Helena'),
-    'si' => t('Slovenia'),
-    'sj' => t('Svalbard and Jan Mayen'),
-    'sk' => t('Slovakia'),
-    'sl' => t('Sierra Leone'),
-    'sm' => t('San Marino'),
-    'sn' => t('Senegal'),
-    'so' => t('Somalia'),
-    'sr' => t('Suriname'),
-    'st' => t('Sao Tome and Principe'),
-    'sv' => t('El Salvador'),
-    'sy' => t('Syria'),
-    'sz' => t('Swaziland'),
-    'tc' => t('Turks and Caicos Islands'),
-    'td' => t('Chad'),
-    'tf' => t('French Southern Territories'),
-    'tg' => t('Togo'),
-    'th' => t('Thailand'),
-    'tj' => t('Tajikistan'),
-    'tk' => t('Tokelau'),
-    'tl' => t('Timor-Leste'),
-    'tm' => t('Turkmenistan'),
-    'tn' => t('Tunisia'),
-    'to' => t('Tonga'),
-    'tr' => t('Turkey'),
-    'tt' => t('Trinidad and Tobago'),
-    'tv' => t('Tuvalu'),
-    'tw' => t('Taiwan'),
-    'tz' => t('Tanzania'),
-    'ua' => t('Ukraine'),
-    'ug' => t('Uganda'),
-    'uk' => t('United Kingdom'),
-    'um' => t('United States Minor Outlying Islands'),
-    'us' => t('United States'),
-    'uy' => t('Uruguay'),
-    'uz' => t('Uzbekistan'),
-    'va' => t('Vatican'),
-    'vc' => t('Saint Vincent and the Grenadines'),
-    've' => t('Venezuela'),
-    'vg' => t('British Virgin Islands'),
-    'vi' => t('U.S. Virgin Islands'),
-    'vn' => t('Vietnam'),
-    'vu' => t('Vanuatu'),
-    'wf' => t('Wallis and Futuna'),
-    'ws' => t('Samoa'),
-    'ye' => t('Yemen'),
-    'yt' => t('Mayotte'),
-    'za' => t('South Africa'),
-    'zm' => t('Zambia'),
-    'zw' => t('Zimbabwe'),
-  );
-
-  // Sort the list.
-  natcasesort($countries);
-
-  // In fact, the ISO codes for countries are all Upper Case.
-  // So, if someone needs the list as the official records,
-  // it will convert.
-  if (!empty($upper)) {
-    return array_change_key_case($countries, CASE_UPPER);
+  elseif (!isset($countries)) {
+    // Location module uses lower-case ISO 3166-1 alpha2 codes, so we need
+    // to convert.
+    $countries = array_change_key_case(country_get_list(), CASE_LOWER);
   }
   return $countries;
 }

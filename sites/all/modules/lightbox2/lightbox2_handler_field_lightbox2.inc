@@ -1,7 +1,7 @@
 <?php
-// $Id: lightbox2_handler_field_lightbox2.inc,v 1.1.2.4 2010/03/07 21:38:39 snpower Exp $
-
 /**
+ * @file
+ * Contain the integration with views
  * A handler to provide a field that is completely custom by the administrator.
  *
  * @ingroup views_field_handlers
@@ -142,7 +142,7 @@ class lightbox2_handler_field_lightbox2 extends views_handler_field {
       // div is hidden it won't show up as a lightbox.  We also specify a group
       // in the rel attribute in order to link the whole View together for paging.
       $group_name = !empty($this->options['custom_group']) ? $this->options['custom_group'] : ($this->options['rel_group'] ? 'lightbox-popup-' . $this->view->name . '-' . implode('/', $this->view->args) : '');
-      return "<a href='$link #lightbox-popup-{$i}'  rel='lightmodal[{$group_name}|width:" . ($this->options['width'] ? $this->options['width'] : '600px') . ';height:' . ($this->options['height'] ? $this->options['height'] : '600px') . "][" . $caption . "]'>". $tokens["[{$this->options['trigger_field']}]"] ."</a>
+      return "<a href='$link #lightbox-popup-{$i}'  rel='lightmodal[{$group_name}|width:" . ($this->options['width'] ? $this->options['width'] : '600px') . ';height:' . ($this->options['height'] ? $this->options['height'] : '600px') . "][" . $caption . "]'>" . $tokens["[{$this->options['trigger_field']}]"] . "</a>
                 <div style='display: none;'><div id='lightbox-popup-{$i}' class='lightbox-popup'>$popup</div></div>";
     }
     else {

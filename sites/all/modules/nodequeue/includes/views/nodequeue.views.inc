@@ -16,44 +16,7 @@
  */
 
 /**
- * Implementation of hook_views_handlers().
- */
-function nodequeue_views_handlers() {
-  return array(
-  'info' => array(
-    'path' => drupal_get_path('module', 'nodequeue') .'/includes/views',
-    ),
-    'handlers' => array(
-      'nodequeue_handler_argument_subqueue_qid' => array(
-         'parent' => 'views_handler_filter_numeric',
-       ),
-      'nodequeue_handler_field_all_queues' => array(
-        'parent' => 'views_handler_field_prerender_list',
-      ),
-      'nodequeue_handler_field_all_subqueues' => array(
-        'parent' => 'nodequeue_handler_field_all_queues',
-      ),
-      'nodequeue_handler_field_links' => array(
-        'parent' => 'views_handler_field_node_link',
-      ),
-      'nodequeue_handler_field_queue_tab' => array(
-        'parent' => 'views_handler_field_node_link',
-      ),
-      'nodequeue_handler_filter_in_queue' => array(
-        'parent' => 'views_handler_filter_boolean_operator',
-      ),
-      'nodequeue_handler_relationship_nodequeue' => array(
-        'parent' => 'views_handler_relationship',
-      ),
-      'nodequeue_handler_relationship_nodequeue_queue_name' => array(
-        'parent' => 'views_handler_relationship',
-      ),
-    ),
-  );
-}
-
-/**
- * Implementation of hook_views_data().
+ * Implements hook_views_data().
  */
 function nodequeue_views_data() {
   $data = array();
@@ -146,6 +109,24 @@ function nodequeue_views_data() {
     ),
   );
 
+  $data['nodequeue_queue']['name'] = array(
+    'title' => t('Queue machine name'),
+    'help' => t('The machine name of the queue.'),
+    'field' => array(
+      'handler' => 'views_handler_field',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_string',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_string',
+    ),
+  );
+
   // ----------------------------------------------------------------
   // nodequeue_queue table
   $data['nodequeue_queue']['table']['group'] = t('Nodequeue');
@@ -165,24 +146,6 @@ function nodequeue_views_data() {
       'handler' => 'views_handler_field',
       'click sortable' => TRUE,
      ),
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-    'filter' => array(
-      'handler' => 'views_handler_filter_string',
-    ),
-    'argument' => array(
-      'handler' => 'views_handler_argument_string',
-    ),
-  );
-
-  $data['nodequeue_queue']['name'] = array(
-    'title' => t('Queue machine name'),
-    'help' => t('The machine name of the queue.'),
-    'field' => array(
-      'handler' => 'views_handler_field',
-      'click sortable' => TRUE,
-    ),
     'sort' => array(
       'handler' => 'views_handler_sort',
     ),
@@ -241,35 +204,22 @@ function nodequeue_views_data() {
       'handler' => 'views_handler_argument_string',
     ),
   );
-  
+
   return $data;
 }
 
 /**
- * Implementation of hook_views_data_alter().
+ * Implements hook_views_data_alter().
  */
 function nodequeue_views_data_alter(&$data) {
   // queue relationship
   $data['node']['nodequeue_rel'] = array(
     'group' => t('Nodequeue'),
-    'title' => t('Queue (qid)'),
-    'help' => t('Create a relationship to a nodequeue. This relationship requires one less JOIN than the queue name relationship, but is less useful if you are exporting this view across sites.'),
+    'title' => t('Queue'),
+    'help' => t('Create a relationship to a nodequeue.'),
     'real field' => 'nid',
     'relationship' => array(
       'handler' => 'nodequeue_handler_relationship_nodequeue',
-      'base' => 'nodequeue_nodes',
-      'field' => 'nid',
-      'label' => t('queue'),
-    ),
-  );
-
-  $data['node']['nodequeue_rel_queue_name'] = array(
-    'group' => t('Nodequeue'),
-    'title' => t('Queue (name)'),
-    'help' => t('Create a relationship to a nodequeue. This relationship requires an additional JOIN versus the queue qid based relationship, but is more useful for exporting views across sites.'),
-    'real field' => 'nid',
-    'relationship' => array(
-      'handler' => 'nodequeue_handler_relationship_nodequeue_queue_name',
       'base' => 'nodequeue_nodes',
       'field' => 'nid',
       'label' => t('queue'),

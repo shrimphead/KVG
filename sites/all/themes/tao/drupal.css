@@ -17,8 +17,8 @@
  */
 div#edit-openid-identifier-wrapper { display:block; }
 
-html.js #user-login-form div#edit-openid-identifier-wrapper,
-html.js #user-login div#edit-openid-identifier-wrapper { display:none; }
+html.js #user-login-form div.form-item-openid-identifier,
+html.js #user-login div.form-item-openid-identifier { display:none; }
 
 html.js #user-login-form li.openid-link,
 html.js #user-login li.openid-link { display:block; }
@@ -27,6 +27,60 @@ html.js #user-login li.openid-link { display:block; }
 #user-login-form li.user-link,
 #user-login li.openid-link,
 #user-login li.user-link { display:none; }
+
+/**
+ * system/system-behavior.css =========================================
+ */
+
+/**
+ * Password strength indicator
+ */
+.password-strength {
+  width:200px;
+  float:right;  /*LTR*/
+  }
+
+.password-strength-title { display:inline; }
+
+.password-strength-text {
+  float:right; /*LTR*/
+  font-weight:bold;
+  }
+
+.password-indicator {
+  background-color:#ccc;
+  height:5px;
+  width:100%;
+  }
+
+.password-indicator div {
+  height:100%;
+  width:0%;
+  background-color:#4c6;
+  }
+
+/**
+ * Password confirmation checker
+ */
+div.password-confirm { visibility: hidden; }
+
+.container-inline div,
+.container-inline label { display:inline; }
+
+.container-inline .fieldset-wrapper { display:block; }
+
+.nowrap { white-space:nowrap; }
+
+html.js .js-hide { display:none; }
+
+.element-hidden { display:none; }
+
+.element-invisible {
+  position:absolute !important;
+  clip:rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip:rect(1px, 1px, 1px, 1px);
+  }
+
 
 /**
  * system/system.css ==================================================
@@ -144,22 +198,15 @@ html.js input.throbbing { background:transparent url(drupal/throbber.gif) 100% 5
 /**
  * Resizable text areas
  */
-.resizable-textarea { width:95%; }
-
-.resizable-textarea .grippie {
-  height:9px;
-  overflow:hidden;
-  background:#eee;
-  border:1px solid #ddd;
-  border-top:0px;
-  cursor:s-resize;
+.form-textarea-wrapper textarea {
+  width: 100%;
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   }
 
-html.js .resizable-textarea textarea {
-  margin-bottom:0px;
-  width:100%;
-  display:block;
-  }
+.resizable textarea { resize:vertical; }
 
 /**
  * Table drag and drop.
@@ -281,12 +328,20 @@ html.js .js-hide { display:none; }
 #system-themes-form div.incompatible { font-weight:bold; }
 
 /**
- * Password strength indicator
+ * Markup free clearing
+ * Details: http://perishablepress.com/press/2009/12/06/new-clearfix-hack
  */
-span.password-strength,
-span.password-confirm { visibility:hidden; }
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+  }
 
-div.password-description { max-width:500px; }
+* html .clearfix { height: 1%; } /* IE6 */
+
+*:first-child + html .clearfix { min-height: 1%; } /* IE7 */
 
 /**
  * update/update.css ==================================================
@@ -317,3 +372,23 @@ div.password-description { max-width:500px; }
  */
 #permissions td.module { font-weight: bold; }
 #permissions td.permission { padding-left:20px; }
+
+/**
+ * misc/vertical-tabs.css =============================================
+ */
+.vertical-tabs { padding-left:200px; }
+
+.vertical-tabs .vertical-tabs-list {
+  float:left;
+  width:200px;
+  margin-left:-200px;
+  }
+
+.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane {
+  margin:0px;
+  padding:0px;
+  border:0px;
+  }
+
+.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane legend { display:none; }
+.vertical-tabs .vertical-tabs-list .summary { display:block; }

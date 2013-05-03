@@ -7,7 +7,7 @@
 /**
  * Implementation of hook_views_handlers().
  */
-function link_views_handlers() {
+/*function link_views_handlers() {
   return array(
     'info' => array(
       'path' => drupal_get_path('module', 'link') .'/views',
@@ -21,12 +21,14 @@ function link_views_handlers() {
       ),
     ),
   );
-}
+}*/
 
 /**
  * Return CCK Views data for the link_field_settings($op == 'views data').
+ *
+ * @TODO: Is there some way to tell views I have formatters for it?
  */
-function link_views_content_field_data($field) {
+/*function link_views_content_field_data($field) {
   // Build the automatic views data provided for us by CCK.
   // This creates all the information necessary for the "url" field.
   $data = content_views_field_views_data($field);
@@ -57,7 +59,7 @@ function link_views_content_field_data($field) {
     ),
     'filter' => array(
       'field' => $db_info['columns']['title']['column'],
-      'title' => t('@label title', array('@label' => t($field_types[$field['type']]['label']))) .': '. t($field['widget']['label']),
+      'title' => t('@label title', array('@label' => t($field_types[$field['type']]['label']))),
       'tablename' => $db_info['table'],
       'handler' => 'content_handler_filter_string',
       'additional fields' => array(),
@@ -74,13 +76,14 @@ function link_views_content_field_data($field) {
   );
 
   // Build out additional Views filter for the link "protocol" pseudo field.
+  // TODO: Add a protocol argument.
   $data[$table_alias][$field['field_name'] .'_protocol'] = array(
     'group' => t('Content'),
     'title' => t('@label protocol', array('@label' => t($field_types[$field['type']]['label']))) .': '. t($field['widget']['label']) .' ('. $field['field_name'] .')',
     'help' =>  $data[$table_alias][$field['field_name'] .'_url']['help'],
     'filter' => array(
       'field' => $db_info['columns']['url']['column'],
-      'title' => t('@label protocol', array('@label' => t($field_types[$field['type']]['label']))) .': '. t($field['widget']['label']),
+      'title' => t('@label protocol', array('@label' => t($field_types[$field['type']]['label']))),
       'tablename' => $db_info['table'],
       'handler' => 'link_views_handler_filter_protocol',
       'additional fields' => array(),
@@ -90,6 +93,7 @@ function link_views_content_field_data($field) {
   );
 
   // Build out additional Views argument for the link "target" pseudo field.
+  // TODO: Add a target filter.
   $data[$table_alias][$field['field_name'] .'_target'] = array(
     'group' => t('Content'),
     'title' => t('@label target', array('@label' => t($field_types[$field['type']]['label']))) .': '. t($field['widget']['label']) .' ('. $field['field_name'] .')',
@@ -106,4 +110,4 @@ function link_views_content_field_data($field) {
   );
 
   return $data;
-}
+}*/

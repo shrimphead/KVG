@@ -1,9 +1,8 @@
-
 /**
  * @file
  * Environment info css.
  *
- * @author Tom Kirkpatrick (mrfelton), www.kirkdesigns.co.uk
+ * @author Tom Kirkpatrick (mrfelton), www.systemseed.com
  */
 
 #environment-indicator {
@@ -64,9 +63,17 @@ body.environment-indicator-adjust.environment-indicator-right div#admin-toolbar.
 body.environment-indicator-adjust.environment-indicator-right div#admin-toolbar.se .admin-toggle { right:30px; }
 body.environment-indicator-adjust.environment-indicator-right.admin-expanded div#admin-toolbar.se .admin-toggle { right:0; }
 
+/* compatability with admin_menu.module */
+body.environment-indicator-adjust.environment-indicator-left #admin-menu #admin-menu-wrapper {
+  margin-right: 0px;
+  padding-left: 30px;
+}
 
+/* compatability with admin_menu.module */
+body.environment-indicator-adjust.environment-indicator-right #admin-menu #admin-menu-wrapper {
+  padding-right: 30px;
+}
 
-  
 /* Hide the menu on print output. */
 @media print {
   #environment-indicator {

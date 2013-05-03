@@ -24,7 +24,7 @@ class MollomDrupal extends Mollom {
    */
   public function loadConfiguration($name) {
     $name = $this->configuration_map[$name];
-    return variable_get($name, NULL);
+    return variable_get($name);
   }
 
   /**
@@ -52,15 +52,14 @@ class MollomDrupal extends Mollom {
     }
 
     // Retrieve Drupal distribution and installation profile information.
-    include_once './includes/install.inc';
-    // Prior to D7, there is no distribution name recorded anywhere, so we have to
-    // use "Drupal".
-    $profile_info['distribution_name'] = 'Drupal';
-    $profile_info['version'] = VERSION;
+    $profile = drupal_get_profile();
+    $profile_info = system_get_info('module', $profile) + array(
+      'distribution_name' => 'Drupal',
+      'version' => VERSION,
+    );
 
     // Retrieve Mollom module information.
-    $mollom_info = db_result(db_query("SELECT info FROM {system} WHERE type = 'module' AND name = 'mollom'"));
-    $mollom_info = unserialize($mollom_info);
+    $mollom_info = system_get_info('module', 'mollom');
     if (empty($mollom_info['version'])) {
       // Manually build a module version string for repository checkouts.
       $mollom_info['version'] = DRUPAL_CORE_COMPATIBILITY . '-2.x-dev';
@@ -111,7 +110,6 @@ class MollomDrupal extends Mollom {
       'method' => $method,
       'headers' => $headers,
       'timeout' => $this->requestTimeout,
-      'data' => NULL,
     );
     if (isset($query)) {
       if ($method == 'GET') {
@@ -122,7 +120,7 @@ class MollomDrupal extends Mollom {
       }
     }
 
-    $dhr = drupal_http_request($server . '/' . $path, $request['headers'], $method, $request['data'], 3, $request['timeout']);
+    $dhr = drupal_http_request($server . '/' . $path, $request);
     // @todo Core: Ensure that $dhr->code is an integer.
     $dhr->code = (int) $dhr->code;
     // @todo Core: Any other code than 200 is interpreted as error.
@@ -137,13 +135,6 @@ class MollomDrupal extends Mollom {
     // @see http://drupal.org/node/1246376
     if ($dhr->code === 1) {
       $dhr->code = -1;
-    }
-    // Convert response headers to lowercase.
-    if (!empty($dhr->headers)) {
-      foreach ($dhr->headers as $name => $value) {
-        unset($dhr->headers[$name]);
-        $dhr->headers[drupal_strtolower($name)] = $value;
-      }
     }
 
     $response = (object) array(

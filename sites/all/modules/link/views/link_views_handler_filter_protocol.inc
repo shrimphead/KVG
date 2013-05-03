@@ -9,16 +9,14 @@
  * Filter handler for limiting a view to URLs of a certain protocol.
  */
 class link_views_handler_filter_protocol extends views_handler_filter_string {
-  
   /**
    * Set defaults for the filter options.
    */
-  function option_definition() {
-    $options = parent::option_definition();
-    $options['operator'] = array('default' => 'OR');
-    $options['value'] = array('default' => 'http');
-    $options['case'] = array('default' => 0);
-    return $options;
+  function options(&$options) {
+    parent::options($options);
+    $options['operator'] = 'OR';
+    $options['value'] = 'http';
+    $options['case'] = 0;
   }
 
   /**
@@ -75,59 +73,35 @@ class link_views_handler_filter_protocol extends views_handler_filter_string {
    * Filter down the query to include only the selected protocols.
    */
   function op_protocol($field, $upper) {
-    global $db_type;
+    $db_type = db_driver();
 
     $protocols = $this->value;
 
     $where_conditions = array();
     foreach ($protocols as $protocol) {
       // Simple case, the URL begins with the specified protocol.
-      $condition = $field .' LIKE \''. $protocol .'%\'';
+      $condition = $field . ' LIKE \'' . $protocol . '%\'';
 
       // More complex case, no protocol specified but is automatically cleaned up
       // by link_cleanup_url(). RegEx is required for this search operation.
       if ($protocol == 'http') {
+        $LINK_DOMAINS = _link_domains();
         if ($db_type == 'pgsql') {
           // PostGreSQL code has NOT been tested. Please report any problems to the link issue queue.
           // pgSQL requires all slashes to be double escaped in regular expressions.
           // See http://www.postgresql.org/docs/8.1/static/functions-matching.html#FUNCTIONS-POSIX-REGEXP
-          $condition .= ' OR '. $field .' ~* \''.'^(([a-z0-9]([a-z0-9\\-_]*\\.)+)('. LINK_DOMAINS .'|[a-z][a-z]))'.'\'';
+          $condition .= ' OR ' . $field .' ~* \''.'^(([a-z0-9]([a-z0-9\\-_]*\\.)+)(' . $LINK_DOMAINS . '|[a-z][a-z]))' . '\'';
         }
         else {
           // mySQL requires backslashes to be double (triple?) escaped within character classes.
           // See http://dev.mysql.com/doc/refman/5.0/en/string-comparison-functions.html#operator_regexp
-          $condition .= ' OR '. $field .' REGEXP \''.'^(([a-z0-9]([a-z0-9\\\-_]*\.)+)('. LINK_DOMAINS .'|[a-z][a-z]))'.'\'';
+          $condition .= ' OR ' . $field . ' REGEXP \''.'^(([a-z0-9]([a-z0-9\\\-_]*\.)+)(' . $LINK_DOMAINS . '|[a-z][a-z]))' . '\'';
         }
       }
 
       $where_conditions[] = $condition;
     }
 
-    $this->query->add_where($this->options['group'], implode(' '. $this->operator .' ', $where_conditions));
-  }
-  
-  /**
-   * Because more than one can be selected, we need to handle the value better.
-   */
-  function admin_summary() {
-    if (!empty($this->options['exposed'])) {
-      return t('exposed');
-    }
-
-    $options = $this->operator_options('short');
-    $output = check_plain($options[$this->operator]);
-    if (in_array($this->operator, $this->operator_values(1))) {
-      $count = 0;
-      foreach ($this->value as $value) {
-        if (!$count) {
-          $output .= ' ' . check_plain($value);
-        }
-        else {
-          $output .= ', ' . check_plain($value);
-        }
-        $count++;
-      }
-    }
-    return $output;
+    $this->query->add_where($this->options['group'], implode(' ' . $this->operator . ' ', $where_conditions));
   }
 }

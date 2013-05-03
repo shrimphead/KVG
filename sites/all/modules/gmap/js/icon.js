@@ -4,7 +4,7 @@
  * Required for markers to operate properly.
  */
 
-/*global $, Drupal, GIcon, GPoint, GSize, G_DEFAULT_ICON */
+/*global jQuery, Drupal, GIcon, GPoint, GSize, G_DEFAULT_ICON */
 
 /**
  * Get the GIcon corresponding to a setname / sequence.
@@ -116,7 +116,7 @@ Drupal.gmap.iconSetup = function () {
 
       for (var ini in m[path].i) {
         if (m[path].i.hasOwnProperty(ini)) {
-          $.extend(Drupal.gmap.icons, Drupal.gmap.expandIconDef(m[path].i[ini], path, files));
+          jQuery.extend(Drupal.gmap.icons, Drupal.gmap.expandIconDef(m[path].i[ini], path, files));
         }
       }
     }

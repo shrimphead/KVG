@@ -1,4 +1,4 @@
-<?php // $Id: postal.install,v 1.2 2009/08/11 02:03:33 vauxia Exp $
+<?php
 
 /**
  * Implementation of hook_schema().
@@ -6,7 +6,7 @@
 function postal_schema() {
   return array(
     'postal' => array(
-      'description' => t('Stores lookup information for postal data.'),
+      'description' => 'Stores lookup information for postal data.',
       'fields' => array(
         'id' => array(
           'type' => 'int',
@@ -59,7 +59,7 @@ function postal_schema() {
       'primary key' => array('id'),
     ),
     'postal_admin' => array(
-      'description' => t('Stores information about locations as relative to the site.'),
+      'description' => 'Stores information about locations as relative to the site.',
       'fields' => array(
         'id' => array(
           'type' => 'int',
@@ -101,7 +101,8 @@ function postal_schema() {
  * Implementation of hook_install().
  */
 function postal_install() {
-  drupal_install_schema('postal');
+  // @todo No longer required in d7?
+  // drupal_install_schema('postal');
 }
 
 function postal_enable() {

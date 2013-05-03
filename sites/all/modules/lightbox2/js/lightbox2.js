@@ -1,5 +1,8 @@
 /* $Id: lightbox2.js,v 1.1.4.39 2010/06/07 15:24:24 snpower Exp $ */
 
+// start jQuery block
+(function ($) {
+
 function alt_layout_handler(event) {
   if ($("input[name=lightbox2_lite]:checked").val() != 1) {
     if ($("input[name=lightbox2_use_alt_layout]:checked").val() == 1) {
@@ -166,9 +169,7 @@ function lightbox2_lite_auto_handler(event) {
   }
 }
 
-if (Drupal.jsEnabled) {
-  $(document).ready(function () {
-
+$(document).ready(function () {
     // Handle lightbox2_settings_form.
     lightbox2_lite_general_handler();
     lightbox2_lite_auto_handler();
@@ -184,6 +185,8 @@ if (Drupal.jsEnabled) {
     $("select[name=lightbox2_custom_class_handler]").bind("change", image_node_handler);
     $("textarea[name=lightbox2_custom_trigger_classes]").bind("change", image_node_handler);
   });
-}
+
+//End jQuery block
+}(jQuery));
 
 

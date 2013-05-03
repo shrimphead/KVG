@@ -43,17 +43,11 @@ function mollom_test_schema() {
 }
 
 /**
- * Implements hook_install().
- */
-function mollom_test_install() {
-  drupal_install_schema('mollom_test');
-}
-
-/**
  * Implements hook_uninstall().
  */
 function mollom_test_uninstall() {
-  drupal_uninstall_schema('mollom_test');
-  db_query("DELETE FROM {variable} WHERE name LIKE 'mollom_test.%'");
+  db_delete('variable')
+    ->condition('name', db_like('mollom_test.') . '%', 'LIKE')
+    ->execute();
 }
 

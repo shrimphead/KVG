@@ -17,11 +17,12 @@ class page_title_plugin_display_page_with_page_title extends views_plugin_displa
 
     // Lookup the current title and strip any tags out.
     $title = strip_tags($this->get_option('page_title_pattern'));
+
     if (empty($title)) {
       $title = t('None');
     }
     elseif (drupal_strlen($title) > 16) {
-      $title = drupal_substr($title, 0, 16) .'...';
+      $title = drupal_substr($title, 0, 16) . '...';
     }
 
     $options['page_title_pattern'] = array(
@@ -33,9 +34,12 @@ class page_title_plugin_display_page_with_page_title extends views_plugin_displa
 
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
+
     if ($form_state['section'] == 'page_title_pattern') {
       $form['#title'] = t('The <em>Page Title Pattern</em> of this view');
+
       $form['page_title_pattern'] = array(
+        '#title' => t('Page Title Pattern'),
         '#type' => 'textfield',
         '#description' => t('Optionally use this field to define a Page Title Pattern (not the Page Title). You may use the Tokens listed below'),
         '#default_value' => $this->get_option('page_title_pattern'),
@@ -49,8 +53,8 @@ class page_title_plugin_display_page_with_page_title extends views_plugin_displa
         '#collapsed' => TRUE,
       );
       $form['token_help']['content'] = array(
-        '#type' => 'markup',
-        '#value' => theme('token_help', 'global'),
+        '#theme' => 'token_tree',
+        '#token_types' => array(),
       );
     }
   }

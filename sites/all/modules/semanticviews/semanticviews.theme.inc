@@ -1,5 +1,4 @@
 <?php
-// $Id: semanticviews.theme.inc,v 1.1.2.1 2010/04/10 04:07:25 bangpound Exp $
 /**
  * @file semanticviews.theme.inc
  * TODO: Enter file description here.
@@ -15,7 +14,7 @@ function template_preprocess_semanticviews_view_fields(&$vars) {
   $vars['fields'] = array(); // ensure it's at least an empty array.
   foreach ($view->field as $id => $field) {
     // render this even if set to exclude so it can be used elsewhere.
-    $field_output = $view->style_plugin->get_field($view->row_index, $id);
+    $field_output = $view->field[$id]->theme($vars['row']);
     $empty = $field_output !== 0 && empty($field_output);
     if (empty($field->options['exclude']) && !(($vars['options']['skip_blank'] || $field->options['hide_empty']) && $empty)) {
       $object = new stdClass();

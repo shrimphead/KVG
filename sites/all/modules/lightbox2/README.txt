@@ -23,6 +23,7 @@ Maintainers:
   Stella Power (http://drupal.org/user/66894)
   Daniel F. Kudwien (http://drupal.org/user/54136)
   Mark Ashmead (http://drupal.org/user/52392)
+  Fernando Correa da Conceição (http://drupal.org/user/889254)
 
 Documentation: http://drupal.org/node/144469
 

@@ -1,3 +1,6 @@
+/**
+ * Styles for theme in the Aggregator module.
+ */
 
 #aggregator .feed-source .feed-title {
   margin-top: 0;
@@ -16,7 +19,8 @@
   margin-bottom: 0;
   font-size: 1.3em;
 }
-#aggregator .feed-item-meta, #aggregator .feed-item-body {
+#aggregator .feed-item-meta,
+#aggregator .feed-item-body {
   margin-bottom: 0.5em;
 }
 #aggregator .feed-item-categories {

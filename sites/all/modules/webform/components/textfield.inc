@@ -37,7 +37,7 @@ function _webform_defaults_textfield() {
 function _webform_theme_textfield() {
   return array(
     'webform_display_textfield' => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'file' => 'components/textfield.inc',
     ),
   );
@@ -69,7 +69,7 @@ function _webform_edit_textfield($component) {
   );
   $form['display']['field_prefix'] = array(
     '#type' => 'textfield',
-    '#title' => t('Prefix text placed to the left of the field'),
+    '#title' => t('Prefix text placed to the left of the textfield'),
     '#default_value' => $component['extra']['field_prefix'],
     '#description' => t('Examples: $, #, -.'),
     '#size' => 20,
@@ -79,7 +79,7 @@ function _webform_edit_textfield($component) {
   );
   $form['display']['field_suffix'] = array(
     '#type' => 'textfield',
-    '#title' => t('Postfix text placed to the right of the field'),
+    '#title' => t('Postfix text placed to the right of the textfield'),
     '#default_value' => $component['extra']['field_suffix'],
     '#description' => t('Examples: lb, kg, %.'),
     '#size' => 20,
@@ -135,9 +135,7 @@ function _webform_render_textfield($component, $value = NULL, $filter = TRUE) {
     '#field_suffix' => empty($component['extra']['field_suffix']) ? NULL : ($filter ? _webform_filter_xss($component['extra']['field_suffix']) : $component['extra']['field_suffix']),
     '#description' => $filter ? _webform_filter_descriptions($component['extra']['description'], $node) : $component['extra']['description'],
     '#attributes' => $component['extra']['attributes'],
-    '#theme_wrappers' => array('webform_element_wrapper'),
-    '#pre_render' => array('webform_element_title_display'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => array('webform_element'),
     '#translatable' => array('title', 'description', 'field_prefix', 'field_suffix'),
   );
 
@@ -178,8 +176,7 @@ function _webform_display_textfield($component, $value, $format = 'html') {
     '#title' => $component['name'],
     '#weight' => $component['weight'],
     '#theme' => 'webform_display_textfield',
-    '#theme_wrappers' => $format == 'html' ? array('webform_element', 'webform_element_wrapper') : array('webform_element_text'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => $format == 'html' ? array('webform_element') : array('webform_element_text'),
     '#field_prefix' => $component['extra']['field_prefix'],
     '#field_suffix' => $component['extra']['field_suffix'],
     '#format' => $format,
@@ -191,9 +188,10 @@ function _webform_display_textfield($component, $value, $format = 'html') {
 /**
  * Format the output of data for this component.
  */
-function theme_webform_display_textfield($element) {
-  $prefix = $element['#format'] == 'html' ? filter_xss($element['#field_prefix']) : $element['#field_prefix'];
-  $suffix = $element['#format'] == 'html' ? filter_xss($element['#field_suffix']) : $element['#field_suffix'];
+function theme_webform_display_textfield($variables) {
+  $element = $variables['element'];
+  $prefix = $element['#format'] == 'html' ? '' : $element['#field_prefix'];
+  $suffix = $element['#format'] == 'html' ? '' : $element['#field_suffix'];
   $value = $element['#format'] == 'html' ? check_plain($element['#value']) : $element['#value'];
   return $value !== '' ? ($prefix . $value . $suffix) : ' ';
 }
@@ -202,18 +200,21 @@ function theme_webform_display_textfield($element) {
  * Implements _webform_analysis_component().
  */
 function _webform_analysis_textfield($component, $sids = array()) {
-  $placeholders = count($sids) ? array_fill(0, count($sids), "'%s'") : array();
-  $sidfilter = count($sids) ? " AND sid in (" . implode(",", $placeholders) . ")" : "";
-  $query = 'SELECT data ' .
-    ' FROM {webform_submitted_data} ' .
-    ' WHERE nid = %d ' .
-    ' AND cid = %d ' . $sidfilter;
+  $query = db_select('webform_submitted_data', 'wsd', array('fetch' => PDO::FETCH_ASSOC))
+    ->fields('wsd', array('data'))
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid']);
+
+  if (count($sids)) {
+    $query->condition('sid', $sids, 'IN');
+  }
+
   $nonblanks = 0;
   $submissions = 0;
   $wordcount = 0;
 
-  $result = db_query($query, array_merge(array($component['nid'], $component['cid']), $sids));
-  while ($data = db_fetch_array($result)) {
+  $result = $query->execute();
+  foreach ($result as $data) {
     if (drupal_strlen(trim($data['data'])) > 0) {
       $nonblanks++;
       $wordcount += str_word_count(trim($data['data']));

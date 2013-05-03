@@ -84,7 +84,7 @@ $imce =& $imce_ref['imce'];//keep this line.
     </div>
 
     <div id="file-list-wrapper">
-      <?php print theme('imce_file_list', $imce_ref); /* see imce-file-list-tpl.php */?>
+      <?php print theme('imce_file_list', array('imce_ref' => $imce_ref)); /* see imce-file-list-tpl.php */?>
     </div>
 
     <div id="dir-stat"><?php print t('!num files using !dirsize of !quota', array(

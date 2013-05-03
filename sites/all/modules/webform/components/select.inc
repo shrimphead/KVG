@@ -38,7 +38,7 @@ function _webform_defaults_select() {
 function _webform_theme_select() {
   return array(
     'webform_display_select' => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'file' => 'components/select.inc',
     ),
   );
@@ -48,10 +48,14 @@ function _webform_theme_select() {
  * Implements _webform_edit_component().
  */
 function _webform_edit_select($component) {
-  $form = array();
-
-  drupal_add_js(drupal_get_path('module', 'webform') . '/js/select-admin.js', 'module', 'header', FALSE, TRUE, FALSE);
-  drupal_add_js(array('webform' => array('selectOptionsUrl' => url('webform/ajax/options/' . $component['nid']))), 'setting');
+  $form = array(
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'webform') . '/js/select-admin.js' => array('preprocess' => FALSE),
+        array('data' => array('webform' => array('selectOptionsUrl' => url('webform/ajax/options/' . $component['nid']))), 'type' => 'setting'),
+      ),
+    ),
+  );
 
   $other = array();
   if ($info = _webform_select_options_info()) {
@@ -98,7 +102,7 @@ function _webform_edit_select($component) {
       '#type' => 'fieldset',
       '#title' => t('Options'),
       '#collapsible' => TRUE,
-      '#attributes' => array('class' => 'webform-options-element'),
+      '#attributes' => array('class' => array('webform-options-element')),
       '#element_validate' => array('_webform_edit_validate_options'),
       '#weight' => 2,
     );
@@ -225,7 +229,7 @@ function _webform_edit_validate_select($element, &$form_state) {
     }
 
     if (!empty($duplicate_keys)) {
-      form_error($element, t('Options within the select list must be unique. The following keys have been used multiple times:') . theme('item_list', $duplicate_keys));
+      form_error($element, t('Options within the select list must be unique. The following keys have been used multiple times:') . theme('item_list', array('items' => $duplicate_keys)));
     }
 
     // Set the listbox option if needed.
@@ -290,9 +294,8 @@ function _webform_render_select($component, $value = NULL, $filter = TRUE) {
     '#required' => $component['mandatory'],
     '#weight' => $component['weight'],
     '#description' => $filter ? _webform_filter_descriptions($component['extra']['description'], $node) : $component['extra']['description'],
-    '#theme_wrappers' => array('webform_element_wrapper'),
-    '#pre_render' => array('webform_element_title_display'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => array('webform_element'),
+    '#pre_render' => array(), // Needed to disable double-wrapping of radios and checkboxes.
     '#translatable' => array('title', 'description', 'options'),
   );
 
@@ -304,10 +307,10 @@ function _webform_render_select($component, $value = NULL, $filter = TRUE) {
     _webform_shuffle_options($options);
   }
 
-  // Add default options if using a select list with no default. This matches
-  // Drupal 7's handling of select lists.
+  // Add default options if using a select list with no default. This trigger's
+  // Drupal 7's adding of the option for us. See @form_process_select().
   if ($component['extra']['aslist'] && !$component['extra']['multiple'] && $default_value === '') {
-    $options = array('' => ($component['mandatory'] ? t('- Select -') : t('- None -'))) + $options;
+    $element['#empty_value'] = '';
   }
 
   // Set the component options.
@@ -353,9 +356,13 @@ function _webform_render_select($component, $value = NULL, $filter = TRUE) {
     // Set display as a select_or_other element:
     $element['#type'] = 'select_or_other';
     $element['#other'] = !empty($component['extra']['other_text']) ? check_plain($component['extra']['other_text']) : t('Other...');
+    $element['#other_title'] = $element['#title'] . ' ' . $element['#other'];
+    $element['#other_title_display'] = 'invisible';
     $element['#other_unknown_defaults'] = 'other';
     $element['#other_delimiter'] = ', ';
-    $element['#process'] = array('select_or_other_process', 'webform_expand_select_or_other');
+    // Merge in Webform's #process function for Select or other.
+    $element['#process'] = array_merge(element_info_property('select_or_other', '#process'), array('webform_expand_select_or_other'));
+
     if ($component['extra']['multiple']) {
       $element['#multiple'] = TRUE;
       $element['#select_type'] = 'checkboxes';
@@ -380,14 +387,19 @@ function _webform_render_select($component, $value = NULL, $filter = TRUE) {
     if ($component['extra']['multiple']) {
       // Set display as a checkbox set.
       $element['#type'] = 'checkboxes';
-      // Drupal 6 hack to properly render on multipage forms.
-      $element['#process'] = array('webform_expand_checkboxes');
-      $element['#pre_render'][] = 'webform_expand_select_ids';
+      $element['#theme_wrappers'] = array_merge(array('checkboxes'), $element['#theme_wrappers']);
+      $element['#process'] = array_merge(element_info_property('checkboxes', '#process'), array('webform_expand_select_ids'));
+
+      // Entirely replace the normal expand checkboxes with our custom version.
+      // This helps render checkboxes in multipage forms.
+      $process_key = array_search('form_process_checkboxes', $element['#process']);
+      $element['#process'][$process_key] = 'webform_expand_checkboxes';
     }
     else {
       // Set display as a radio set.
       $element['#type'] = 'radios';
-      $element['#pre_render'][] = 'webform_expand_select_ids';
+      $element['#theme_wrappers'] = array_merge(array('radios'), $element['#theme_wrappers']);
+      $element['#process'] = array_merge(element_info_property('radios', '#process'), array('webform_expand_select_ids'));
     }
   }
 
@@ -419,11 +431,8 @@ function webform_expand_select_or_other($element) {
   }
 
   // Sanitize the options in Select or other check boxes and radio buttons.
-  if ($element['#select_type'] == 'checkboxes') {
-    $element['select']['#pre_render'][] = 'webform_expand_select_ids';
-  }
-  elseif ($element['#select_type'] == 'radios') {
-    $element['select']['#pre_render'][] = 'webform_expand_select_ids';
+  if ($element['#select_type'] == 'checkboxes' || $element['#select_type'] == 'radios') {
+    $element['select']['#process'] = array_merge(element_info_property($element['#select_type'], '#process'), array('webform_expand_select_ids'));
   }
 
   return $element;
@@ -444,56 +453,18 @@ function webform_expand_checkboxes($element) {
     }
   }
 
-  $element = expand_checkboxes($element);
+  $element = form_process_checkboxes($element);
 
   // Escape the values of checkboxes.
   foreach (element_children($element) as $key) {
     $element[$key]['#return_value'] = check_plain($element[$key]['#return_value']);
     $element[$key]['#name'] = $element['#name'] . '[' . $element[$key]['#return_value'] . ']';
-    $element[$key]['#value_callback'] = 'webform_checkbox_value';
-    $element[$key]['#pre_render'][] = 'webform_checkbox_prerender';
   }
 
   foreach ($default_value as $key => $val) {
     $element[$key]['#default_value'] = $val;
   }
   return $element;
-}
-
-/**
- * Helper function to ensure that the default value of "0" checkboxes renders.
- *
- * The default handling of checkboxes only checks checkboxes based on the #value
- * property. If a checkbox has a value of "0" (as a string), the checkbox
- * doesn't print out the way it should.
- *
- * @see theme_checkbox()
- */
-function webform_checkbox_prerender($element) {
-  if ($element['#value'] === '0') {
-    $element['#value'] = TRUE;
-  }
-  return $element;
-}
-
-/**
- * Helper function to determine the value for a checkbox form element.
- *
- * Drupal core cannot decern the difference between an unchecked checkbox and
- * a checked checkbox that has a value of '0'. This value callback will return
- * NULL instead of an integer 0 for checkboxes that are not checked.
- *
- * @see form_type_checkbox_value()
- */
-function webform_checkbox_value($form, $edit = FALSE) {
-  if ($edit !== FALSE) {
-    if (empty($form['#disabled'])) {
-      return $edit !== NULL ? $form['#return_value'] : NULL; // 0 in core.
-    }
-    else {
-      return $form['#default_value'];
-    }
-  }
 }
 
 /**
@@ -521,8 +492,7 @@ function _webform_display_select($component, $value, $format = 'html') {
     '#title' => $component['name'],
     '#weight' => $component['weight'],
     '#theme' => 'webform_display_select',
-    '#theme_wrappers' => $format == 'html' ? array('webform_element', 'webform_element_wrapper') : array('webform_element_text'),
-    '#post_render' => array('webform_element_wrapper'),
+    '#theme_wrappers' => $format == 'html' ? array('webform_element') : array('webform_element_text'),
     '#format' => $format,
     '#options' => _webform_select_options($component, !$component['extra']['aslist']),
     '#value' => (array) $value,
@@ -545,9 +515,9 @@ function _webform_submit_select($component, $value) {
     foreach ($value as $key => $option_value) {
       // Handle options that are specified options.
       if ($option_value !== '' && isset($options[$option_value])) {
-        // Checkboxes submit a value of FALSE when unchecked. A checkbox with
-        // a value of '0' is valid, so we can't use empty() here.
-        if ($option_value === FALSE && !$component['extra']['aslist'] && $component['extra']['multiple']) {
+        // Checkboxes submit an integer value of 0 when unchecked. A checkbox
+        // with a value of '0' is valid, so we can't use empty() here.
+        if ($option_value === 0 && !$component['extra']['aslist'] && $component['extra']['multiple']) {
           unset($value[$option_value]);
         }
         else {
@@ -571,7 +541,8 @@ function _webform_submit_select($component, $value) {
 /**
  * Format the text output for this component.
  */
-function theme_webform_display_select($element) {
+function theme_webform_display_select($variables) {
+  $element = $variables['element'];
   $component = $element['#webform_component'];
 
   // Flatten the list of options so we can get values easily. These options
@@ -617,7 +588,7 @@ function theme_webform_display_select($element) {
   }
 
   if ($element['#format'] == 'html') {
-    $output = count($items) > 1 ? theme('item_list', $items) : (isset($items[0]) ? $items[0] : ' ');
+    $output = count($items) > 1 ? theme('item_list', array('items' => $items)) : (isset($items[0]) ? $items[0] : ' ');
   }
   else {
     if (count($items) > 1) {
@@ -645,25 +616,32 @@ function _webform_analysis_select($component, $sids = array(), $single = FALSE) 
   $sid_filter = count($sids) ? " AND sid IN (" . implode(",", $sid_placeholders) . ")" : "";
 
   $option_operator = $show_other_results ? 'NOT IN' : 'IN';
-  $placeholders = count($options) ? array_fill(0, count($options), "'%s'") : array();
-  $query = 'SELECT data, count(data) as datacount ' .
-    ' FROM {webform_submitted_data} ' .
-    ' WHERE nid = %d ' .
-    ' AND cid = %d ' .
-    " AND data != ''" . $sid_filter .
-    ($placeholders ? ' AND data ' . $option_operator . ' (' . implode(',', $placeholders) . ')' : '') .
-    ' GROUP BY data ';
+  $query = db_select('webform_submitted_data', 'wsd', array('fetch' => PDO::FETCH_ASSOC))
+    ->fields('wsd', array('data'))
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid'])
+    ->condition('data', '', '<>')
+    ->condition('data', array_keys($options), $option_operator)
+    ->groupBy('data');
+  $query->addExpression('COUNT(data)', 'datacount');
 
-  $count_query = 'SELECT count(*) as datacount ' .
-    ' FROM {webform_submitted_data} ' .
-    ' WHERE nid = %d ' .
-    ' AND cid = %d ' .
-    " AND data != ''" . $sid_filter;
+  if (count($sids)) {
+    $query->condition('sid', $sids, 'IN');
+  }
 
-  $result = db_query($query, array_merge(array($component['nid'], $component['cid']), $sids, array_keys($options)));
+  $count_query = db_select('webform_submitted_data', 'wsd', array('fetch' => PDO::FETCH_ASSOC))
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid'])
+    ->condition('data', '', '<>');
+  $count_query->addExpression('COUNT(*)', 'datacount');
+  if (count($sids)) {
+    $count_query->condition('sid', $sids, 'IN');
+  }
+
+  $result = $query->execute();
   $rows = array();
   $normal_count = 0;
-  while ($data = db_fetch_array($result)) {
+  foreach ($result as $data) {
     $display_option = $single ? $data['data'] : $options[$data['data']];
     $rows[$data['data']] = array(_webform_filter_xss($display_option), $data['datacount']);
     $normal_count += $data['datacount'];
@@ -678,7 +656,7 @@ function _webform_analysis_select($component, $sids = array(), $single = FALSE) 
 
     // Add a row for any unknown or user-entered values.
     if ($component['extra']['other_option']) {
-      $full_count = db_result(db_query($count_query, array_merge(array($component['nid'], $component['cid']), $sids)));
+      $full_count = $count_query->execute()->fetchField();
       $other_count = $full_count - $normal_count;
       $display_option = !empty($component['extra']['other_text']) ? check_plain($component['extra']['other_text']) : t('Other...');
       $other_text = $other_count ? $other_count . ' (' . l(t('view'), 'node/' . $component['nid'] . '/webform-results/analysis/' . $component['cid']) . ')' : $other_count;
@@ -822,7 +800,7 @@ function webform_select_options_ajax($source_name = '') {
     'options' => $options,
   );
 
-  drupal_json($return);
+  drupal_json_output($return);
 }
 
 /**

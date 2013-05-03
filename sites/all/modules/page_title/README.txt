@@ -30,7 +30,7 @@ INSTALLATION:
 
 2. Enable this module by navigating to:
 
-     Administer > Build > Modules
+     Administration > Modules
 
    At this point the Drupal install system will attempt to create the database
    table page_title. You should see a message confirming success or
@@ -47,10 +47,4 @@ INSTALLATION:
 
 3. Optionally configure the two variations of page title by visiting:
 
-    Administer > Site configuration > Page title
-
-   From the configuration page you can define "patterns" for sections of your
-   site as well as toggling the visibility of the Page Title field.
-
-4. Unlike Drupal 5, in Drupal 6 the Page Title module requires no modification
-   to the theme at all.
+    Administration > Configuration > Search and metadata

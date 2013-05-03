@@ -10,7 +10,7 @@
  *
  * @param $type
  *   The new CAPTCHA type to retrieve, e.g. 'image' or 'audio'.
- * @param $mollom_build_id
+ * @param $form_build_id
  *   The internal form build id of the form to update the CAPTCHA for.
  * @param $contentId
  *   (optional) The associated content ID in the form.
@@ -22,7 +22,7 @@
  *
  * @todo Add error handling.
  */
-function mollom_captcha_js($type, $mollom_build_id, $contentId = NULL) {
+function mollom_captcha_js($type, $form_build_id, $contentId = NULL) {
   // Deny GET requests to make automated security audit tools not complain
   // about a JSON Hijacking possibility.
   // @see http://capec.mitre.org/data/definitions/111.html
@@ -31,12 +31,13 @@ function mollom_captcha_js($type, $mollom_build_id, $contentId = NULL) {
     header($_SERVER['SERVER_PROTOCOL'] . ' 405 Method Not Allowed');
     // A HTTP 405 response MUST specify allowed methods.
     header('Allow: POST');
-    exit();
+    drupal_exit();
   }
 
   // Load $form_state from cache or create a dummy state.
-  if ($cache = cache_get($mollom_build_id, 'cache_mollom')) {
-    $form_state['mollom'] = $cache->data;
+  $cid = 'form_state_' . $form_build_id;
+  if ($cache = cache_get($cid, 'cache_form')) {
+    $form_state = $cache->data;
   }
   else {
     $form_state['mollom'] = array();
@@ -48,18 +49,21 @@ function mollom_captcha_js($type, $mollom_build_id, $contentId = NULL) {
   $captcha = mollom_get_captcha($form_state);
 
   if (!empty($form_state['mollom']['response']['captcha']['id'])) {
-    // Update cached session id in the cached $form_state.
+    // Update the CAPTCHA ID in the cached $form_state, since it might have
+    // changed.
+    // @todo Replace the entire CAPTCHA switch/refresh with new AJAX framework
+    //   functionality.
     if ($cache) {
-      cache_set($mollom_build_id, $form_state['mollom'], 'cache_mollom', $cache->expire);
+      cache_set($cid, $form_state, 'cache_form', REQUEST_TIME + 21600);
     }
     // Return new content and CAPTCHA ID via JSON.
     $data = array(
-      'captchaId' => $form_state['mollom']['response']['captcha']['id'],
       'content' => $captcha,
+      'captchaId' => $form_state['mollom']['response']['captcha']['id'],
     );
-    drupal_json($data);
+    drupal_json_output($data);
   }
-  exit();
+  drupal_exit();
 }
 
 /**
@@ -72,7 +76,7 @@ function mollom_captcha_js($type, $mollom_build_id, $contentId = NULL) {
  *
  * @see mollom_report_access()
  */
-function mollom_report_form(&$form_state, $entity, $id) {
+function mollom_report_form($form, &$form_state, $entity, $id) {
   $form['entity'] = array(
     '#type' => 'value',
     '#value' => $entity,
@@ -88,7 +92,7 @@ function mollom_report_form(&$form_state, $entity, $id) {
   //   compatible with any of the standard processes either way.
   $form = confirm_form($form,
     t('Are you sure you want to delete and report the content as inappropriate?'),
-    isset($_GET['destination']) ? $_GET['destination'] : '<front>',
+    '<front>',
     t('This action cannot be undone.'),
     t('Delete'), t('Cancel')
   );

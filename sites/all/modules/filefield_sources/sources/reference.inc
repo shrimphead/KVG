@@ -23,6 +23,7 @@ function filefield_source_reference_info() {
     'process' => 'filefield_source_reference_process',
     'value' => 'filefield_source_reference_value',
     'weight' => 1,
+    'file' => 'includes/reference.inc',
   );
   return $source;
 }
@@ -33,11 +34,11 @@ function filefield_source_reference_info() {
 function filefield_source_reference_menu() {
   $items = array();
 
-  $items['filefield/reference/%/%'] = array(
+  $items['file/reference/%/%/%'] = array(
     'page callback' => 'filefield_source_reference_autocomplete',
-    'page arguments' => array(2, 3),
-    'access callback' => 'filefield_edit_access',
-    'access arguments' => array(2, 3),
+    'page arguments' => array(2, 3, 4),
+    'access callback' => '_filefield_sources_field_access',
+    'access arguments' => array(2, 3, 4),
     'file' => 'sources/reference.inc',
     'type' => MENU_CALLBACK,
   );
@@ -50,11 +51,11 @@ function filefield_source_reference_menu() {
 function filefield_source_reference_theme() {
   return array(
     'filefield_source_reference_element' => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'file' => 'sources/reference.inc',
     ),
     'filefield_source_reference_autocomplete_item' => array(
-      'arguments' => array('file' => NULL),
+      'variables' => array('file' => NULL),
       'file' => 'sources/reference.inc',
     ),
  );
@@ -63,29 +64,31 @@ function filefield_source_reference_theme() {
 /**
  * Implements hook_filefield_source_settings().
  */
-function filefield_source_reference_settings($op, $field) {
+function filefield_source_reference_settings($op, $instance) {
   $return = array();
 
   if ($op == 'form') {
-    $return['sources_reference'] = array(
+    $settings = $instance['widget']['settings']['filefield_sources'];
+
+    $return['source_reference'] = array(
       '#title' => t('Autocomplete reference options'),
       '#type' => 'fieldset',
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
 
-    $return['sources_reference']['filefield_source_autocomplete'] = array(
+    $return['source_reference']['autocomplete'] = array(
       '#title' => t('Match file name'),
       '#options' => array(
         '0' => t('Starts with string'),
         '1' => t('Contains string'),
       ),
       '#type' => 'radios',
-      '#default_value' => empty($field['filefield_source_autocomplete']) ? '0' : '1', 
+      '#default_value' => isset($settings['source_reference']['autocomplete']) ? $settings['source_reference']['autocomplete'] : '0', 
     );
   }
   elseif ($op == 'save') {
-    $return[] = 'filefield_source_autocomplete';
+    $return['source_reference']['autocomplete'] = '0';
   }
 
   return $return;
@@ -94,7 +97,7 @@ function filefield_source_reference_settings($op, $field) {
 /**
  * A #process callback to extend the filefield_widget element type.
  */
-function filefield_source_reference_process($element, $edit, &$form_state, $form) {
+function filefield_source_reference_process($element, &$form_state, $form) {
 
   $element['filefield_reference'] = array(
     '#weight' => 100.5,
@@ -105,7 +108,7 @@ function filefield_source_reference_process($element, $edit, &$form_state, $form
 
   $element['filefield_reference']['autocomplete'] = array(
     '#type' => 'textfield',
-    '#autocomplete_path' => 'filefield/reference/' . $element['#type_name'] . '/' . $element['#field_name'],
+    '#autocomplete_path' => 'file/reference/' . $element['#entity_type'] . '/' . $element['#bundle'] . '/' . $element['#field_name'],
     '#description' => filefield_sources_element_validation_help($element['#upload_validators']),
   );
 
@@ -114,12 +117,12 @@ function filefield_source_reference_process($element, $edit, &$form_state, $form
     '#type' => 'submit',
     '#value' => t('Select'),
     '#validate' => array(),
-    '#submit' => array('node_form_submit_build_node'),
+    '#submit' => array('filefield_sources_field_submit'),
     '#name' => $element['#name'] . '[filefield_reference][button]',
-    '#ahah' => array(
-      'path' => 'filefield/ahah/' . $element['#type_name'] . '/' . $element['#field_name'] . '/' . $element['#delta'],
-      'wrapper' => $element['#id'] . '-ahah-wrapper',
-      'method' => 'replace',
+    '#limit_validation_errors' => array($element['#parents']),
+    '#ajax' => array(
+      'path' => 'file/ajax/' . implode('/', $element['#array_parents']) . '/' . $form['form_build_id']['#value'],
+      'wrapper' => $element['#id'] . '-ajax-wrapper',
       'effect' => 'fade',
     ),
   );
@@ -135,15 +138,15 @@ function filefield_source_reference_value($element, &$item) {
     $matches = array();
     if (preg_match('/\[fid:(\d+)\]/', $item['filefield_reference']['autocomplete'], $matches)) {
       $fid = $matches[1];
-      if ($file = field_file_load($fid)) {
+      if ($file = file_load($fid)) {
 
         // Run all the normal validations, minus file size restrictions.
-        if (isset($element['#upload_validators']['filefield_validate_size'])) {
-          unset($element['#upload_validators']['filefield_validate_size']);
+        if (isset($element['#upload_validators']['file_validate_size'])) {
+          unset($element['#upload_validators']['file_validate_size']);
         }
 
         if (filefield_sources_element_validate($element, (object) $file)) {
-          $item = array_merge($item, $file);
+          $item = array_merge($item, (array) $file);
         }
       }
       else {
@@ -158,24 +161,26 @@ function filefield_source_reference_value($element, &$item) {
 /**
  * Menu callback; autocomplete.js callback to return a list of files.
  */
-function filefield_source_reference_autocomplete($type_name, $field_name, $filename) {
-  $field = content_fields($field_name, $type_name);
+function filefield_source_reference_autocomplete($entity_type, $bundle_name, $field_name, $filename) {
+  $field = field_info_instance($entity_type, $field_name, $bundle_name);
 
   $items = array();
   if (!empty($field)) {
     $files = filefield_source_reference_get_files($filename, $field);
     foreach ($files as $fid => $file) {
-      $items[$file->filename ." [fid:$fid]"] = theme('filefield_source_reference_autocomplete_item', $file);
+      $items[$file->filename ." [fid:$fid]"] = theme('filefield_source_reference_autocomplete_item', array('file' => $file));
     }
   }
 
-  drupal_json($items);
+  drupal_json_output($items);
 }
 
 /**
  * Theme the output of a single item in the autocomplete list.
  */
-function theme_filefield_source_reference_autocomplete_item($file) {
+function theme_filefield_source_reference_autocomplete_item($variables) {
+  $file = $variables['file'];
+
   $output = '';
   $output .= '<div class="filefield-source-reference-item">';
   $output .= '<span class="filename">' . check_plain($file->filename) . '</span> <span class="filesize">(' . format_size($file->filesize) . ')</span>';
@@ -186,9 +191,11 @@ function theme_filefield_source_reference_autocomplete_item($file) {
 /**
  * Theme the output of the autocomplete field.
  */
-function theme_filefield_source_reference_element($element) {
-  $element['autocomplete']['#field_suffix'] = theme('submit', $element['select']);
-  return '<div class="filefield-source filefield-source-reference clear-block">' . theme('textfield', $element['autocomplete']) . '</div>';
+function theme_filefield_source_reference_element($variables) {
+  $element = $variables['element'];
+
+  $element['autocomplete']['#field_suffix'] = drupal_render($element['select']);
+  return '<div class="filefield-source filefield-source-reference clear-block">' . drupal_render($element['autocomplete']) . '</div>';
 }
 
 /**
@@ -196,30 +203,48 @@ function theme_filefield_source_reference_element($element) {
  *
  * @param $file_name
  *   The partial name of the file to retrieve.
- * @param $field
+ * @param $instance
  *   Optional. A CCK field array for which to filter returned files.
  */
-function filefield_source_reference_get_files($filename, $field = NULL) {
-  if (!isset($field)) {
-    foreach (content_fields() as $field) {
-      if ($field['type'] == 'filefield') {
-        $fields[] = $field;
+function filefield_source_reference_get_files($filename, $instance = NULL) {
+  $instances = array();
+  if (!isset($instance)) {
+    foreach (field_info_fields() as $instance) {
+      if ($instance['type'] == 'file' || $instance['type'] == 'image') {
+        $instances[] = $instance;
       }
     }
   }
   else {
-    $fields = array($field);
+    $instances = array($instance);
   }
 
   $files = array();
-  foreach ($fields as $field) {
-    $db_info = content_database_info($field);
+  foreach ($instances as $instance) {
+    // Load the field data, which contains the schema information.
+    $field = field_info_field($instance['field_name']);
+
+    // We don't support fields that are not stored with SQL.
+    if (!isset($field['storage']['details']['sql']['FIELD_LOAD_CURRENT'])) {
+      continue;
+    }
 
     // 1 == contains, 0 == starts with.
-    $like = empty($field['widget']['filefield_source_autocomplete']) ? '%s%%' : '%%%s%%';
-    $result = db_query_range("SELECT f.* FROM {" . $db_info['table'] . "} c INNER JOIN {files} f ON c." . $db_info['columns']['fid']['column'] . " = f.fid WHERE f.filename LIKE '" . $like . "' AND f.status = 1 GROUP BY f.fid ORDER BY f.timestamp DESC", $filename, 0, 30);
+    $like = empty($instance['widget']['settings']['filefield_sources']['source_reference']['autocomplete']) ? (db_like($filename) . '%') : ('%' . db_like($filename) . '%');
 
-    while ($file = db_fetch_object($result)) {
+    $table_info = reset($field['storage']['details']['sql']['FIELD_LOAD_CURRENT']);
+    $table = key($field['storage']['details']['sql']['FIELD_LOAD_CURRENT']);
+    $query = db_select($table, 'cf');
+    $query->innerJoin('file_managed', 'f', 'f.fid = cf.' . $table_info['fid']);
+    $query->fields('f');
+    $query->condition('f.status', 1);
+    $query->condition('f.filename', $like, 'LIKE');
+    $query->orderBy('f.timestamp', 'DESC');
+    $query->groupBy('f.fid');
+    $query->range(0, 30);
+    $result = $query->execute();
+
+    foreach ($result as $file) {
       $files[$file->fid] = $file;
     }
   }

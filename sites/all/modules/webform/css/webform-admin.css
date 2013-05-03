@@ -82,7 +82,7 @@ table.webform-file-extensions td {
 table.webform-file-extensions td .description {
   white-space: normal;
 }
-table.webform-file-extensions .form-checkboxes .form-item {
+table.webform-file-extensions .form-type-checkbox {
   width: 5em;
   float: left;
 }

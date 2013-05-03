@@ -6,13 +6,28 @@
 
 /**
  * Skip navigation ====================================================
- *
- * 508 compliance link for skipping navigation elements.
  */
-#skipnav {
+#skip-link {
   position:absolute;
-  left:-1000px;
-  top:-1000px;
+  display:block;
+  }
+
+#skip-link a,
+#skip-link a:link,
+#skip-link a:visited {
+  position:absolute;
+  display:block;
+  left:-10000px;
+  width:1px;
+  height:1px;
+  }
+
+#skip-link a:hover,
+#skip-link a:active,
+#skip-link a:focus {
+  position:static;
+  width:auto;
+  height:auto;
   }
 
 /**
@@ -155,43 +170,3 @@ table.grid-5 td { width:20%; }
 table.grid-6 td { width:16.6%; }
 table.grid-7 td { width:14.2%; }
 table.grid-8 td { width:12.5%; }
-
-/**
- * Markup free clearing ===============================================
- *
- * Consider adding your own selectors to this instead of finding ways
- * to sneak the clear-block class into Drupal's markup.
- * From http://www.positioniseverything.net/easyclearing.html
- */
-ul.links:after,
-.clear-block:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-  }
-
-  /* Exclude inline links from clear-block behavior */
-  ul.inline:after {
-    content: "";
-    display:none;
-    clear:none;
-    }
-
-ul.links,
-.clear-block {
-  display: inline-block;
-  }
-
-/* Hides from IE-mac \*/
-* html ul.links,
-* html .clear-block {
-  height: 1%;
-  }
-
-ul.links,
-.clear-block {
-  display: block;
-  }
-/* End hide from IE-mac */

@@ -1,12 +1,12 @@
-<?php // $Id: postal.admin.inc,v 1.2 2009/08/11 02:03:33 vauxia Exp $
+<?php
 
 /**
  * Menu callback for the postal administration screen.
  */
-function postal_admin(&$form_state, $scope = 'default') {
+function postal_admin($form, $form_state, $scope = 'default') {
   $countries = postal_country_load();
   $enabled   = postal_country_load('all', $scope);
-  
+
   // 
   if (!$countries) {
     postal_admin_load_countries();
@@ -20,8 +20,8 @@ function postal_admin(&$form_state, $scope = 'default') {
     '#postal_scope' => $scope,
   );
 
-  foreach ($countries as $c) {
-    $key = $c->iso;
+  foreach ($countries as $country) {
+    $key = $country->iso;
 
     $form[$key] = array(
       '#tree' => TRUE,
@@ -33,32 +33,38 @@ function postal_admin(&$form_state, $scope = 'default') {
     
     // If the scope hasn't been initialized, default status is "ON"
     $default = $enabled ? 0 : 1;
-    $status = isset($enabled[$key]) ? $enabled[$key]['status'] : $default;
+    $status = isset($enabled[$key]) ? $enabled[$key]->status : $default;
 
     $form[$key]['status'] = array(
       '#type' => 'checkbox',
-      '#title' => $c->name,
+      '#title' => $country->name,
       '#default_value' => $status,
     );
 
     // TODO weight (tabledrag)
-
+/*
+    $form[$key]['weight'] = array(
+      '#type' => 'value',
+      '#value' => 0,
+    );
+*/
+    
     // Import children/update children.
     $path = $_GET['q'] .'/import/'. $key;
-    if (is_null($c->children)) {
+    if (is_null($country->children)) {
       $form[$key]['import'] = array(
         '#type' => 'markup',
         '#value' => l('import states/provinces', $path, array('destination' => $_GET['q'])),
       );
     }
-    elseif ($c->children !== 0) {
+    elseif ($country->children !== 0) {
       $form[$key]['update'] = array(
         '#type' => 'markup',
         '#value' => l('update states/provinces', $path, array('destination' => $_GET['q'])),
       );
     }
   }
-
+  
   $form['submit'] = array('#type' => 'submit', '#value' => t('Save'));
 
   return $form;
@@ -68,10 +74,12 @@ function postal_admin(&$form_state, $scope = 'default') {
  * Submit callback for the postal administration form.
  */
 function postal_admin_submit($form, &$form_state) {
+  $existing = db_query("SELECT id FROM {postal_admin}")->fetchAllAssoc('id');
   foreach (element_children($form) as $country) {
-    if (isset($form[$key]['id'])) {
-      $key = array('id', 'scope');
-      drupal_write_record('postal_admin', $form_state['values'][$key], $key);
+    if (!empty($form[$country]['id'])) {
+      $id = $form_state['values'][$country]['id'];
+      $key = isset($existing[$id]) ? array('id', 'scope') : array();
+      drupal_write_record('postal_admin', $form_state['values'][$country], $key);
     }
   }
 }
@@ -93,11 +101,11 @@ function postal_admin_load_countries() {
   $ret = drupal_http_request('http://download.geonames.org/export/dump/countryInfo.txt');
 
   foreach (explode("\n", $ret->data) as $row) {
-    if ($row[0] == '#') continue;  // Skip comments.
-
+    if (drupal_substr($row, 0, 1) == '#') continue;  // Skip comments.
+    
     $c = explode("\t", $row);
     $item = array(
-      'id' => $c[16],
+      'id' => (int) $c[16],
       'parent_id' => NULL,
       'type' => 'country',
       'code' => $c[0],
@@ -110,8 +118,8 @@ function postal_admin_load_countries() {
       'zip_regex' => $c[14],
     );
 
-    if ($item['code']) {
-      $update = ($existing && isset($existing[$item['code']])) ? 'id' : NULL;
+    if (isset($item['code']) && ($item['id'] <> 0)) {
+      $update = ($existing && isset($existing[$item['code']])) ? 'id' : array();
       drupal_write_record('postal', $item, $update);
     }
   }

@@ -1,5 +1,5 @@
 <?php
-// $Id: admin.theme.inc,v 1.1.2.1 2010/02/22 16:02:42 yhahn Exp $
+// $Id: admin.theme.inc,v 1.1.2.1.2.1 2010/09/15 19:28:38 jmiccolis Exp $
 
 /**
  * Theme switcher admin block.
@@ -19,7 +19,7 @@ function admin_block_theme() {
 /**
  * Devel admin block form.
  */
-function admin_block_theme_form($form_state, $themes) {
+function admin_block_theme_form($form, $form_state, $themes) {
   $options = array();
   foreach ($themes as $theme) {
     if ($theme->status) {

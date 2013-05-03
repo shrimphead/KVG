@@ -5,17 +5,24 @@
  *
  * Required for valid XHTML Strict markup.
  */
-Drupal.behaviors.mollomTarget = function (context) {
-  $(context).find('.mollom-target').click(function () {
-    this.target = '_blank';
-  });
+Drupal.behaviors.mollomTarget = {
+  attach: function (context) {
+    $(context).find('.mollom-target').click(function () {
+      this.target = '_blank';
+    });
+  }
 };
 
 /**
  * Attach click event handlers for CAPTCHA links.
  */
-Drupal.behaviors.mollomCaptcha = function (context) {
-  $('a.mollom-switch-captcha', context).click(getMollomCaptcha);
+Drupal.behaviors.mollomCaptcha = {
+  attach: function (context, settings) {
+    // @todo Pass the local settings we get from Drupal.attachBehaviors(), or
+    //   inline the click event handlers, or turn them into methods of this
+    //   behavior object.
+    $('a.mollom-switch-captcha', context).click(getMollomCaptcha);
+  }
 };
 
 /**
@@ -28,7 +35,7 @@ function getMollomCaptcha() {
   var context = $(this).parents('form');
 
   // Extract the form build ID and Mollom content ID from the form.
-  var formBuildId = $('input[name="mollom[mollom_build_id]"]', context).val();
+  var formBuildId = $('input[name="form_build_id"]', context).val();
   var mollomContentId = $('input.mollom-content-id', context).val();
 
   var path = 'mollom/captcha/' + newCaptchaType + '/' + formBuildId;
@@ -48,7 +55,7 @@ function getMollomCaptcha() {
       // Inject new CAPTCHA.
       $('.mollom-captcha-content', context).parent().html(data.content);
       // Update CAPTCHA ID.
-      $('input[name="mollom[captchaId]"]', context).val(data.captchaId);
+      $('input.mollom-captcha-id', context).val(data.captchaId);
       // Add an onclick-event handler for the new link.
       Drupal.attachBehaviors(context);
       // Focus on the CAPTCHA input.

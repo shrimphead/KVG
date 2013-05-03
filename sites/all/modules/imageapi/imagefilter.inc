@@ -23,7 +23,7 @@ define('IMAGEAPI_IMAGEFILTER_PHP', 1);
 /**
  * walk each pixel in an image applying $callback to it.
  */
-function _imageapi_gd_pixel_color_walk(&$im, $callback, $arg1 = NULL, $arg2 = NULL, $arg3 = NULL, $arg4 = NULL) {
+function _imageapi_gd_pixel_color_walk(&$im, $callback, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null) {
   $max_y = imagesy($im);
   $max_x = imagesx($im);
   for ($y=0; $y < $max_y; ++$y) {
@@ -84,26 +84,26 @@ function _imageapi_gd_pixel_colorize(&$r, &$g, &$b, &$a, $arg1, $arg2, $arg3, $a
   $b += $arg3;
 }
 
-function imagefilter(&$im, $var, $arg1 = NULL, $arg2 = NULL, $arg3 = NULL, $arg4 = NULL) {
+function imagefilter(&$im, $var, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null) {
 
   switch ($var) {
     case IMG_FILTER_NEGATE:
       _imageapi_gd_pixel_color_walk($im, '_imageapi_gd_pixel_negate');
-      return TRUE;
+      return true;
 
     case IMG_FILTER_GRAYSCALE:
       _imageapi_gd_pixel_color_walk($im, '_imageapi_gd_pixel_grayscale');
-      return TRUE;
+      return true;
 
     case IMG_FILTER_BRIGHTNESS:
       _imageapi_gd_pixel_color_walk($im, '_imageapi_gd_pixel_brightness', $arg1);
-      return TRUE;
+      return true;
 
     case IMG_FILTER_CONTRAST:
       // normalize between 0-1, square to keep positive.
       $contrast = pow((100-$arg1)/100, 2);
       _imageapi_gd_pixel_color_walk($im, '_imageapi_gd_pixel_contrast', $contrast);
-      return TRUE;
+      return true;
 
     case IMG_FILTER_COLORIZE:
       $arg1 = (is_null($arg1)) ? 0 : $arg1;
@@ -111,7 +111,7 @@ function imagefilter(&$im, $var, $arg1 = NULL, $arg2 = NULL, $arg3 = NULL, $arg4
       $arg3 = (is_null($arg3)) ? 0 : $arg3;
       $arg4 = (is_null($arg4)) ? 0 : $arg4;
       _imageapi_gd_pixel_color_walk($im, '_imageapi_gd_pixel_colorize', $arg1, $arg2, $arg3, $arg4);
-      return TRUE;
+      return true;
 
     case IMG_FILTER_EDGEDETECT:
       return imageconvolution($im, array(array(-1, 0, -1), array(0, 4, 0), array(-1, 0, -1)), 1, 127);
@@ -190,7 +190,7 @@ function imagefilter(&$im, $var, $arg1 = NULL, $arg2 = NULL, $arg3 = NULL, $arg4
               $new_g = ($new_g > 255)? 255 : (($new_g < 0)? 0:$new_g);
               $new_b = ($new_b > 255)? 255 : (($new_b < 0)? 0:$new_b);
               $new_pxl = imagecolorallocatealpha($im, (int)$new_r, (int)$new_g, (int)$new_b, $new_a);
-              if ($new_pxl == FALSE) {
+              if ($new_pxl == false) {
                 $new_pxl = imagecolorclosestalpha($im, (int)$new_r, (int)$new_g, (int)$new_b, $new_a);
               }
               imagesetpixel($im, $x, $y, $new_pxl);
@@ -198,7 +198,7 @@ function imagefilter(&$im, $var, $arg1 = NULL, $arg2 = NULL, $arg3 = NULL, $arg4
           }
         }
       }
-      return TRUE;
+      return true;
 
     case IMG_FILTER_MEAN_REMOVAL:
       return imageconvolution($im, array(array(-1, -1, -1), array(-1, 9, -1), array(-1, -1, -1)), 1, 0);

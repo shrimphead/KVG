@@ -2,11 +2,11 @@
 
 /**
  * @file
- * Views 2 support for Location Phone.
+ * Views 3 support for Location Phone.
  */
 
 /**
- * Implementation of hook_views_data().
+ * Implements hook_views_data().
  */
 function location_phone_views_data() {
   // ----------------------------------------------------------------
@@ -30,8 +30,8 @@ function location_phone_views_data() {
       'left_field' => 'lid',
       'field' => 'lid',
     ),
-    // location_phone links to node_revisions through location_instance via lid.
-    'node_revisions' => array(
+    // location_phone links to node_revision through location_instance via lid.
+    'node_revision' => array(
       'left_table' => 'location_instance',
       'left_field' => 'lid',
       'field' => 'lid',

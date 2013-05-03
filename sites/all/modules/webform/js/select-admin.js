@@ -6,7 +6,8 @@
 
 (function ($) {
 
-Drupal.behaviors.webformSelectLoadOptions = function(context) {
+Drupal.behaviors.webformSelectLoadOptions = {};
+Drupal.behaviors.webformSelectLoadOptions.attach = function(context) {
   settings = Drupal.settings;
 
   $('#edit-extra-options-source', context).change(function() {

@@ -1,11 +1,13 @@
-; $Id: postal.info,v 1.3 2008/09/18 03:57:39 vauxia Exp $
 name = Postal
 description = Defines an address field element 
-core = 6.x
+files[] = includes/postal.form.inc
+files[] = includes/postal.admin.inc
+files[] = includes/postal.menu.inc
+core = 7.x
 
-; Information added by drupal.org packaging script on 2009-10-08
-version = "6.x-1.0-alpha1"
-core = "6.x"
+; Information added by drupal.org packaging script on 2011-11-09
+version = "7.x-1.x-dev"
+core = "7.x"
 project = "postal"
-datestamp = "1255030286"
+datestamp = "1320841105"
 

@@ -1,4 +1,3 @@
-<!-- $Id: README.txt,v 1.1.2.7 2009/10/29 21:42:41 bangpound Exp $ -->
 
 About
 =====

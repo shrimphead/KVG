@@ -24,34 +24,25 @@ function mollom_admin_form_list() {
     t('Protection mode'),
     array('data' => t('Operations'), 'colspan' => 2),
   );
-  $result = db_query("SELECT form_id FROM {mollom_form}");
+  $result = db_query('SELECT form_id FROM {mollom_form}')->fetchCol();
   $forms = array();
-  $modules = array();
-  while ($form_id = db_result($result)) {
+  $module_info = system_get_info('module');
+  foreach ($result as $form_id) {
     $forms[$form_id] = mollom_form_load($form_id);
-
-    // Load module information.
+    // system_get_info() only supports enabled modules. Default to the module's
+    // machine name in case it is disabled.
     $module = $forms[$form_id]['module'];
-    if (!isset($modules[$module])) {
-      // Default to the module's machine name in case the query below does not
-      // lead to a result (which is possible, because D6 does not inform modules
-      // about uninstalled modules).
-      $modules[$module] = $module;
-      $module_info = db_result(db_query("SELECT info FROM {system} WHERE type = 'module' AND name = '%s'", $module));
-      if ($module_info) {
-        $module_info = unserialize($module_info);
-        $modules[$module] = t($module_info['name']);
-      }
+    if (!isset($module_info[$module])) {
+      $module_info[$module]['name'] = $module;
     }
-
     $forms[$form_id]['title'] = t('!module: !form-title', array(
       '!form-title' => $forms[$form_id]['title'],
-      '!module' => $modules[$module],
+      '!module' => t($module_info[$module]['name']),
     ));
   }
 
   // Sort forms by title (including module name prefix).
-  uasort($forms, 'mollom_sort_by_title');
+  uasort($forms, 'drupal_sort_title');
 
   $rows = array();
   foreach ($forms as $form_id => $mollom_form) {
@@ -67,30 +58,27 @@ function mollom_admin_form_list() {
     else {
       $row[] = $modes[$mollom_form['mode']];
     }
-    $row[] = l(t('Configure'), 'admin/settings/mollom/manage/' . $form_id);
-    $row[] = l(t('Unprotect'), 'admin/settings/mollom/unprotect/' . $form_id);
+    $row[] = array('data' => array(
+      '#type' => 'link',
+      '#title' => t('Configure'),
+      '#href' => 'admin/config/content/mollom/manage/' . $form_id,
+    ));
+    $row[] = array('data' => array(
+      '#type' => 'link',
+      '#title' => t('Unprotect'),
+      '#href' => 'admin/config/content/mollom/unprotect/' . $form_id,
+    ));
     $rows[] = $row;
   }
 
-  // Add a row to add a form.
-  if (empty($rows)) {
-    $rows[] = array(array('data' => l(t('Add form'), 'admin/settings/mollom/add'), 'colspan' => 4));
-  }
+  $build['forms'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => l(t('Add form'), 'admin/config/content/mollom/add'),
+  );
 
-  return theme('table', $header, $rows);
-}
-
-/**
- * Array sorting callback; sorts elements by 'title' key.
- */
-function mollom_sort_by_title($a, $b) {
-  if (!isset($b['title'])) {
-    return -1;
-  }
-  if (!isset($a['title'])) {
-    return 1;
-  }
-  return strcasecmp($a['title'], $b['title']);
+  return $build;
 }
 
 /**
@@ -101,44 +89,44 @@ function mollom_admin_form_options() {
   $form_list = mollom_form_list();
 
   // Remove already configured form ids.
-  $result = db_query("SELECT form_id FROM {mollom_form}");
-  while ($form_id = db_result($result)) {
+  $result = db_query('SELECT form_id FROM {mollom_form}')->fetchCol();
+  foreach ($result as $form_id) {
     unset($form_list[$form_id]);
   }
   // If all registered forms are configured already, output a message, and
   // redirect the user back to overview.
   if (empty($form_list)) {
     drupal_set_message(t('All available forms are protected already.'));
-    drupal_goto('admin/settings/mollom');
+    drupal_goto('admin/config/content/mollom');
   }
 
   // Load module information.
-  $modules = module_implements('mollom_form_info');
-  $placeholders = db_placeholders($modules, 'varchar');
-  $result = db_query("SELECT name, info FROM {system} WHERE type = 'module' AND name IN ($placeholders)", $modules);
-  $modules = array();
-  while ($row = db_fetch_object($result)) {
-    $row->info = unserialize($row->info);
-    $modules[$row->name] = t($row->info['name']);
-  }
+  $module_info = system_get_info('module');
 
   // Transform form information into an associative array suitable for #options.
-  foreach ($form_list as $form_id => $mollom_form) {
-    $form_list[$form_id] = t('!module: !form-title', array(
-      '!form-title' => $mollom_form['title'],
-      '!module' => $modules[$mollom_form['module']],
+  $options = array();
+  foreach ($form_list as $form_id => $info) {
+    // system_get_info() only supports enabled modules. Default to the module's
+    // machine name in case it is disabled.
+    $module = $info['module'];
+    if (!isset($module_info[$module])) {
+      $module_info[$module]['name'] = $module;
+    }
+    $options[$form_id] = t('!module: !form-title', array(
+      '!form-title' => $info['title'],
+      '!module' => t($module_info[$module]['name']),
     ));
   }
   // Sort form options by title.
-  asort($form_list);
+  asort($options);
 
-  return $form_list;
+  return $options;
 }
 
 /**
  * Form builder; Configure Mollom protection for a form.
  */
-function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
+function mollom_admin_configure_form($form, &$form_state, $mollom_form = NULL) {
   // If no $mollom_form was passed, then we are adding a new form configuration.
   if (!isset($mollom_form)) {
     if (!isset($form_state['storage']['mollom_form'])) {
@@ -162,6 +150,9 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
   }
 
   $form['#tree'] = TRUE;
+  $form['actions'] = array(
+    '#type' => 'actions',
+  );
 
   switch ($form_state['storage']['step']) {
     case 'select':
@@ -179,8 +170,7 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
       break;
 
     case 'configure':
-      drupal_set_title(t('Configure %form-title protection', array('%form-title' => $mollom_form['title'])));
-      $form['#after_build'][] = 'mollom_admin_configure_form_after_build';
+      drupal_set_title(t('Configure %form-title protection', array('%form-title' => $mollom_form['title'])), PASS_THROUGH);
 
       $form['mollom']['form_id'] = array(
         '#type' => 'value',
@@ -197,17 +187,15 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
         '#options' => $modes,
         '#default_value' => isset($mollom_form['mode']) ? $mollom_form['mode'] : key($modes),
       );
+      $form['mollom']['mode'][MOLLOM_MODE_CAPTCHA] = array(
+        '#description' => t('Only choose CAPTCHA if text analysis is not suitable. Page caching is disabled on all pages containing CAPTCHA-only protected forms.'),
+      );
 
       $all_permissions = array();
-      foreach (module_implements('perm') as $module) {
-        if ($module_permissions = module_invoke($module, 'perm')) {
-          // Transpose permissions into D7 format.
-          $module_permissions = array_flip($module_permissions);
-          foreach ($module_permissions as $permission => $key) {
-            $module_permissions[$permission] = array(
-              'title' => $permission,
-              'module' => $module,
-            );
+      foreach (module_implements('permission') as $module) {
+        if ($module_permissions = module_invoke($module, 'permission')) {
+          foreach ($module_permissions as &$info) {
+            $info += array('module' => $module);
           }
           $all_permissions += $module_permissions;
         }
@@ -216,12 +204,22 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
       array_unshift($mollom_form['bypass access'], 'bypass mollom protection');
       $permissions = array();
       foreach ($mollom_form['bypass access'] as $permission) {
-        $permissions[] = l($all_permissions[$permission]['title'], 'admin/user/permissions', array(
+        // @todo D7: Array keys are used as CSS class for the link list item,
+        //   but are not sanitized: http://drupal.org/node/98696
+        $permissions[drupal_html_class($permission)] = array(
+          'title' => $all_permissions[$permission]['title'],
+          'href' => 'admin/people/permissions',
           'fragment' => 'module-' . $all_permissions[$permission]['module'],
-        ));
+          'html' => TRUE,
+        );
       }
       $form['mollom']['mode']['#description'] = t('The protection is omitted for users having any of the permissions: !permission-list', array(
-        '!permission-list' => theme('item_list', $permissions),
+        '!permission-list' => theme('links', array(
+          'links' => $permissions,
+          // @todo D7: Something went entirely wrong: system.menus.css makes ANY
+          //   ul.links appear as if it would have the .inline CSS class.
+          'attributes' => array(),
+        )),
       ));
 
       // If not re-configuring an existing protection, make it the default.
@@ -238,12 +236,15 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
           'profanity' => t('Profanity'),
         ),
         '#default_value' => $mollom_form['checks'],
+        '#states' => array(
+          'visible' => array(
+            ':input[name="mollom[mode]"]' => array('value' => (string) MOLLOM_MODE_ANALYSIS),
+          ),
+        ),
       );
       // Profanity check requires text to analyze; unlike the spam check, there
       // is no fallback in case there is no text.
-      if (empty($mollom_form['elements'])) {
-        unset($form['mollom']['checks']['#options']['profanity']);
-      }
+      $form['mollom']['checks']['profanity']['#access'] = !empty($mollom_form['elements']);
 
       // Form elements defined by hook_mollom_form_info() use the
       // 'parent][child' syntax, which Form API also uses internally for
@@ -271,6 +272,11 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
         '#default_value' => $enabled_fields,
         '#description' => t('Only enable fields that accept text (not numbers). Omit fields that contain sensitive data (e.g., credit card numbers) or computed/auto-generated values, as well as author information fields (e.g., name, e-mail).'),
         '#access' => !empty($mollom_form['elements']),
+        '#states' => array(
+          'visible' => array(
+            ':input[name="mollom[mode]"]' => array('value' => (string) MOLLOM_MODE_ANALYSIS),
+          ),
+        ),
       );
 
       $form['mollom']['strictness'] = array(
@@ -282,8 +288,11 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
           'relaxed' => t('Relaxed: Posts are more likely classified as ham'),
         ),
         '#default_value' => $mollom_form['strictness'],
-        // Only possible for forms protected via text analysis.
-        '#access' => $modes[MOLLOM_MODE_ANALYSIS],
+        '#states' => array(
+          'visible' => array(
+            ':input[name="mollom[mode]"]' => array('value' => (string) MOLLOM_MODE_ANALYSIS),
+          ),
+        ),
       );
 
       $form['mollom']['unsure'] = array(
@@ -296,11 +305,16 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
           'binary' => t('Accept the post'),
         ),
         '#required' => $mollom_form['mode'] == MOLLOM_MODE_ANALYSIS,
+        // Only possible for forms protected via text analysis.
+        '#states' => array(
+          'visible' => array(
+            ':input[name="mollom[mode]"]' => array('value' => (string) MOLLOM_MODE_ANALYSIS),
+            ':input[name="mollom[checks][spam]"]' => array('checked' => TRUE),
+          ),
+        ),
       );
       // Only possible for forms supporting moderation of unpublished posts.
-      if (empty($mollom_form['moderation callback'])) {
-        unset($form['mollom']['unsure']['#options']['moderate']);
-      }
+      $form['mollom']['unsure']['moderate']['#access'] = !empty($mollom_form['moderation callback']);
 
       $form['mollom']['discard'] = array(
         '#type' => 'radios',
@@ -313,6 +327,13 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
         '#required' => $mollom_form['mode'] == MOLLOM_MODE_ANALYSIS,
         // Only possible for forms supporting moderation of unpublished posts.
         '#access' => !empty($mollom_form['moderation callback']),
+        // Only possible for forms protected via text analysis.
+        '#states' => array(
+          'visible' => array(
+            ':input[name="mollom[mode]"]' => array('value' => (string) MOLLOM_MODE_ANALYSIS),
+            ':input[name="mollom[checks][spam]"]' => array('checked' => TRUE),
+          ),
+        ),
       );
 
       $form['mollom']['moderation'] = array(
@@ -324,6 +345,12 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
         '#default_value' => $mollom_form['moderation'],
         // Only possible for forms which result in a locally stored entity.
         '#access' => !empty($mollom_form['entity']),
+        // Only possible for forms protected via text analysis.
+        '#states' => array(
+          'visible' => array(
+            ':input[name="mollom[mode]"]' => array('value' => (string) MOLLOM_MODE_ANALYSIS),
+          ),
+        ),
         '#description' => t('Provides a unified moderation interface supporting multiple sites, moderation teams, and detailed analytics.'),
       );
       $form['mollom']['moderation']['#description'] .= '<br />' . t('Note: All content that was created while this option was disabled cannot be moderated from the @moderation-product; only new content will appear.', array(
@@ -338,23 +365,10 @@ function mollom_admin_configure_form(&$form_state, $mollom_form = NULL) {
   }
 
   $form['actions']['cancel'] = array(
-    '#value' => l(t('Cancel'), 'admin/settings/mollom'),
+    '#type' => 'link',
+    '#title' => t('Cancel'),
+    '#href' => 'admin/config/content/mollom',
   );
-
-  return $form;
-}
-
-/**
- * #after_build callback for mollom_admin_configure_form().
- */
-function mollom_admin_configure_form_after_build($form, &$form_state) {
-  $form['mollom']['mode'][MOLLOM_MODE_CAPTCHA]['#description'] = t('Only choose CAPTCHA if text analysis is not suitable. Page caching is disabled on all pages containing CAPTCHA-only protected forms.');
-
-  // Conditionally make text analysis form elements required.
-  // Accounts for different add and edit form builds and rebuilds.
-  $required = ($form_state['values']['mollom']['mode'] == MOLLOM_MODE_ANALYSIS);
-  $form['mollom']['checks']['#required'] = $required;
-  $form['mollom']['discard']['#required'] = $required;
 
   return $form;
 }
@@ -365,8 +379,6 @@ function mollom_admin_configure_form_after_build($form, &$form_state) {
 function mollom_admin_configure_form_next_submit($form, &$form_state) {
   $form_id = $form_state['values']['mollom']['form_id'];
   $form_state['redirect'] = $_GET['q'] . '/' . $form_id;
-  // D6 only.
-  unset($form_state['storage']);
 }
 
 /**
@@ -378,6 +390,7 @@ function mollom_admin_configure_form_validate(&$form, &$form_state) {
   // #required form error message.
   if ($form_state['storage']['step'] == 'configure') {
     // Make field checkboxes required, if protection mode is text analysis.
+    // @see http://drupal.org/node/875722
     $required = ($form_state['values']['mollom']['mode'] == MOLLOM_MODE_ANALYSIS);
     $form['mollom']['checks']['#required'] = $required;
     $form['mollom']['discard']['#required'] = $required;
@@ -413,19 +426,18 @@ function mollom_admin_configure_form_submit($form, &$form_state) {
     drupal_set_message(t('The form protection has been updated.'));
   }
 
-  unset($form_state['storage']);
-  $form_state['redirect'] = 'admin/settings/mollom';
+  $form_state['redirect'] = 'admin/config/content/mollom';
 }
 
 /**
  * Form builder; Remove Mollom protection from a form.
  */
-function mollom_admin_unprotect_form(&$form_state, $mollom_form) {
+function mollom_admin_unprotect_form($form, &$form_state, $mollom_form) {
   $form['#tree'] = TRUE;
   $form['form'] = array(
     '#type' => 'item',
     '#title' => t('Form'),
-    '#value' => $mollom_form['title'],
+    '#markup' => $mollom_form['title'],
   );
   $form['mollom']['form_id'] = array(
     '#type' => 'value',
@@ -434,7 +446,7 @@ function mollom_admin_unprotect_form(&$form_state, $mollom_form) {
 
   return confirm_form($form,
     t('Are you sure you want to unprotect this form?'),
-    'admin/settings/mollom',
+    'admin/config/content/mollom',
     t('Mollom will no longer protect this form from spam.')
   );
 }
@@ -447,7 +459,7 @@ function mollom_admin_unprotect_form_submit($form, &$form_state) {
 
   drupal_set_message(t('The form protection has been removed.'));
 
-  $form_state['redirect'] = 'admin/settings/mollom';
+  $form_state['redirect'] = 'admin/config/content/mollom';
 }
 
 /**
@@ -456,9 +468,9 @@ function mollom_admin_unprotect_form_submit($form, &$form_state) {
  * @param $type
  *   The type of blacklist; i.e., 'spam', 'profanity', or 'unwanted'.
  */
-function mollom_admin_blacklist_form(&$form_state, $type = 'spam') {
+function mollom_admin_blacklist_form($form, &$form_state, $type = 'spam') {
   $form['#tree'] = TRUE;
-  drupal_add_css(drupal_get_path('module', 'mollom') . '/mollom.admin.css');
+  $form['#attached']['css'][] = drupal_get_path('module', 'mollom') . '/mollom.admin.css';
 
   // Translate internal reason values for rendering and select list in form.
   $contexts = array(
@@ -486,46 +498,49 @@ function mollom_admin_blacklist_form(&$form_state, $type = 'spam') {
       // #class property is internally used by
       // theme_mollom_admin_blacklist_form().
       $row['context'] = array(
-        '#value' => check_plain($contexts[$entry['context']]),
+        '#markup' => check_plain($contexts[$entry['context']]),
         '#class' => 'mollom-blacklist-context value-' . check_plain($entry['context']),
       );
       $row['match'] = array(
-        '#value' => check_plain($matches[$entry['match']]),
+        '#markup' => check_plain($matches[$entry['match']]),
         '#class' => 'mollom-blacklist-match value-' . check_plain($entry['match']),
       );
       $row['value'] = array(
-        '#value' => check_plain($entry['value']),
+        '#markup' => check_plain($entry['value']),
         '#class' => 'mollom-blacklist-value',
       );
       $row['actions']['delete'] = array(
-        '#value' => l(t('delete'), 'admin/settings/mollom/blacklist/delete', array(
-          'query' => 'id=' . rawurlencode($entry['id']) . '&' . drupal_get_destination(),
-        )),
+        '#type' => 'link',
+        '#title' => t('delete'),
+        '#href' => 'admin/config/content/mollom/blacklist/delete',
+        '#options' => array(
+          'query' => array('id' => $entry['id']) + drupal_get_destination(),
+        ),
       );
       $form['blacklist'][$entry['id']] = $row;
     }
   }
 
-  // The value NULL in the following select lists will intentionally trigger a
-  // form validation error, since the elements are #required.
-  // @see http://drupal.org/node/140783
   $form['entry']['context'] = array(
     '#type' => 'select',
     '#title' => t('Context'),
-    '#options' => array(NULL => t('- Any -')) + $contexts,
+    '#title_display' => 'invisible',
+    '#options' => $contexts,
     '#required' => TRUE,
     '#id' => 'mollom-blacklist-filter-context',
   );
   $form['entry']['match'] = array(
     '#type' => 'select',
     '#title' => t('Match'),
-    '#options' => array(NULL => t('- Any -')) + $matches,
+    '#title_display' => 'invisible',
+    '#options' => $matches,
     '#required' => TRUE,
     '#id' => 'mollom-blacklist-filter-match',
   );
   $form['entry']['value'] = array(
     '#type' => 'textfield',
     '#title' => t('Value'),
+    '#title_display' => 'invisible',
     '#size' => 40,
     '#required' => TRUE,
     '#maxlength' => 64,
@@ -539,6 +554,7 @@ function mollom_admin_blacklist_form(&$form_state, $type = 'spam') {
     '#value' => $type,
   );
   $form['entry']['actions'] = array(
+    '#type' => 'actions',
     '#tree' => FALSE,
   );
   $form['entry']['actions']['submit'] = array(
@@ -586,7 +602,8 @@ function mollom_admin_blacklist_form_submit($form, &$form_state) {
 /**
  * Formats the blacklist form as table to embed the form.
  */
-function theme_mollom_admin_blacklist_form($form) {
+function theme_mollom_admin_blacklist_form($variables) {
+  $form = $variables['form'];
   $header = array(
     t('Context'),
     t('Matches'),
@@ -595,10 +612,6 @@ function theme_mollom_admin_blacklist_form($form) {
   );
   $rows = array();
 
-  // D6 only: There is no #title_display yet, so unset the titles.
-  unset($form['entry']['context']['#title']);
-  unset($form['entry']['match']['#title']);
-  unset($form['entry']['value']['#title']);
   $rows[] = array(
     drupal_render($form['entry']['context']),
     drupal_render($form['entry']['match']),
@@ -625,10 +638,10 @@ function theme_mollom_admin_blacklist_form($form) {
   }
 
   // This table is never empty due to the form.
-  $output = theme('table', $header, $rows, array('id' => 'mollom-blacklist'));
-  $output .= drupal_render($form);
+  $output  = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'mollom-blacklist')));
+  $output .= drupal_render_children($form);
 
-  drupal_add_js(drupal_get_path('module', 'mollom') . '/mollom.admin.js', 'module', 'header', FALSE, TRUE, FALSE);
+  drupal_add_js(drupal_get_path('module', 'mollom') . '/mollom.admin.js');
 
   return $output;
 }
@@ -639,7 +652,7 @@ function theme_mollom_admin_blacklist_form($form) {
  * @ingroup forms
  * @see mollom_admin_blacklist_delete_submit()
  */
-function mollom_admin_blacklist_delete(&$form_state) {
+function mollom_admin_blacklist_delete($form, &$form_state) {
   $id = $_GET['id'];
   if (empty($id) || !($entry = mollom()->getBlacklistEntry($id))) {
     drupal_not_found();
@@ -653,7 +666,7 @@ function mollom_admin_blacklist_delete(&$form_state) {
   return confirm_form(
     $form,
     t('Are you sure you want to delete %value from the blacklist?', array('%value' => $entry['value'])),
-    'admin/settings/mollom/blacklist',
+    'admin/config/content/mollom/blacklist',
     t('This action cannot be undone.'),
     t('Delete'), t('Cancel')
   );
@@ -685,7 +698,7 @@ function mollom_admin_blacklist_delete_submit($form, &$form_state) {
     ), WATCHDOG_ERROR);
   }
 
-  $form_state['redirect'] = 'admin/settings/mollom/blacklist';
+  $form_state['redirect'] = 'admin/config/content/mollom/blacklist';
 }
 
 /**
@@ -700,11 +713,11 @@ function mollom_admin_blacklist_delete_submit($form, &$form_state) {
  * @todo Implement proper form validation now that mollom() no longer triggers
  *   the fallback mode.
  */
-function mollom_admin_settings(&$form_state) {
+function mollom_admin_settings($form, &$form_state) {
   // Output a positive status message, since users keep on asking whether
   // Mollom should work or not. Re-check on every regular visit of this form to
   // verify the module's configuration.
-  if (empty($form_state['post'])) {
+  if (empty($form_state['input'])) {
     $status = _mollom_status();
     // If there is any configuration error, then mollom_init() will have output
     // it already.
@@ -816,84 +829,9 @@ function mollom_admin_settings_validate_key($element, &$form_state) {
 }
 
 /**
- * Form submit handler to mass-report and unpublish or delete comments.
- */
-function mollom_comment_admin_overview_submit($form, &$form_state) {
-  if (strpos($form_state['values']['operation'], 'mollom-') === 0) {
-    list($id, $operation) = explode('-', $form_state['values']['operation']);
-    foreach ($form_state['values']['comments'] as $cid => $value) {
-      if ($value) {
-        // First, report the comments as spam to Mollom.com.
-        if ($data = mollom_data_load('comment', $cid)) {
-          _mollom_send_feedback($data);
-        }
-
-        // Second, perform the proper operation on the comments:
-        if ($comment = _comment_load($cid)) {
-          if ($operation == 'unpublish') {
-            db_query("UPDATE {comments} SET status = %d WHERE cid = %d", COMMENT_NOT_PUBLISHED, $cid);
-            _comment_update_node_statistics($comment->nid);
-          }
-          elseif ($operation == 'delete') {
-            _comment_delete_thread($comment);
-            _comment_update_node_statistics($comment->nid);
-          }
-        }
-      }
-    }
-
-    // Flush caches so the content changes are visible for anonymous users.
-    cache_clear_all();
-
-    if ($operation == 'delete') {
-      drupal_set_message(t('The selected comments have been reported as inappropriate and are deleted.'));
-    }
-    else {
-      drupal_set_message(t('The selected comments have been reported as inappropriate and are unpublished.'));
-    }
-  }
-}
-
-/**
- * Form submit handler to mass-report and unpublish or delete nodes.
- */
-function mollom_node_admin_overview_submit($form, &$form_state) {
-  if (strpos($form_state['values']['operation'], 'mollom-') === 0) {
-    list($id, $operation) = explode('-', $form_state['values']['operation']);
-    foreach ($form_state['values']['nodes'] as $nid => $value) {
-      if ($value) {
-        // First, report the nodes as spam to Mollom.com.
-        if ($data = mollom_data_load('node', $nid)) {
-           _mollom_send_feedback($data);
-        }
-
-        if ($node = node_load($nid)) {
-          if ($operation == 'unpublish') {
-            db_query("UPDATE {node} SET status = 0 WHERE nid = %d", $nid);
-          }
-          elseif ($operation == 'delete') {
-            node_delete($nid);
-          }
-        }
-      }
-    }
-
-    // Flush caches so the content changes are visible for anonymous users.
-    cache_clear_all();
-
-    if ($operation == 'delete') {
-      drupal_set_message(t('The selected posts have been reported as inappropriate and are deleted.'));
-    }
-    else {
-      drupal_set_message(t('The selected posts have been reported as inappropriate and are unpublished.'));
-    }
-  }
-}
-
-/**
  * Menu callback; Displays the administrative reports page.
  */
-function mollom_reports_page() {
+function mollom_reports_page($form, &$form_state) {
   $embed_attributes = array(
     'src' => '//mollom.com/statistics.swf?key=' . check_plain(variable_get('mollom_public_key', '')),
     'quality' => 'high',
@@ -911,7 +849,7 @@ function mollom_reports_page() {
   $form['chart'] = array(
     '#type' => 'item',
     '#title' => t('Statistics'),
-    '#value' => '<embed' . drupal_attributes($embed_attributes) . '></embed>',
+    '#markup' => '<embed' . drupal_attributes($embed_attributes) . '></embed>',
   );
 
   return $form;

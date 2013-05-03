@@ -378,7 +378,6 @@ navigate: function(dir) {
   }
   else $.ajax(set);//live load
 },
-
 //ajax navigation settings
 navSet: function (dir, cache) {
   $(imce.tree[dir].li).addClass('loading');
@@ -441,7 +440,7 @@ uploadValidate: function (data, form, options) {
 
 //settings for upload
 uploadSettings: function () {
-  return {beforeSubmit: imce.uploadValidate, success: function (response) {imce.processResponse(Drupal.parseJson(response));}, complete: function () {imce.fopLoading('upload', false);}, resetForm: true};
+  return {beforeSubmit: imce.uploadValidate, success: function (response) {imce.processResponse($.parseJSON(response));}, complete: function () {imce.fopLoading('upload', false);}, resetForm: true};
 },
 
 //validate default ops(delete, thumb, resize)
@@ -715,7 +714,7 @@ decodePlain: function (str) {
 
 //global ajax error function
 ajaxError: function (e, response, settings, thrown) {
-  imce.setMessage(Drupal.ahahError(response, settings.url).replace(/\n/g, '<br />'), 'error');
+  imce.setMessage(Drupal.ajaxError(response, settings.url).replace(/\n/g, '<br />'), 'error');
 },
 
 //convert button elements to standard input buttons

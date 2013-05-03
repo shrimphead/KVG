@@ -59,7 +59,7 @@ INSTALLATION
 
      cd sites/SITENAME/modules/location
      mysql -u username -p database-name < database/zipcodes.us.mysql
-     
+
 KNOWN ISSUES
 ------------
 

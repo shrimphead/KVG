@@ -26,7 +26,7 @@ $plugin = array(
 /**
  * Settings form for the 'by node_access' access plugin
  */
-function ctools_node_access_ctools_access_settings(&$form, &$form_state, $conf) {
+function ctools_node_access_ctools_access_settings($form, &$form_state, $conf) {
   $form['settings']['type'] = array(
     '#title' => t('Operation'),
     '#type' => 'radios',
@@ -39,6 +39,7 @@ function ctools_node_access_ctools_access_settings(&$form, &$form_state, $conf) 
     '#description' => t('Using built in Drupal node access rules, determine if the user can perform the selected operation on the node.'),
     '#default_value' => $conf['type'],
   );
+  return $form;
 }
 
 /**

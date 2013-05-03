@@ -1,39 +1,71 @@
 <?php
-// $Id: feedback.install,v 1.9 2009/03/21 20:22:14 sun Exp $
 
 /**
- * Implementation of hook_schema().
+ * @file
+ * Installation functions for Feedback module.
+ */
+
+/**
+ * Implements hook_schema().
  */
 function feedback_schema() {
   $schema['feedback'] = array(
-    'description' => t('Stores all feedback messages.'),
+    'description' => 'Stores all feedback messages.',
     'fields' => array(
-      'fid' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE,
-        'description' => t('The primary identifier for a feedback message.'),
+      'fid' => array(
+        'description' => 'Feedback message ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
       ),
-      'uid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0,
-        'description' => t('The user id of the author of a feedback message.'),
+      'uid' => array(
+        'description' => 'User ID of the feedback message author.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
       ),
-      'status' => array('type' => 'int', 'size' => 'tiny', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0,
-        'description' => t('The status of a feedback message.'),
+      'status' => array(
+        'description' => 'Feedback status (0 = new, 1 = processed).',
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
       ),
-      'message' => array('type' => 'text', 'size' => 'big', 'not null' => TRUE,
-        'description' => t('The actual feedback message.'),
+      'message' => array(
+        'description' => 'The feedback message.',
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
       ),
-      'location' => array('type' => 'text', 'not null' => TRUE,
-        'description' => t('The internal Drupal path of the page the feedback message was submitted on.'),
+      'location' => array(
+        'description' => 'System path of the originating page.',
+        'type' => 'text',
+        'not null' => TRUE,
       ),
-      'location_masked' => array('type' => 'text', 'not null' => TRUE,
-        'description' => t('The masked Drupal path of the page the feedback message was submitted on.'),
+      'location_masked' => array(
+        'description' => 'Untranslated system path of the originating page.',
+        'type' => 'text',
+        'not null' => TRUE,
       ),
-      'url' => array('type' => 'text', 'not null' => TRUE,
-        'description' => t('The absolute URL of the page the feedback message was submitted on.'),
+      'url' => array(
+        'description' => 'Absolute URL of the originating page.',
+        'type' => 'text',
+        'not null' => TRUE,
       ),
-      'useragent' => array('type' => 'varchar', 'length' => 255, 'not null' => TRUE,
-        'description' => t('The user agent of the feedback message author.'),
+      'useragent' => array(
+        'description' => 'User agent of the feedback message author.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
       ),
-      'timestamp' => array('type' => 'int', 'not null' => TRUE, 'default' => 0,
-        'description' => t('The UNIX timestamp when the feedback message was created.'),
+      // @todo Rename to created. Also add 'changed'.
+      'timestamp' => array(
+        'description' => 'UNIX timestamp of the feedback message creation date.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
       ),
     ),
     'primary key' => array('fid'),
@@ -46,37 +78,39 @@ function feedback_schema() {
 }
 
 /**
- * Implementation of hook_install().
- */
-function feedback_install() {
-  drupal_install_schema('feedback');
-}
-
-/**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function feedback_uninstall() {
-  drupal_uninstall_schema('feedback');
-  db_query("DELETE FROM {variable} WHERE name LIKE 'feedback_%%'");
+  db_delete('variable')
+    ->condition('name', 'feedback_%', 'LIKE')
+    ->execute();
 }
 
 /**
  * Change fid into type serial field.
  */
 function feedback_update_6100() {
-  $ret = array();
-  db_drop_primary_key($ret, 'feedback');
-  db_change_field($ret, 'feedback', 'fid', 'fid', array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE), array('primary key' => array('fid')));
-  return $ret;
+  db_drop_primary_key('feedback');
+  db_change_field('feedback', 'fid', 'fid', array(
+    'type' => 'serial',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+  ), array(
+    'primary key' => array('fid'),
+  ));
 }
 
 /**
  * Add column for absolute URL.
  */
 function feedback_update_6101() {
-  $ret = array();
-  db_add_field($ret, 'feedback', 'url', array('type' => 'text', 'not null' => TRUE));
-  $ret[] = update_sql("UPDATE {feedback} SET url = location");
-  return $ret;
+  db_add_field('feedback', 'url', array(
+    'type' => 'text',
+    'not null' => TRUE,
+  ));
+  // Set 'url' to the value of 'location' for all existing entries.
+  db_update('feedback')
+    ->expression('url', 'location')
+    ->execute();
 }
 

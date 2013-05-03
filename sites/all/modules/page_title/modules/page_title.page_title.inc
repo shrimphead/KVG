@@ -7,7 +7,7 @@
 
 
 /**
- * Implementation of hook_page_title_alter().
+ * Implements hook_page_title_alter().
  */
 function page_title_page_title_alter(&$title) {
  // If nothing above set a title, give the legacy function a chance to act
@@ -17,15 +17,15 @@ function page_title_page_title_alter(&$title) {
 
   // If we still have no title, fall back to the title provided by Drupal Core
   if (empty($title)) {
-    $title = drupal_get_title();
+    $title = strip_tags(drupal_get_title());
   }
 }
 
 
 /**
- * Implementation of hook_page_title_pattern_alter().
+ * Implements hook_page_title_pattern_alter().
  */
-function page_title_page_title_pattern_alter(&$pattern, &$data = array()) {
+function page_title_page_title_pattern_alter(&$pattern, &$types) {
   // If frontpage, then use the frontpage pattern and set the title.
   if (drupal_is_front_page()) {
     // Get the frontpage pattern
@@ -36,7 +36,7 @@ function page_title_page_title_pattern_alter(&$pattern, &$data = array()) {
 
 
 /**
- * Implementation of hook_page_title_settings().
+ * Implements hook_page_title_settings().
  */
 function page_title_page_title_settings() {
   return array(
@@ -47,7 +47,7 @@ function page_title_page_title_settings() {
       'show field' => FALSE,
       'description' => 'This pattern will be used as a <em>fallback</em> (ie, when no other pattern is defined)',
       'weight' => -50,
-      'default' => '[page-title] | [site-name]',
+      'default' => '[current-page:page-title] | [site:name]',
     ),
     'page_title_front' => array(
       'label' => 'Frontpage',
@@ -55,7 +55,7 @@ function page_title_page_title_settings() {
       'show field' => FALSE,
       'description' => 'This pattern will be used for the site frontpage',
       'weight' => -49,
-      'default' => '[site-name] | [site-slogan]',
+      'default' => '[site:name] | [site:slogan]',
     ),
     'page_title_pager_pattern' => array(
       'label' => 'Pager Suffix',

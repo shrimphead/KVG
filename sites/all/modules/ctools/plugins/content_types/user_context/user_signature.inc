@@ -13,16 +13,20 @@ $plugin = array(
 );
 
 function ctools_user_signature_content_type_render($subtype, $conf, $panel_args, $context) {
-  $account = isset($context->data) ? drupal_clone($context->data) : NULL;
+  $account = isset($context->data) ? clone($context->data) : NULL;
   $block = new stdClass();
-  $block->module = 'term-list';
+  $block->module = 'user-signature';
 
   if ($account === FALSE || ($account->access == 0 && !user_access('administer users'))) {
-    return NULL;
+    return;
   }
 
-  $block->content = theme('user_signature', $account->signature);
+  $element['user_signature'] = array(
+    '#theme' => 'user_signature',
+    '#signature' => check_markup($account->signature, $account->signature_format),
+  );
 
+  $block->content = $element;
   return $block;
 }
 
@@ -33,6 +37,7 @@ function ctools_user_signature_content_type_admin_title($subtype, $conf, $contex
   return t('"@s" user signature', array('@s' => $context->identifier));
 }
 
-function ctools_user_signature_content_type_edit_form(&$form, &$form_state) {
+function ctools_user_signature_content_type_edit_form($form, &$form_state) {
   // provide a blank form so we have a place to have context setting.
+  return $form;
 }

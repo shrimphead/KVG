@@ -7,23 +7,11 @@
  * @ingroup xmlsitemap
  */
 
-function xmlsitemap_sitemap_list_form_local_actions() {
-  $local_actions['add'] = xmlsitemap_get_operation_link('admin/settings/xmlsitemap/add', array('modal' => TRUE));
-  return $local_actions;
-}
-
 /**
  * Render a tableselect list of XML sitemaps for the main admin page.
  */
 function xmlsitemap_sitemap_list_form() {
-  xmlsitemap_load_all_includes();
   $destination = drupal_get_destination();
-
-  // Add the local actions.
-  $form['actions'] = array(
-    '#type' => 'markup',
-    '#value' => theme('links', xmlsitemap_sitemap_list_form_local_actions(), array('class' => 'item-list action-links')),
-  );
 
   // Build the 'Update options' form.
   $form['#operations'] = module_invoke_all('xmlsitemap_sitemap_operations');
@@ -38,7 +26,6 @@ function xmlsitemap_sitemap_list_form() {
     '#title' => t('Update options'),
     '#prefix' => '<div class="container-inline">',
     '#suffix' => '</div>',
-    '#access' => module_exists('elements'),
   );
   $form['operations']['operation'] = array(
     '#type' => 'select',
@@ -66,16 +53,22 @@ function xmlsitemap_sitemap_list_form() {
   $header['chunks'] = array('data' => t('Pages'), 'field' => 'chunks');
   $header['operations'] = array('data' => t('Operations'));
 
-  $query = db_query("SELECT smid FROM {xmlsitemap_sitemap}" . tablesort_sql($header));
-  $smids = xmlsitemap_db_fetch_col($query);
-  $sitemaps = !empty($smids) ? xmlsitemap_sitemap_load_multiple($smids) : array();
+  $query = db_select('xmlsitemap_sitemap');
+  $query->fields('xmlsitemap_sitemap', array('smid'));
+  $query->extend('TableSort')->orderByHeader($header);
+  $smids = $query->execute()->fetchCol();
+  $sitemaps = $smids ? xmlsitemap_sitemap_load_multiple($smids) : array();
 
   $options = array();
   foreach ($sitemaps as $smid => $sitemap) {
     $sitemap->url = url($sitemap->uri['path'], $sitemap->uri['options']);
 
     $options[$smid]['url'] = array(
-      'data' => l($sitemap->url, $sitemap->url),
+      'data' => array(
+        '#type' => 'link',
+        '#title' => $sitemap->url,
+        '#href' => $sitemap->url,
+      ),
     );
 
     foreach ($contexts as $context_key => $context_info) {
@@ -89,14 +82,18 @@ function xmlsitemap_sitemap_list_form() {
     $options[$smid]['chunks'] = $sitemap->updated ? $sitemap->chunks : '-';
 
     // @todo Highlight sitemaps that need updating.
-    //$options[$smid]['#attributes']['class'] = 'warning';
+    //$options[$smid]['#attributes']['class'][] = 'warning';
 
     $operations = array();
-    $operations['edit'] = xmlsitemap_get_operation_link('admin/settings/xmlsitemap/edit/' . $smid, array('title' => t('Edit'), 'modal' => TRUE));
-    $operations['delete'] = xmlsitemap_get_operation_link('admin/settings/xmlsitemap/delete/' . $smid, array('title' => t('Delete'), 'modal' => TRUE));
+    $operations['edit'] = xmlsitemap_get_operation_link('admin/config/search/xmlsitemap/edit/' . $smid, array('title' => t('Edit'), 'modal' => TRUE));
+    $operations['delete'] = xmlsitemap_get_operation_link('admin/config/search/xmlsitemap/delete/' . $smid, array('title' => t('Delete'), 'modal' => TRUE));
     if ($operations) {
       $options[$smid]['operations'] = array(
-        'data' => theme('links', $operations, array('class' => 'links inline')),
+        'data' => array(
+          '#theme' => 'links',
+          '#links' => $operations,
+          '#attributes' => array('class' => array('links', 'inline')),
+        ),
       );
     }
     else {
@@ -104,28 +101,12 @@ function xmlsitemap_sitemap_list_form() {
     }
   }
 
-  if (module_exists('elements')) {
-    $form['sitemaps'] = array(
-      '#type' => 'tableselect',
-      '#header' => $header,
-      '#options' => $options,
-      '#empty' => t('No XML sitemaps available.') . ' ' . l('Add a new XML sitemap', 'admin/settings/xmlsitemap/add'),
-    );
-  }
-  else {
-    if (empty($options)) {
-      $options[] = array(array(
-        'data' => t('No XML sitemaps available.') . ' ' . l('Add a new XML sitemap', 'admin/settings/xmlsitemap/add'),
-        'colspan' => count($header),
-        'class' => 'empty',
-      ));
-    }
-    $form['sitemaps'] = array(
-      '#type' => 'markup',
-      '#value' => theme('table', $header, $options),
-    );
-  }
-
+  $form['sitemaps'] = array(
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $options,
+    '#empty' => t('No XML sitemaps available.') . ' ' . l('Add a new XML sitemap', 'admin/config/search/xmlsitemap/add'),
+  );
   return $form;
 }
 
@@ -172,11 +153,11 @@ function xmlsitemap_sitemap_list_form_submit($form, &$form_state) {
     $count = count($form_state['values']['sitemaps']);
     //watchdog('xmlsitemap', '@action @count XML sitemaps.', array('@action' => $operation['action past'], '@count' => $count));
     drupal_set_message(format_plural(count($sitemaps), '@action @count XML sitemap.', '@action @count XML sitemaps.', array('@action' => $operation['action past'], '@count' => $count)));
-    //$form_state['redirect'] = 'admin/settings/xmlsitemap';
+    //$form_state['redirect'] = 'admin/config/search/xmlsitemap';
   }
 }
 
-function xmlsitemap_sitemap_edit_form(array &$form_state, stdClass $sitemap = NULL) {
+function xmlsitemap_sitemap_edit_form(array $form, array &$form_state, stdClass $sitemap = NULL) {
   _xmlsitemap_set_breadcrumb();
 
   if (!isset($sitemap)) {
@@ -197,15 +178,16 @@ function xmlsitemap_sitemap_edit_form(array &$form_state, stdClass $sitemap = NU
   );
 
   $form['actions'] = array(
-    '#weight' => 100,
+    '#type' => 'actions',
   );
   $form['actions']['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
   );
   $form['actions']['cancel'] = array(
-    '#type' => 'markup',
-    '#value' => l(t('Cancel'), isset($_GET['destination']) ? $_GET['destination'] : 'admin/settings/xmlsitemap'),
+    '#type' => 'link',
+    '#href' => isset($_GET['destination']) ? $_GET['destination'] : 'admin/config/search/xmlsitemap',
+    '#title' => t('Cancel'),
   );
 
   // Let other modules alter this form with their context settings.
@@ -215,11 +197,11 @@ function xmlsitemap_sitemap_edit_form(array &$form_state, stdClass $sitemap = NU
 }
 
 function xmlsitemap_sitemap_edit_form_pre_render($form) {
-  $visible_children = xmlsitemap_element_get_visible_children($form['context']);
+  $visible_children = element_get_visible_children($form['context']);
   if (empty($visible_children)) {
     $form['context']['empty'] = array(
       '#type' => 'markup',
-      '#value' => '<p>' . t('There are currently no XML sitemap contexts available.') . '</p>',
+      '#markup' => '<p>' . t('There are currently no XML sitemap contexts available.') . '</p>',
     );
   }
   return $form;
@@ -236,16 +218,17 @@ function xmlsitemap_sitemap_edit_form_validate($form, &$form_state) {
 }
 
 function xmlsitemap_sitemap_edit_form_submit($form, &$form_state) {
+  form_state_values_clean($form_state);
   $sitemap = (object) $form_state['values'];
   xmlsitemap_sitemap_save($sitemap);
   drupal_set_message(t('The sitemap has been saved.'));
-  $form_state['redirect'] = 'admin/settings/xmlsitemap';
+  $form_state['redirect'] = 'admin/config/search/xmlsitemap';
 }
 
-function xmlsitemap_sitemap_delete_form(array &$form_state, stdClass $sitemap) {
+function xmlsitemap_sitemap_delete_form(array $form, array &$form_state, stdClass $sitemap) {
   _xmlsitemap_set_breadcrumb();
 
-  $count = (int) db_result(db_query("SELECT COUNT(smid) FROM {xmlsitemap_sitemap}"));
+  $count = (int) db_query("SELECT COUNT(smid) FROM {xmlsitemap_sitemap}")->fetchField();
   if ($count === 1 && empty($_POST)) {
     drupal_set_message(t('It is not recommended to delete the only XML sitemap.'), 'error');
   }
@@ -258,7 +241,7 @@ function xmlsitemap_sitemap_delete_form(array &$form_state, stdClass $sitemap) {
   return confirm_form(
     $form,
     t('Are you sure you want to delete the XML sitemap?'),
-    'admin/settings/xmlsitemap',
+    'admin/config/search/xmlsitemap',
     '',
     t('Delete'),
     t('Cancel')
@@ -268,7 +251,7 @@ function xmlsitemap_sitemap_delete_form(array &$form_state, stdClass $sitemap) {
 function xmlsitemap_sitemap_delete_form_submit($form, $form_state) {
   xmlsitemap_sitemap_delete($form_state['values']['smid']);
   drupal_set_message(t('The sitemap has been deleted.'));
-  $form_state['redirect'] = 'admin/settings/xmlsitemap';
+  $form_state['redirect'] = 'admin/config/search/xmlsitemap';
 }
 
 /**
@@ -277,7 +260,7 @@ function xmlsitemap_sitemap_delete_form_submit($form, $form_state) {
  * @see system_settings_form()
  * @see xmlsitemap_settings_form_validate()
  */
-function xmlsitemap_settings_form() {
+function xmlsitemap_settings_form($form, &$form_state) {
   $form['xmlsitemap_minimum_lifetime'] = array(
     '#type' => 'select',
     '#title' => t('Minimum sitemap lifetime'),
@@ -304,7 +287,6 @@ function xmlsitemap_settings_form() {
     '#collapsible' => TRUE,
     '#collapsed' => !variable_get('xmlsitemap_developer_mode', 0),
     '#weight' => 10,
-    '#group' => FALSE,
   );
   //$form['advanced']['xmlsitemap_gz'] = array(
   //  '#type' => 'checkbox',
@@ -327,8 +309,9 @@ function xmlsitemap_settings_form() {
     '#default_value' => xmlsitemap_var('batch_limit'),
     '#description' => t('If you have problems running cron or rebuilding the sitemap, you may want to lower this value.'),
   );
-  $directory = xmlsitemap_get_directory();
-  file_check_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS, 'xmlsitemap_path');
+  if (!xmlsitemap_check_directory()) {
+    form_set_error('xmlsitemap_path', t('The directory %directory does not exist or is not writable.', array('%directory' => xmlsitemap_get_directory())));
+  }
   $form['advanced']['xmlsitemap_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Sitemap cache directory'),
@@ -336,7 +319,7 @@ function xmlsitemap_settings_form() {
     '#size' => 30,
     '#maxlength' => 255,
     '#description' => t('Subdirectory where the sitemap data will be stored. This folder <strong>must not be shared</strong> with any other Drupal site or install using XML sitemap.'),
-    '#field_prefix' =>  file_directory_path() . '/',
+    '#field_prefix' => file_build_uri(''),
     '#required' => TRUE,
   );
   $form['advanced']['xmlsitemap_base_url'] = array(
@@ -366,6 +349,11 @@ function xmlsitemap_settings_form() {
     '#default_value' => variable_get('xmlsitemap_developer_mode', 0),
   );
 
+  $form['xmlsitemap_settings'] = array(
+    '#type' => 'vertical_tabs',
+    '#weight' => 20,
+  );
+
   $entities = xmlsitemap_get_link_info(NULL, TRUE);
   module_load_all_includes('inc', 'xmlsitemap');
   foreach ($entities as $entity => $entity_info) {
@@ -375,7 +363,6 @@ function xmlsitemap_settings_form() {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#group' => 'xmlsitemap_settings',
-      '#weight' => 20,
     );
 
     if (!empty($entity_info['bundles'])) {
@@ -390,16 +377,15 @@ function xmlsitemap_settings_form() {
 
     // Ensure that the entity fieldset is not shown if there are no accessible
     // sub-elements.
-    $form[$entity]['#access'] = (bool) xmlsitemap_element_get_visible_children($form[$entity]);
+    $form[$entity]['#access'] = (bool) element_get_visible_children($form[$entity]);
   }
 
-  $form['#pre_render'][] = 'vertical_tabs_form_pre_render';
   $form['#validate'][] = 'xmlsitemap_settings_form_validate';
   $form['#submit'][] = 'xmlsitemap_settings_form_submit';
+  array_unshift($form['#submit'], 'xmlsitemap_form_submit_flag_regenerate');
   $form['array_filter'] = array('#type' => 'value', '#value' => TRUE);
 
   $form = system_settings_form($form);
-  $form['buttons']['#weight'] = 100;
   return $form;
 }
 
@@ -443,7 +429,7 @@ function xmlsitemap_rebuild_form() {
       drupal_set_message(t('Your sitemap is up to date and does not need to be rebuilt.'), 'error');
     }
     else {
-      $_REQUEST += array('destination' => 'admin/settings/xmlsitemap');
+      $_REQUEST += array('destination' => 'admin/config/search/xmlsitemap');
       drupal_set_message(t('A rebuild is not necessary. If you are just wanting to regenerate the XML sitemap files, you can <a href="@link-cron">run cron manually</a>.', array('@link-cron' => url('admin/reports/status/run-cron', array('query' => drupal_get_destination())))), 'warning');
     }
   }
@@ -470,7 +456,7 @@ function xmlsitemap_rebuild_form() {
   return confirm_form(
     $form,
     t('Are you sure you want to rebuild the XML sitemap?'),
-    'admin/settings/xmlsitemap',
+    'admin/config/search/xmlsitemap',
     '',
     t('Rebuild sitemap'),
     t('Cancel')
@@ -487,7 +473,7 @@ function xmlsitemap_rebuild_form_submit($form, &$form_state) {
   module_load_include('generate.inc', 'xmlsitemap');
   $batch = xmlsitemap_rebuild_batch($form_state['values']['entities'], $form_state['values']['save_custom']);
   batch_set($batch);
-  $form_state['redirect'] = 'admin/settings/xmlsitemap';
+  $form_state['redirect'] = 'admin/config/search/xmlsitemap';
 }
 
 /**
@@ -508,9 +494,9 @@ function xmlsitemap_add_form_entity_summary(&$form, $entity, array $entity_info)
     $totals['visible'] += $status['visible'];
 
     $row = array();
-    $edit_link = xmlsitemap_get_operation_link("admin/settings/xmlsitemap/settings/$entity/$bundle", array('modal' => TRUE));
-    if (!empty($edit_link['router info']['access'])) {
-      $row[] = l($bundle_info['label'], $edit_link['href'], $edit_link);
+    if (drupal_valid_path("admin/config/search/xmlsitemap/settings/$entity/$bundle")) {
+      $edit_link = xmlsitemap_get_operation_link("admin/config/search/xmlsitemap/settings/$entity/$bundle", array('title' => $bundle_info['label'], 'modal' => TRUE));
+      $row[] = l($edit_link['title'], $edit_link['href'], $edit_link);
     }
     else {
       // Bundle labels are assumed to be un-escaped input.
@@ -553,7 +539,9 @@ function xmlsitemap_add_form_entity_summary(&$form, $entity, array $entity_info)
       ),
     );
     $form['summary'] = array(
-      '#value' => theme('table', $header, $rows),
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => $rows,
     );
   }
 }
@@ -566,6 +554,17 @@ function xmlsitemap_add_form_entity_summary(&$form, $entity, array $entity_info)
  */
 function xmlsitemap_add_link_bundle_settings(array &$form, array &$form_state, $entity, $bundle) {
   $entity_info = xmlsitemap_get_link_info($entity);
+
+  //if (!isset($bundle) && isset($entity_info['bundle keys']['bundle'])) {
+  //  $bundle_key = $entity_info['bundle keys']['bundle'];
+  //  if (isset($form[$bundle_key]['#value'])) {
+  //    $bundle = $form[$bundle_key]['#value'];
+  //  }
+  //  elseif (isset($form[$bundle_key]['#default_value'])) {
+  //    $bundle = $form[$bundle_key]['#default_value'];
+  //  }
+  //}
+
   $bundle_info = xmlsitemap_link_bundle_load($entity, $bundle);
 
   $form['xmlsitemap'] = array(
@@ -586,10 +585,16 @@ function xmlsitemap_add_link_bundle_settings(array &$form, array &$form_state, $
     '#entity_info' => $entity_info,
     '#bundle_info' => $bundle_info,
   );
+
+  // Hack to remove fieldset summary if Vertical tabs is not enabled.
+  if (!isset($form['additional_settings'])) {
+    unset($form['xmlsitemap']['#attached']['js']['vertical-tabs']);
+  }
+
   $form['xmlsitemap']['description'] = array(
     '#prefix' => '<div class="description">',
     '#suffix' => '</div>',
-    '#value' => t('Changing these type settings will affect any items of this type that have either inclusion or priority set to default.'),
+    '#markup' => t('Changing these type settings will affect any items of this type that have either inclusion or priority set to default.'),
   );
   $form['xmlsitemap']['status'] = array(
     '#type' => 'select',
@@ -602,14 +607,12 @@ function xmlsitemap_add_link_bundle_settings(array &$form, array &$form_state, $
     '#title' => t('Default priority'),
     '#options' => xmlsitemap_get_priority_options(),
     '#default_value' => $bundle_info['priority'],
-    '#process' => array('form_expand_ahah', 'ctools_dependent_process'),
-    '#dependency' => array('edit-xmlsitemap-status' => array(1)),
+    '#states' => array(
+      'invisible' => array(
+        'select[name="xmlsitemap[status]"]' => array('value' => '0'),
+      ),
+    ),
   );
-
-  // Hide the priority field if the link is excluded.
-  if (module_exists('ctools')) {
-    ctools_include('dependent');
-  }
 
   $form += array('#submit' => array());
   array_unshift($form['#submit'], 'xmlsitemap_link_bundle_settings_form_submit');
@@ -622,12 +625,12 @@ function xmlsitemap_add_link_bundle_settings(array &$form, array &$form_state, $
   }
 }
 
-function xmlsitemap_link_bundle_settings_form(array &$form_state, array $bundle) {
+function xmlsitemap_link_bundle_settings_form(array $form, array &$form_state, array $bundle) {
   if (empty($form_state['ajax']) && $admin_path = xmlsitemap_get_bundle_path($bundle['entity'], $bundle['bundle'])) {
     // If this is a non-ajax form, redirect to the bundle administration page.
     $destination = drupal_get_destination();
-    unset($_REQUEST['destination']);
-    drupal_goto($admin_path, $destination);
+    unset($_GET['destination']);
+    drupal_goto($admin_path, array('query' => $destination));
   }
   else {
     drupal_set_title( t('@bundle XML sitemap settings', array('@bundle' => $bundle['info']['label'])));
@@ -641,14 +644,14 @@ function xmlsitemap_link_bundle_settings_form(array &$form_state, array $bundle)
   $form['xmlsitemap']['#show_message'] = TRUE;
 
   $form['actions'] = array(
-    '#weight' => 100,
+    '#type' => 'actions',
   );
   $form['actions']['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
   );
   $form['actions']['cancel'] = array(
-    '#value' => l(t('Cancel'), isset($_GET['destination']) ? $_GET['destination'] : 'admin/settings/xmlsitemap/settings'),
+    '#value' => l(t('Cancel'), isset($_GET['destination']) ? $_GET['destination'] : 'admin/config/search/xmlsitemap/settings'),
     '#weight' => 10,
   );
 
@@ -697,11 +700,16 @@ function xmlsitemap_add_form_link_options(array &$form, $entity, $bundle, $id) {
     ),
   );
 
+  // Hack to remove fieldset summary if Vertical tabs is not enabled.
+  if (!isset($form['additional_settings'])) {
+    unset($form['xmlsitemap']['#attached']['js']['vertical-tabs']);
+  }
+
   if (xmlsitemap_link_bundle_access($bundle_info) && $path = xmlsitemap_get_bundle_path($entity, $bundle)) {
     $form['xmlsitemap']['description'] = array(
       '#prefix' => '<div class="description">',
       '#suffix' => '</div>',
-      '#value' => t('The default XML sitemap settings for this @bundle can be changed <a href="@link-type">here</a>.', array('@bundle' => drupal_strtolower($info['bundle label']), '@link-type' => url($path, array('query' => drupal_get_destination())))),
+      '#markup' => t('The default XML sitemap settings for this @bundle can be changed <a href="@link-type">here</a>.', array('@bundle' => drupal_strtolower($info['bundle label']), '@link-type' => url($path, array('query' => drupal_get_destination())))),
     );
   }
 
@@ -739,11 +747,18 @@ function xmlsitemap_add_form_link_options(array &$form, $entity, $bundle, $id) {
     '#options' => xmlsitemap_get_priority_options($link['priority_default']),
     '#default_value' => $link['priority_override'] ? number_format($link['priority'], 1) : 'default',
     '#description' => t('The priority of this URL relative to other URLs on your site.'),
-    '#process' => array('form_expand_ahah', 'ctools_dependent_process'),
-    '#dependency' => array('edit-xmlsitemap-status' => array(1)),
+    '#states' => array(
+      'invisible' => array(
+        'select[name="xmlsitemap[status]"]' => array('value' => '0'),
+      ),
+    ),
   );
-  if ($link['status_default']) {
-    $form['xmlsitemap']['priority']['#dependency']['edit-xmlsitemap-status'][] = 'default';
+  if (!$link['status_default']) {
+    // If the default status is excluded, add a visible state on the include
+    // override option.
+    $form['xmlsitemap']['priority']['#states']['visible'] = array(
+      'select[name="xmlsitemap[status]"]' => array('value' => '1'),
+    );
   }
   $form['xmlsitemap']['priority_default'] = array(
     '#type' => 'value',
@@ -767,11 +782,6 @@ function xmlsitemap_add_form_link_options(array &$form, $entity, $bundle, $id) {
   //  '#type' => 'value',
   //  '#value' => $node->xmlsitemap['changecount'],
   //);
-
-  // Hide the priority field if the link is excluded.
-  if (module_exists('ctools')) {
-    ctools_include('dependent');
-  }
 
   // Add the submit handler to adjust the default values if selected.
   $form += array('#submit' => array());

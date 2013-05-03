@@ -1,4 +1,4 @@
-// $Id: jquery.drilldown.js,v 1.1.2.10 2010/08/06 15:31:44 yhahn Exp $
+// $Id: jquery.drilldown.js,v 1.1.2.10.2.1 2010/09/16 18:40:02 yhahn Exp $
 
 /**
  * Generic menu drilldown plugin for standard Drupal menu tree markup.
@@ -69,9 +69,9 @@
           }
           if (activeMenu) {
             $('.drilldown-active-trail', menu).removeClass('drilldown-active-trail');
-            $('ul.menu', menu).removeClass('drilldown-active-menu').removeClass('clear-block');
+            $('ul.menu', menu).removeClass('drilldown-active-menu').removeClass('clearfix');
             $(activeMenu)
-              .addClass('drilldown-active-menu').addClass('clear-block')
+              .addClass('drilldown-active-menu').addClass('clearfix')
               .parents('li').addClass('drilldown-active-trail').show();
           }
         });

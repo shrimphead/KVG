@@ -3,24 +3,35 @@
 /**
  * @file
  * Site security review and reporting Drupal module.
- * 
+ *
+ * @TODO other check types
+ * @TODO reporting
  */
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_permission().
  */
-function security_review_perm() {
-  return array('access security review list', 'run security checks');
+function security_review_permission() {
+  return array(
+    'access security review list' => array(
+      'title' => t('Access security review pages'),
+      'description' => t('View security review checks and output. Give only to trusted users.'),
+    ),
+    'run security checks' => array(
+      'title' => t('Run security review checks'),
+      'description' => t('Run the security review checks'),
+    ),
+  );
 }
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function security_review_menu() {
   $items = array();
   $items['admin/reports/security-review'] = array(
     'title' => 'Security review',
-    'description' => 'Perform and review the security of your site.',
+    'description' => 'Perform a review or the security of your site.',
     'page callback' => 'security_review_page',
     'access arguments' => array('access security review list'),
     'type' => MENU_NORMAL_ITEM,
@@ -57,13 +68,13 @@ function security_review_menu() {
 }
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function security_review_theme($existing, $type, $theme, $path) {
   return array(
-    'security_review_reviewed' => array('arguments' => array('items' => array())),
-    'security_review_help_options' => array('arguments' => array('element' => array())),
-    'security_review_check_help' => array('arguments' => array('element' => array())),
+    'security_review_reviewed' => array('variables' => array('items' => array(), 'header' => '', 'description' => '')),
+    'security_review_help_options' => array('variables' => array('element' => array())),
+    'security_review_check_help' => array('variables' => array('element' => array())),
   );
 }
 
@@ -72,22 +83,22 @@ function security_review_theme($existing, $type, $theme, $path) {
  */
 function security_review_page() {
   $checks = array();
-  $output = '';
+  $output = array();
   // Retrieve the checklist.
   $checklist = module_invoke_all('security_checks');
   // Retrieve results from last run of the checklist.
-  $results = db_query("SELECT namespace, reviewcheck, result, lastrun, skip, skiptime, skipuid FROM {security_review}");
-  while ($result = db_fetch_array($results)) {
-    $checks[] = $result;
+  $result = db_query("SELECT namespace, reviewcheck, result, lastrun, skip, skiptime, skipuid FROM {security_review}");
+  foreach ($result as $record) {
+    $checks[] = $record;
   }
   // Only users with the proper permission can run the checklist.
   if (user_access('run security checks')) {
-    $output .= drupal_get_form('security_review_run_form', $checks);
+    $output += drupal_get_form('security_review_run_form', $checks);
   }
-  
+
   if (!empty($checks)) {
     // We have prior results, so display them.
-    $output .= security_review_reviewed($checklist, $checks);
+    $output['results'] = security_review_reviewed($checklist, $checks);
   }
   else {
     // If they haven't configured the site, prompt them to do so.
@@ -100,21 +111,15 @@ function security_review_page() {
 }
 
 /**
- * Implementation of hook_security_checks().
- */
-function security_review_security_checks() {
-  module_load_include('inc', 'security_review');
-  // security_review_get_checks() will include implementations of this hook
-  // that Security Review defines on behalf of other modules.
-  return security_review_get_checks();
-}
-
-/**
- * Retrive the result from the last run of a security check.
+ * Retrieve the result from the last run of a security check.
  */
 function security_review_get_last_check($namespace, $check_name) {
-  $check = db_fetch_array(db_query("SELECT namespace, reviewcheck, result, lastrun, skip, skiptime, skipuid FROM {security_review} WHERE namespace = '%s' AND reviewcheck = '%s'", $namespace, $check_name));
-  return !empty($check) ? $check : NULL;
+  $fields = array('namespace', 'reviewcheck', 'result', 'lastrun', 'skip', 'skiptime', 'skipuid');
+  $result = db_select('security_review', 'sr')->fields('sr', $fields)
+    ->condition('namespace', $namespace)
+    ->condition('reviewcheck', $check_name)
+    ->execute()->fetchAssoc();
+  return !empty($result) ? $result : NULL;
 }
 
 /**
@@ -144,7 +149,7 @@ function security_review_check_help($module = NULL, $check_name = NULL) {
         $function = $check['callback'] . '_help';
         if (function_exists($function)) {
           $element = $function();
-          $output = theme('security_review_check_help', $element);
+          $output = theme('security_review_check_help', array('element' => $element));
         }
       }
     }
@@ -161,51 +166,58 @@ function security_review_check_help($module = NULL, $check_name = NULL) {
       }
     }
     if ($items) {
-      $output .= theme('item_list', $items);
+      $output .= theme('item_list', array('items' => $items));
     }
   }
   if (empty($output)) {
     return drupal_not_found();
   }
-  return $output;
+  return array('#markup' => $output);
 }
 
 function security_review_reviewed($checklist, $checks, $namespace = NULL) {
-  $output = '';
-
+  $items = array();
   $header = t('Review results from last run');
   $desc = t("Here you can review the results from the last run of the checklist. Checks are not always perfectly correct in their procedure and result. You can keep a check from running by clicking the 'Skip' link beside it. You can run the checklist again by expanding the fieldset above.");
   foreach ($checks as $check) {
-    $message = $check['result'] ? $checklist[$check['namespace']][$check['reviewcheck']]['success'] : $checklist[$check['namespace']][$check['reviewcheck']]['failure'];
-    $class = $check['skip'] ? 'info' : ($check['result'] ? 'ok' : 'error');
-    $toggle = $check['skip'] ? t('Enable') : t('Skip');
-    $token = drupal_get_token($check['reviewcheck']);
+    $message = $check->result ? $checklist[$check->namespace][$check->reviewcheck]['success'] : $checklist[$check->namespace][$check->reviewcheck]['failure'];
+    $title = $check->result ? t('OK') : t('Error');
+    $class = $check->skip ? 'info' : ($check->result ? 'ok' : 'error');
+    $toggle = $check->skip ? t('Enable') : t('Skip');
+    $token = drupal_get_token($check->reviewcheck);
     $link_options = array(
       'query' => array('token' => $token),
-      'attributes' => array('class' => 'sec-rev-dyn'),
+      //'attributes' => array('class' => 'use-ajax'),
     );
     $items[] = array(
-      'value' => $check['result'],
+      'title' => $title,
+      'value' => $check->result,
       'class' => $class,
       'message' => $message,
-      'help_link' => l(t('Details'), 'admin/reports/security-review/help/' . $check['namespace'] . '/' . $check['reviewcheck']),
-      'toggle_link' => l($toggle, 'admin/reports/security-review/toggle/' . $check['reviewcheck'], $link_options),
+      'help_link' => l(t('Details'), 'admin/reports/security-review/help/' . $check->namespace . '/' . $check->reviewcheck),
+      'toggle_link' => l($toggle, 'admin/reports/security-review/toggle/nojs/' . $check->reviewcheck, $link_options),
     );
   }
-  $output .= theme('security_review_reviewed', $items, $header, $desc);
-  return $output;
+  $output = theme('security_review_reviewed', array('items' => $items, 'header' => $header, 'description' => $desc));
+  // @todo #markup?
+  return array('#markup' => $output);
 }
 
-function theme_security_review_reviewed($items = array(), $header = '', $desc = '') {
-  drupal_add_js(drupal_get_path('module', 'security_review') . '/security_review.js', 'module', 'footer');
-  $output = '<h3>' . $header . '</h3>';
-  $output .= '<p>' . $desc . '</p>';
+function theme_security_review_reviewed($variables) {
+  // @todo
+  //drupal_add_js(drupal_get_path('module', 'security_review') . '/security_review.js', array('scope' => 'footer'));
+  $output = '<h3>' . $variables['header'] . '</h3>';
+  $output .= '<p>' . $variables['description'] . '</p>';
   $output .= '<table class="system-status-report">';
-  foreach ($items as $item) {
-    $output .= '<tr class="' . $item['class'] . '"><th>' . $item['message'] . '</th>';
-    $output .= '<td>' . $item['help_link'] . '</td>';
-    $output .= '<td>' . $item['toggle_link'] . '</td>';
-    $output .= '</tr>';
+  if (!empty($variables['items'])) {
+    foreach ($variables['items'] as $item) {
+      $output .= '<tr class="' . $item['class'] . '">';
+      $output .= '<td class="status-icon"><div title="' . $item['title'] . '"><span class="element-invisible">' . $item['title'] . '</span></div></td>';
+      $output .= '<td>' . $item['message'] . '</td>';
+      $output .= '<td>' . $item['help_link'] . '</td>';
+      $output .= '<td>' . $item['toggle_link'] . '</td>';
+      $output .= '</tr>';
+    }
   }
   $output .= '</table>';
   return $output;
@@ -216,14 +228,15 @@ function theme_security_review_reviewed($items = array(), $header = '', $desc = 
  *
  * Calling function should filter and sanitize.
  */
-function theme_security_review_check_help($element) {
-  $output = "<h3>" . $element['title'] . "</h3>\n";
+function theme_security_review_check_help($variables) {
+  $element = $variables['element'];
+  $output = '<h3>' . $element['title'] . '</h3>';
   foreach ($element['descriptions'] as $description) {
-    $output .= "<p>" . $description . "</p>\n";
+    $output .= '<p>' . $description . '</p>';
   }
   if (!empty($element['findings'])) {
     foreach ($element['findings']['descriptions'] as $description) {
-      $output .= "<p>" . $description . "</p>\n";
+      $output .= '<p>' . $description . '</p>';
     }
     if (!empty($element['findings']['items'])) {
       $items = $element['findings']['items'];
@@ -255,7 +268,7 @@ function theme_security_review_check_help($element) {
   return $output;
 }
 
-function security_review_run_form($form_state, $checks = NULL) {
+function security_review_run_form($form, &$form_state, $checks = NULL) {
   $form['run_form'] = array(
     '#type' => 'fieldset',
     '#title' => t('Run'),
@@ -309,11 +322,11 @@ function security_review_run_form_submit($form, &$form_state) {
  * Run the security review checklist and store the results.
  */
 function security_review_run_store($checklist, $log = NULL) {
-  // Allow callers like a drush command to decide not to log.
+  // Allow callers, like our drush command, to decide not to log.
   if (is_null($log)) {
     $log = variable_get('security_review_log', TRUE);
   }
-  // Perform the actual review.
+  // Call our private function to perform the actual review.
   $results = _security_review_run($checklist, $log);
   // Store results and return.
   return security_review_store_results($results);
@@ -324,15 +337,16 @@ function security_review_run_store($checklist, $log = NULL) {
  */
 function security_review_store_results($results) {
   $log = variable_get('security_review_log', TRUE);
-  // Store all results in the table.
   $saved = $to_save = 0;
   foreach ($results as $module => $checks) {
     foreach ($checks as $check_name => $check) {
-      // Clear previous entry.
-      db_query("DELETE FROM {security_review} WHERE namespace = '%s' AND reviewcheck = '%s'", $module, $check_name);
-      if (db_affected_rows() && is_null($check['result']) && $log) {
+      $num_deleted = db_delete('security_review')
+        ->condition('namespace', $module)
+        ->condition('reviewcheck', $check_name)
+        ->execute();
+      if ($num_deleted == 1 && is_null($check['result']) && $log) {
         // Last check was deleted and current check returns null so check is
-        // now no longer applicable.
+        // no longer applicable.
         $message = '!name no longer applicable for checking';
         _security_review_log($module, $check_name, $message, array('!name' => $check['title']), WATCHDOG_INFO);
       }
@@ -343,9 +357,9 @@ function security_review_store_results($results) {
           'namespace' => $module,
           'reviewcheck' => $check_name,
           'result' => $check['result'],
-          'lastrun' => $check['lastrun'] ? $check['lastrun'] : time(),
+          'lastrun' => $check['lastrun'] ? $check['lastrun'] : REQUEST_TIME,
         );
-        
+
         if (drupal_write_record('security_review', $record) == SAVED_NEW) {
           $saved++;
         }
@@ -359,13 +373,39 @@ function security_review_store_results($results) {
 }
 
 /**
+ * Run the security review checklist and return the full results.
+ */
+function security_review_run_full($checklist, $log = NULL) {
+  // Allow callers, like our drush command, to decide not to log.
+  if (is_null($log)) {
+    $log = variable_get('security_review_log', TRUE);
+  }
+  // Call our private function to perform the actual review.
+  $results = _security_review_run($checklist, $log);
+
+  // Fill out the descriptions of the results.
+  foreach ($results as $module => $checks) {
+    foreach ($checks as $check_name => $check) {
+      $function = $check['callback'] . '_help';
+      // We should have loaded all necessary include files.
+      if (function_exists($function)) {
+        $element = call_user_func($function, $check);
+        // @todo run through theme?
+        $results[$module][$check_name]['help'] = $element;
+      }
+    }
+  }
+  return $results;
+}
+
+/**
  * Operation function called by Batch.
  */
 function _security_review_batch_op($module, $check_name, $check, $log, &$context) {
   module_load_include('inc', 'security_review');
   $context['message'] = $check['title'];
   // Run the check.
-  $check_result = _security_review_run_check($module, $check_name, $check, $log, TRUE);
+  $check_result = _security_review_run_check($module, $check_name, $check, $log);
   if (!empty($check_result)) {
     $context['results'][$module][$check_name] = $check_result;
   }
@@ -392,30 +432,47 @@ function _security_review_batch_finished($success, $results, $operations) {
 }
 
 /**
- * Implementation of hook_security_review_log().
+ * Implements hook_security_checks().
  */
-function security_review_security_review_log($module, $check_name, $message, $variables, $type) {
-  // Log using watchdog().
-  watchdog('security_review', $message, $variables, $type);
+function security_review_security_checks() {
+  module_load_include('inc', 'security_review');
+  // security_review_get_checks() will include implementations of this hook
+  // that Security Review defines on behalf of other modules.
+  return security_review_get_checks();
+}
+
+/**
+ * Helper function returns skipped checks.
+ */
+function security_review_skipped_checks() {
+  $skipped = array();
+
+  $results = db_query("SELECT namespace, reviewcheck, result, lastrun, skip, skiptime, skipuid FROM {security_review} WHERE skip = 1");
+  while ($record = $results->fetchAssoc()) {
+    $skipped[$record['namespace']][$record['reviewcheck']] = $record;
+  }
+
+  return $skipped;
 }
 
 /**
  * Menu callback and Javascript callback for check skip toggling.
  */
-function security_review_toggle_check($check_name) {
+function security_review_toggle_check($type = 'ajax', $check_name) {
   global $user;
-  module_load_include('inc', 'security_review');
-
-  if (!drupal_valid_token($_GET['token'], $check_name)) {
+  if (!isset($_GET['token']) || !drupal_valid_token($_GET['token'], $check_name)) {
     return drupal_access_denied();
   }
   $result = FALSE;
-  // To be sure, we compare the user-provided check with available checks.
+  // To be sure, compare the user-provided check with available checks.
   $checklist = module_invoke_all('security_checks');
   foreach ($checklist as $module => $checks) {
     if (in_array($check_name, array_keys($checks))) {
-      $sql = "SELECT namespace, reviewcheck, result, lastrun, skip, skiptime, skipuid FROM {security_review} WHERE namespace = '%s' AND reviewcheck = '%s'";
-      $record = db_fetch_object(db_query($sql, $module, $check_name));
+      $query = db_select('security_review', 'sr')
+        ->fields('sr', array('namespace', 'reviewcheck', 'result', 'lastrun', 'skip', 'skiptime', 'skipuid'))
+        ->condition('namespace', $module, '=')
+        ->condition('reviewcheck', $check_name, '=');
+      $record = $query->execute()->fetchObject();
       // Toggle the skip.
       if ($record->skip) {
         // We were skipping, so stop skipping and clear skip identifiers.
@@ -427,7 +484,7 @@ function security_review_toggle_check($check_name) {
       else {
         // Start skipping and record who made the decision and when.
         $record->skip = TRUE;
-        $record->skiptime = time();
+        $record->skiptime = REQUEST_TIME;
         $record->skipuid = $user->uid;
         $message = '!name check skipped';
       }
@@ -441,38 +498,23 @@ function security_review_toggle_check($check_name) {
       break;
     }
   }
-  if (isset($_GET['js']) && intval($_GET['js']) == 1) {
-    drupal_json($record);
+  if ($type == 'ajax') {
+    drupal_json_output($record);
     return;
   }
-  // We weren't invoked via JS so set a message and return to the review page.
-  drupal_set_message(t('Check will be skipped'));
-  drupal_goto('admin/reports/security-review');
-}
-
-/**
- * Helper function returns skipped checks.
- */
-function security_review_skipped_checks() {
-  $skipped = array();
-
-  $sql = "SELECT namespace, reviewcheck, result, lastrun, skip, skiptime, skipuid FROM {security_review} WHERE skip = 1";
-  $results = db_query($sql);
-  while ($record = db_fetch_array($results)) {
-    $skipped[$record['namespace']][$record['reviewcheck']] = $record;
+  else {
+    // We weren't invoked via JS so set a message and return to the review page.
+    drupal_set_message(t($message, array('!name' => $checks[$check_name]['title'])));
+    drupal_goto('admin/reports/security-review');
   }
-
-  return $skipped;
 }
 
 /**
- * Helper function creates message for reporting check skip information.
+ * Implementation of hook_security_review_log().
  */
-function _security_review_check_skipped($last_check) {
-  $account = user_load(array('uid' => $last_check['skipuid']));
-  $time = format_date($last_check['skiptime'], 'medium');
-  $message = t('Check marked for skipping on !time by !user', array('!time' => $time, '!user' => theme('username', $account)));
-  return $message;
+function security_review_security_review_log($module, $check_name, $message, $variables, $type) {
+  // Log using watchdog().
+  watchdog('security_review', $message, $variables, $type);
 }
 
 /**
@@ -480,14 +522,13 @@ function _security_review_check_skipped($last_check) {
  */
 function security_review_settings() {
   $checklist = module_invoke_all('security_checks');
-
   $roles = user_roles();
   foreach ($roles as $rid => $role) {
     $options[$rid] = check_plain($role);
   }
   $message = '';
-  $defaults = security_review_default_untrusted_roles();
-  if (in_array(DRUPAL_AUTHENTICATED_RID, $defaults)) {
+  $defaults = _security_review_default_untrusted_roles();
+  if (array_key_exists(DRUPAL_AUTHENTICATED_RID, $defaults)) {
     $message = 'You have allowed anonymous users to create accounts without approval, the authenticated role thus defaults to untrusted.';
   }
 
@@ -496,7 +537,7 @@ function security_review_settings() {
     '#title' => t('Untrusted roles'),
     '#description' => t('Mark which roles are not trusted. The anonymous role defaults to untrusted. @message Read more about the idea behind trusted and untrusted roles on <a href="!url">DrupalScout.com</a>.', array('@message' => $message, '!url' => url('http://drupalscout.com/knowledge-base/importance-user-roles-and-permissions-site-security'))),
     '#options' => $options,
-    '#default_value' => variable_get('security_review_untrusted_roles', $defaults),
+    '#default_value' => variable_get('security_review_untrusted_roles', array_keys($defaults)),
   );
 
   $form['security_review_adv'] = array(
@@ -548,7 +589,7 @@ function _security_review_settings_submit($form, &$form_state) {
 
   $stored = array();
   $results = db_query("SELECT namespace, reviewcheck, result, lastrun, skip, skiptime, skipuid FROM {security_review}");
-  while ($record = db_fetch_array($results)) {
+  while($record = $results->fetchAssoc()) {
     $stored[$record['namespace']][$record['reviewcheck']] = $record;
   }
 
@@ -564,11 +605,10 @@ function _security_review_settings_submit($form, &$form_state) {
         $record->skip = FALSE;
         $record->skiptime = 0;
         $record->skipuid = NULL;
-        $message = '!name check no longer skipped';
         $result = drupal_write_record('security_review', $record, array('namespace', 'reviewcheck'));
         if ($log) {
           $variables = array('!name' => $check['title']);
-          _security_review_log($module, $check_name, $message, $variables, WATCHDOG_INFO);
+          _security_review_log($module, $check_name, '!name check no longer skipped', $variables, WATCHDOG_INFO);
         }
       }
       elseif ($form_state['values']['security_review_skip'][$check_name] !== 0) {
@@ -579,17 +619,26 @@ function _security_review_settings_submit($form, &$form_state) {
         $record->namespace = $module;
         $record->reviewcheck = $check_name;
         $record->skip = TRUE;
-        $record->skiptime = time();
+        $record->skiptime = REQUEST_TIME;
         $record->skipuid = $user->uid;
-        $message = '!name check skipped';
         $result = drupal_write_record('security_review', $record, $update);
         if ($log) {
           $variables = array('!name' => $check['title']);
-          _security_review_log($module, $check_name, $message, $variables, WATCHDOG_INFO);
+          _security_review_log($module, $check_name, '!name check skipped', $variables, WATCHDOG_INFO);
         }
       }
     }
   }
   // Unset security_review_skip to keep it from being written to a variable.
   unset($form_state['values']['security_review_skip']);
+}
+
+/**
+ * Helper function creates message for reporting check skip information.
+ */
+function _security_review_check_skipped($last_check) {
+  $account = array_pop(user_load_multiple(array($last_check['skipuid'])));
+  $time = format_date($last_check['skiptime'], 'medium');
+  $message = t('Check marked for skipping on !time by !user', array('!time' => $time, '!user' => theme('username', array('account' => $account))));
+  return $message;
 }

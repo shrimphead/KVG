@@ -24,27 +24,19 @@ function xmlsitemap_get_path_alias($path, $language) {
   static $last_language;
 
   if (!isset($aliases)) {
-    $aliases['all'] = array();
-    $query = db_query("SELECT src, dst FROM {url_alias} WHERE language = '' ORDER BY pid");
-    while ($alias = db_fetch_array($query)) {
-      $aliases['all'][$alias['src']] = $alias['dst'];
-    }
+    $aliases[LANGUAGE_NONE] = db_query("SELECT source, alias FROM {url_alias} WHERE language = :language ORDER BY pid", array(':language' => LANGUAGE_NONE))->fetchAllKeyed();
   }
-  if ($language && $last_language != $language) {
+  if ($language != LANGUAGE_NONE && $last_language != $language) {
     unset($aliases[$last_language]);
-    $aliases[$language] = array();
-    $query = db_query("SELECT src, dst FROM {url_alias} WHERE language = '%s' ORDER BY pid", $language);
-    while ($alias = db_fetch_array($query)) {
-      $aliases[$language][$alias['src']] = $alias['dst'];
-    }
+    $aliases[$language] = db_query("SELECT source, alias FROM {url_alias} WHERE language = :language ORDER BY pid", array(':language' => $language))->fetchAllKeyed();
     $last_language = $language;
   }
 
-  if ($language && isset($aliases[$language][$path])) {
+  if ($language != LANGUAGE_NONE && isset($aliases[$language][$path])) {
     return $aliases[$language][$path];
   }
-  elseif (isset($aliases['all'][$path])) {
-    return $aliases['all'][$path];
+  elseif (isset($aliases[LANGUAGE_NONE][$path])) {
+    return $aliases[LANGUAGE_NONE][$path];
   }
   else {
     return $path;
@@ -60,34 +52,16 @@ function _xmlsitemap_regenerate_before() {
 
   if (variable_get('xmlsitemap_developer_mode', 0)) {
     watchdog('xmlsitemap', 'Starting XML sitemap generation. Memory usage: @memory-peak.', array(
-        '@memory-peak' => format_size(_xmlsitemap_memory_get_peak_usage()),
+        '@memory-peak' => format_size(memory_get_peak_usage(TRUE)),
       ),
       WATCHDOG_DEBUG
     );
   }
 }
 
-/**
- * Wrapper function for memory_get_peak_usage() for PHP versions below 5.2.
- */
-function _xmlsitemap_memory_get_peak_usage() {
-  if (function_exists('memory_get_peak_usage')) {
-    return memory_get_peak_usage(TRUE);
-  }
-  else {
-    return 'N/A';
-  }
-}
-
 function _xmlsitemap_get_memory_usage($start = FALSE) {
   static $memory_start;
-  $current = 0;
-  if (function_exists('memory_get_peak_usage')) {
-    $current = memory_get_peak_usage(TRUE);
-  }
-  if (function_exists('memory_get_usage')) {
-    $current = version_compare(PHP_VERSION, '5.2') ? memory_get_usage(TRUE) : memory_get_usage();
-  }
+  $current = memory_get_peak_usage(TRUE);
   if (!isset($memory_start) || $start) {
     $memory_start = $current;
   }
@@ -101,7 +75,7 @@ function _xmlsitemap_get_memory_usage($start = FALSE) {
  * the currently loaded modules.
  */
 function _xmlsitemap_get_optimal_memory_limit() {
-  $optimal_limit = &xmlsitemap_static(__FUNCTION__);
+  $optimal_limit = &drupal_static(__FUNCTION__);
   if (!isset($optimal_limit)) {
     // Set the base memory amount from the provided core constant.
     $optimal_limit = parse_size(DRUPAL_MINIMUM_PHP_MEMORY_LIMIT);
@@ -111,7 +85,7 @@ function _xmlsitemap_get_optimal_memory_limit() {
 
     // Add memory for storing the url aliases.
     if (variable_get('xmlsitemap_prefetch_aliases', 1)) {
-      $aliases = db_result(db_query("SELECT COUNT(pid) FROM {url_alias}"));
+      $aliases = db_query("SELECT COUNT(pid) FROM {url_alias}")->fetchField();
       $optimal_limit += $aliases * 250;
     }
   }
@@ -146,8 +120,6 @@ function _xmlsitemap_set_memory_limit($new_limit = NULL) {
  *   An integer of the specific page of the sitemap to generate.
  */
 function xmlsitemap_generate_page(stdClass $sitemap, $page) {
-  xmlsitemap_load_all_includes();
-
   try {
     $writer = new XMLSitemapWriter($sitemap, $page);
     $writer->startDocument();
@@ -155,7 +127,7 @@ function xmlsitemap_generate_page(stdClass $sitemap, $page) {
     $writer->endDocument();
   }
   catch (Exception $e) {
-    trigger_error($e->getMessage(), E_USER_ERROR);
+    watchdog_exception('xmlsitemap', $e);
     throw $e;
     return FALSE;
   }
@@ -177,34 +149,22 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
   $last_url = '';
   $link_count = 0;
 
-  $query = array(
-    'SELECT'   => 'SELECT x.loc, x.lastmod, x.changefreq, x.changecount, x.priority, x.language',
-    'FROM'     => 'FROM {xmlsitemap} x',
-    'WHERE'    => 'WHERE x.access = 1 AND x.status = 1',
-    'ORDER BY' => 'ORDER BY x.language, x.loc',
-  );
-  $args = array();
+  $query = db_select('xmlsitemap', 'x');
+  $query->fields('x', array('loc', 'lastmod', 'changefreq', 'changecount', 'priority', 'language', 'access', 'status'));
+  $query->condition('x.access', 1);
+  $query->condition('x.status', 1);
+  $query->orderBy('x.language', 'DESC');
+  $query->orderBy('x.loc');
+  $query->addTag('xmlsitemap_generate');
+  $query->addMetaData('sitemap', $sitemap);
 
-  // Allow other modules to alter the sitemap query SQL and arguments.
-  static $alter;
-  if (!isset($alter)) {
-    // Skip altering if there are no modules to invoke.
-    xmlsitemap_load_all_includes();
-    $alter = (bool) module_implements('query_xmlsitemap_generate_alter');
-  }
-  if ($alter) {
-    $data = &$query;
-    $data['__drupal_alter_by_ref'] = array(&$args);
-    drupal_alter('query_xmlsitemap_generate', $data, $sitemap);
-  }
-
-  $sql = implode($query, ' ');
   $offset = max($chunk - 1, 0) * xmlsitemap_get_chunk_size();
   $limit = xmlsitemap_get_chunk_size();
-  $query = db_query_range($sql, $args, $offset, $limit);
+  $query->range($offset, $limit);
+  $links = $query->execute();
 
-  while ($link = db_fetch_array($query)) {
-    $link['language'] = $link['language'] ? xmlsitemap_language_load($link['language']) : $url_options['language'];
+  while ($link = $links->fetchAssoc()) {
+    $link['language'] = $link['language'] != LANGUAGE_NONE ? xmlsitemap_language_load($link['language']) : $url_options['language'];
     if ($url_options['alias']) {
       $link['loc'] = xmlsitemap_get_path_alias($link['loc'], $link['language']->language);
     }
@@ -260,8 +220,6 @@ function xmlsitemap_generate_chunk(stdClass $sitemap, XMLSitemapWriter $writer, 
  *   An unserialized data array for an XML sitemap.
  */
 function xmlsitemap_generate_index(stdClass $sitemap) {
-  xmlsitemap_load_all_includes();
-
   try {
     $writer = new XMLSitemapIndexWriter($sitemap);
     $writer->startDocument();
@@ -288,7 +246,7 @@ function xmlsitemap_generate_index(stdClass $sitemap) {
  */
 function xmlsitemap_regenerate_batch(array $smids = array()) {
   if (empty($smids)) {
-    $smids = xmlsitemap_db_fetch_col(db_query("SELECT smid FROM {xmlsitemap_sitemap}"));
+    $smids = db_query("SELECT smid FROM {xmlsitemap_sitemap}")->fetchCol();
   }
 
   //$t = get_t();
@@ -302,7 +260,6 @@ function xmlsitemap_regenerate_batch(array $smids = array()) {
 
   // Set the regenerate flag in case something fails during file generation.
   $batch['operations'][] = array('xmlsitemap_batch_variable_set', array(array('xmlsitemap_regenerate_needed' => TRUE)));
-  $batch['operations'][] = array('xmlsitemap_batch_timer_start', array());
 
   // @todo Get rid of this batch operation.
   $batch['operations'][] = array('_xmlsitemap_regenerate_before', array());
@@ -346,7 +303,7 @@ function xmlsitemap_regenerate_batch_generate($smid, array &$context) {
     // Cleanup the 'extra' empty file.
     $file = xmlsitemap_sitemap_get_file($sitemap, $sitemap->chunks);
     if (file_exists($file) && $sitemap->chunks > 1) {
-      file_delete($file);
+      file_unmanaged_delete($file);
     }
     $sitemap->chunks--;
 
@@ -376,10 +333,7 @@ function xmlsitemap_regenerate_batch_generate_index($smid, array &$context) {
 /**
  * Batch callback; sitemap regeneration finished.
  */
-function xmlsitemap_regenerate_batch_finished($success, $results, $operations) {
-  $results['elapsed'] = round((microtime(TRUE) - $results['start']) * 1000, 2);
-  $elapsed = format_interval($results['elapsed'] / 1000);
-
+function xmlsitemap_regenerate_batch_finished($success, $results, $operations, $elapsed) {
   if ($success && !variable_get('xmlsitemap_regenerate_needed', FALSE)) {
     variable_set('xmlsitemap_generated_last', REQUEST_TIME);
     //drupal_set_message(t('The sitemaps were regenerated.'));
@@ -388,7 +342,7 @@ function xmlsitemap_regenerate_batch_finished($success, $results, $operations) {
       'Finished XML sitemap generation in @elapsed. Memory usage: @memory-peak.',
       array(
         '@elapsed' => $elapsed,
-        '@memory-peak' => format_size(_xmlsitemap_memory_get_peak_usage()),
+        '@memory-peak' => format_size(memory_get_peak_usage(TRUE)),
       ),
       WATCHDOG_NOTICE
     );
@@ -411,7 +365,6 @@ function xmlsitemap_rebuild_batch(array $entities, $save_custom = FALSE) {
 
   // Set the rebuild flag in case something fails during the rebuild.
   $batch['operations'][] = array('xmlsitemap_batch_variable_set', array(array('xmlsitemap_rebuild_needed' => TRUE)));
-  $batch['operations'][] = array('xmlsitemap_batch_timer_start', array());
 
   // Purge any links first.
   $batch['operations'][] = array('xmlsitemap_rebuild_batch_clear', array($entities, (bool) $save_custom));
@@ -433,15 +386,6 @@ function xmlsitemap_rebuild_batch(array $entities, $save_custom = FALSE) {
 }
 
 /**
- * Batch callback; start the timer.
- */
-function xmlsitemap_batch_timer_start(array &$context) {
-  if (!isset($context['results']['start'])) {
-    $context['results']['start'] = microtime(TRUE);
-  }
-}
-
-/**
  * Batch callback; set an array of variables and their values.
  */
 function xmlsitemap_batch_variable_set(array $variables) {
@@ -455,15 +399,17 @@ function xmlsitemap_batch_variable_set(array $variables) {
  */
 function xmlsitemap_rebuild_batch_clear(array $entities, $save_custom, &$context) {
   if (!empty($entities)) {
-    $sql = "DELETE FROM {xmlsitemap} WHERE type IN (" . db_placeholders($entities, 'varchar') . ')';
+    $query = db_delete('xmlsitemap');
+    $query->condition('type', $entities);
 
     // If we want to save the custom data, make sure to exclude any links
     // that are not using default inclusion or priority.
     if ($save_custom) {
-      $sql .= ' AND status_override = 0 AND priority_override = 0';
+      $query->condition('status_override', 0);
+      $query->condition('priority_override', 0);
     }
 
-    db_query($sql, $entities);
+    $query->execute();
   }
 
   $context['message'] = t('Purging links.');
@@ -480,27 +426,18 @@ function xmlsitemap_rebuild_batch_fetch($entity, &$context) {
   }
   $info = $context['sandbox']['info'];
 
-  // Build the generic query.
-  $base_table = db_escape_table($info['base table']);
-  $id_key = db_escape_string($info['entity keys']['id']);
-  $query = $args = $ids = array();
-  $query['SELECT'] = "SELECT $id_key";
-  $query['FROM']   = "FROM {{$base_table}}";
-  $query['WHERE']  = "WHERE $id_key > %d";
-  $args[] = $context['sandbox']['last_id'];
-
-  if (!empty($info['entity keys']['bundle'])) {
-    $bundle_key = db_escape_string($info['entity keys']['bundle']);
-    $bundle_type = _xmlsitemap_get_field_type($info['base table'], $info['entity keys']['bundle']);
-    $bundles = xmlsitemap_get_link_type_enabled_bundles($entity);
-    $query['WHERE'] .= " AND $bundle_key IN (" . db_placeholders($bundles, $bundle_type) . ")";
-    $args = array_merge($args, $bundles);
-  }
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', $entity);
+  $query->entityCondition('entity_id', $context['sandbox']['last_id'], '>');
+  $query->addTag('xmlsitemap_link_bundle_access');
+  $query->addTag('xmlsitemap_rebuild');
+  $query->addMetaData('entity', $entity);
+  $query->addMetaData('entity_info', $info);
 
   if (!isset($context['sandbox']['max'])) {
-    $sql = implode(' ', $query);
-    $sql = str_replace("SELECT $id_key", "SELECT COUNT($id_key)", $sql);
-    $context['sandbox']['max'] = (int) db_result(db_query($sql, $args));
+    $count_query = clone $query;
+    $count_query->count();
+    $context['sandbox']['max'] = $count_query->execute();
     if (!$context['sandbox']['max']) {
       // If there are no items to process, skip everything else.
       return;
@@ -508,13 +445,14 @@ function xmlsitemap_rebuild_batch_fetch($entity, &$context) {
   }
 
   // PostgreSQL cannot have the ORDERED BY in the count query.
-  $query['ORDER BY'] = "ORDER BY $id_key";
+  $query->entityOrderBy('entity_id');
 
   $limit = 20; //variable_get('xmlsitemap_batch_limit', 100)
-  $sql = implode(' ', $query);
-  $query = db_query_range($sql, $args, 0, $limit);
+  $query->range(0, $limit);
 
-  $ids = xmlsitemap_db_fetch_col($query);
+  $result = $query->execute();
+  $ids = array_keys($result[$entity]);
+
   $info['xmlsitemap']['process callback']($ids);
   $context['sandbox']['last_id'] = end($ids);
   $context['sandbox']['progress'] += count($ids);
@@ -531,10 +469,8 @@ function xmlsitemap_rebuild_batch_fetch($entity, &$context) {
 /**
  * Batch callback; sitemap rebuild finished.
  */
-function xmlsitemap_rebuild_batch_finished($success, $results, $operations) {
+function xmlsitemap_rebuild_batch_finished($success, $results, $operations, $elapsed) {
   if ($success && !variable_get('xmlsitemap_rebuild_needed', FALSE)) {
-    // Reset the rebuild flag since it was successful.
-    variable_set('xmlsitemap_rebuild_needed', FALSE);
     drupal_set_message(t('The sitemap links were rebuilt.'));
   }
   else {

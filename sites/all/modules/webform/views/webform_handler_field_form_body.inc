@@ -30,8 +30,8 @@ class webform_handler_field_form_body extends views_handler_field {
 
     if (node_access('view', $node)) {
       // Populate $node->content['webform'] by reference.
-      webform_node_view($node, FALSE, FALSE);
-      $form_body = isset($node->content['webform']['#value']) ? $node->content['webform']['#value'] : NULL;
+      webform_node_view($node, 'full');
+      $form_body = isset($node->content['webform']) ? drupal_render($node->content['webform']) : NULL;
     }
     else {
       return;

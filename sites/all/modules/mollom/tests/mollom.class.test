@@ -22,8 +22,8 @@ class MollomClassUnitTestCase extends DrupalUnitTestCase {
 
   function setUp() {
     parent::setUp();
-    // D6: module_load_include() requires a working database.
-    require_once dirname(__FILE__) . '/../includes/mollom.class.inc';
+    // DrupalUnitTestCase does not autoload classes for whatever reason.
+    module_load_include('inc', 'mollom', 'includes/mollom.class');
   }
 
   /**

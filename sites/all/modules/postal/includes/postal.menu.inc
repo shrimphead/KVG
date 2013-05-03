@@ -1,4 +1,4 @@
-<?php //$Id: postal.menu.inc,v 1.3 2009/08/19 00:19:55 vauxia Exp $
+<?php
 
 /**
  * Implementation of hook_menu().
@@ -22,12 +22,6 @@ function postal_menu_menu() {
       'type' => MENU_CALLBACK,
       'file' => 'postal.admin.inc',
       'file path' => $path,
-    ),
-    'postal/js/ahah' => array(
-      'page callback'    => 'postal_form_ahah',
-      'access arguments' => array('access content'),
-      'file'             => 'postal.form.inc',
-      'file path'        => $path,
     ),
   );
 }

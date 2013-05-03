@@ -1,6 +1,4 @@
-<div class='form form-layout-simple clear-block'>
-  <?php print drupal_render($form) ?>
-  <?php if ($buttons): ?>
-    <div class='buttons'><?php print drupal_render($buttons) ?></div>
-  <?php endif; ?>
+<div class='form form-layout-simple clearfix'>
+  <?php print drupal_render_children($form) ?>
+  <?php if (!empty($actions)) print drupal_render($actions) ?>
 </div>

@@ -6,18 +6,21 @@
  */
 
 /**
- * Implementation of hook_install().
+ * Implement hook_requirements().
  */
-function gmap_taxonomy_install() {
-  drupal_install_schema('gmap_taxonomy');
+function gmap_taxonomy_requirements($phase) {
+  $requirements = array();
+  if (!variable_get('taxonomy_maintain_index_table', TRUE)) {
+    $requirements['gmap_taxonomy_able_to_index'] = array(
+      'title' => t('GMap Taxonomy Markers'),
+      'value' => '',
+      'description' => t('The variable <em>taxonomy_maintain_index_table</em> is set to FALSE. gmap_taxonomy.module will not work properly.'),
+      'severity' => REQUIREMENT_ERROR,
+    );
+  }
+  return $requirements;
 }
 
-/**
- * Implementation of hook_uninstall().
- */
-function gmap_taxonomy_uninstall() {
-  drupal_uninstall_schema('gmap_taxonomy');
-}
 
 /**
  * Implementation of hook_schema().
@@ -34,14 +37,11 @@ function gmap_taxonomy_schema() {
   $schema['gmap_taxonomy_node'] = array(
     'fields' => array(
       'nid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
-      'vid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+//      'vid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
       'tid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
       'marker' => array('type' => 'varchar', 'length' => 32),
     ),
-    'primary key' => array('vid'),
-    'indexes' => array(
-      'nid' => array('nid'),
-    ),
+    'primary key' => array('nid'),
   );
 
   return $schema;
@@ -89,3 +89,41 @@ function gmap_taxonomy_update_6001() {
 
   return $ret;
 }
+
+/**
+ * Use vocabularies machine names instead of vids.
+ */
+function gmap_taxonomy_update_7201() {
+  $enabled_vocabularies = variable_get('gmap_taxonomy_vocabs', array());
+  $vocabularies = taxonomy_vocabulary_load_multiple(array_keys(array_filter($enabled_vocabularies)));
+
+  $result = array();
+  foreach ($vocabularies as $vocabulary) {
+    $result[$vocabulary->machine_name] = TRUE;
+  }
+
+  // Save result
+  variable_set('gmap_taxonomy_vocabs', $result);
+}
+
+/**
+ * Split settings in a variable for each vocabulary.
+ */
+function gmap_taxonomy_update_7202() {
+  $enabled_vocabularies = variable_get('gmap_taxonomy_vocabs', array());
+
+  foreach ($enabled_vocabularies as $machine_name => $enabled) {
+    variable_set('gmap_taxonomy_vocab_' . $machine_name, $enabled);
+  }
+
+  variable_del('gmap_taxonomy_vocabs');
+}
+
+/**
+ * Rebuild {gmap_taxonomy_node} again.
+ */
+/*
+function gmap_taxonomy_update_7000() {
+  // @@@ FIXME -- rebuild the table from scratch again.
+}
+*/

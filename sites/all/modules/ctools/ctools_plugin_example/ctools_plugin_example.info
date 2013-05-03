@@ -5,11 +5,11 @@ dependencies[] = ctools
 dependencies[] = panels
 dependencies[] = page_manager
 dependencies[] = advanced_help
-core = 6.x
+core = 7.x
 
-; Information added by drupal.org packaging script on 2012-11-14
-version = "6.x-1.10"
-core = "6.x"
+; Information added by drupal.org packaging script on 2013-04-03
+version = "7.x-1.3"
+core = "7.x"
 project = "ctools"
-datestamp = "1352927156"
+datestamp = "1365013512"
 

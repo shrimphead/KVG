@@ -1,0 +1,9 @@
+name = KasloGuide
+description = Default module for Kaslo Guide settings.
+core = 7.x
+
+;files[] = token.test
+
+; Always available CSS
+stylesheets[all][] = css/kg_style.css
+

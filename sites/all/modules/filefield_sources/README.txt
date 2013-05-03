@@ -22,9 +22,8 @@ Installation
 2) Enable the module within your Drupal site.
 
 3) Add or configure an existing file or image field. To configure a typical node
-   field, visit Administer -> Content management -> Content types and click
-   "manage fields" on a type you'd like to modify. Add a new file field or edit
-   an existing one.
+   field, visit Admin -> Structure -> Content types and click "manage fields"
+   on a type you'd like to modify. Add a new file field or edit an existing one.
 
    While editing the file or image field, you'll have new options available
    under a "File sources" fieldset. You can enable the desired sources for that

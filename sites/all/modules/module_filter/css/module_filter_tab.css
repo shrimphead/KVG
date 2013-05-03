@@ -13,7 +13,7 @@
   background-color: #F6F6F6;
   border: 1px solid #D6DBDE;
   margin-right: -1px;
-  width: 167px;
+  width: 185px;
 }
 #module-filter-left ul {
   margin: 0px;
@@ -29,7 +29,7 @@
 }
 #module-filter-left ul li.active {
   margin-right: -1px;
-  width: 168px;
+  width: 186px;
   background-color: #FFFFFF;
   position: relative;
 }
@@ -75,17 +75,20 @@
   display: block;
 }
 #module-filter-submit {
+  margin: 0;
+}
+#module-filter-submit .form-actions {
   text-align: center;
 }
-#module-filter-submit input {
-  margin: 2em 0.5em 1em 0;
+#module-filter-submit input.form-submit {
+  margin: 1em 0 0;
 }
 #module-filter-submit.fixed {
   position: fixed;
   background-color: #F6F6F6;
   border: 1px solid #D6DBDE;
   margin-left: -1px;
-  width: 167px;
+  width: 185px;
 }
 #module-filter-submit.fixed-top {
   top: 0;
@@ -97,15 +100,15 @@
   display: block;
 }
 #module-filter-squeeze {
-  margin-left: 168px;
+  margin-left: 186px;
   background-color: #FFFFFF;
   border: 1px solid #D6DBDE;
   height: auto !important;
 }
-#edit-module-filter-name-wrapper {
+.form-item-module-filter-name {
   text-align: center;
 }
-#edit-module-filter-name-wrapper label {
+.form-item-module-filter-name label {
   display: inline;
 }
 #module-filter-show-wrapper .form-checkboxes {
@@ -114,18 +117,20 @@
 #module-filter-show-wrapper .form-item:after {
   display: inline;
 }
-table#projects {
+table.package {
   margin: 1em 0;
+}
+table.package,
+table.package thead,
+table.package tbody,
+table.package tbody tr,
+table.package td:last-child {
   border-right: 0 none;
   border-left: 0 none;
 }
-table#projects tbody tr {
-  border-right: 0 none;
-  border-left: 0 none;
-}
-table#projects tr.enabling {
+table.package tr.enabling {
   background-color: #dfd;
 }
-table#projects tr.disabling {
+table.package tr.disabling {
   background-color: #fcc;
 }

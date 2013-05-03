@@ -1,0 +1,79 @@
+/*  Table of contents */
+/*  A. COLOURS
+/*  B. FUNCTIONS
+
+/*  1. ADMIN
+*/
+
+/*
+A. COLOURS
+_______________________________________________________________________*/
+@dark_wine: #F0F0F0;
+@white: #F1F1F1;
+@gray: #8D8D8D;
+  @gray-light: #EEE;
+/*
+B. FUNCTIONS
+_______________________________________________________________________*/
+
+.border-radius(@default:2px) {
+  -webkit-border-radius: @default;
+  -moz-border-radius: @default;
+  -o-border-radius: @default;
+  border-radius: @default;
+}
+
+
+.box-shadow(@default:1px, @default_colour:@dark_wine) {
+  -moz-box-shadow: @default @default 0px @default_colour;
+  -webkit-box-shadow: @default @default 0px @default_colour;
+  box-shadow: @default @default 0px @default_colour;
+}
+
+.border-radius(@deafult: 10px) {
+  -webkit-border-radius: @deafult;
+  -moz-border-radius: @deafult;
+  -o-border-radius: @deafult;
+  border-radius: @deafult;
+}
+
+
+/*
+1. ADMIN
+_______________________________________________________________________*/
+
+/* Directory */
+body.page-node-add-directory {
+  #directory-node-form {
+    #edit-field-section {
+      margin-bottom: 20px;
+      #edit-field-section-und {
+        .form-item {
+          display: block;
+          float: left;
+          width: 25%;
+        }
+      }
+    }
+    #edit-field-accommodation-type, #edit-field-facilities {
+      margin-top: 15px;
+      padding: 5px;
+      clear: both;
+      height: 90px;
+      .border-radius;
+      background-color: @gray-light;
+        #edit-field-accommodation-type-und .form-item, #edit-field-facilities-und .form-item {
+          display: block;
+          float: left;
+          width: 25%;
+        }
+    }
+    #edit-field-facilities {
+      height: 115px;
+    }
+    #node_directory_form_group_optional {
+      margin-top: 25px;
+      clear: both;
+    }
+  }
+}

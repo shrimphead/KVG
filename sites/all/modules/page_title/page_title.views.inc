@@ -7,19 +7,28 @@
 
 
 /**
- * Implementation of hook_views_data().
+ * Implements hook_views_data().
  *
  * Provides the Page Title as a Views field for Views 2.
  */
 function page_title_views_data() {
   $data = array();
+
   // Define the table.
   $data['page_title']['table']['group'] = t('Page Title');
+
   // Join the node table.
-  $data['page_title']['table']['join']['node'] = array(
-    'left_field' => 'nid',
-    'field' => 'id',
+  $data['page_title']['table']['join'] = array(
+    'node' => array(
+      'table' => 'page_title',
+      'left_field' => 'nid',
+      'field' => 'id',
+      'extra' => array(
+        array('field' => 'type', 'value' => 'node', 'operator' => '='),
+      ),
+    ),
   );
+
   // Define the field.
   $data['page_title']['page_title'] = array(
     'title' => t('Title'),
@@ -46,7 +55,7 @@ function page_title_views_data() {
 
 
 /**
- * Implementation of hook_views_handlers().
+ * Implements hook_views_handlers().
  */
 function page_title_views_handlers() {
   return array(

@@ -24,7 +24,10 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
    */
   function destinations() {
     $out  = array();
-    $out['files'] = backup_migrate_create_destination('filesource', array('destination_id' => 'files', 'location' => file_directory_path(), 'name' => t('Files Directory')));
+    $out['files'] = backup_migrate_create_destination('filesource', array('destination_id' => 'files', 'location' => 'public://', 'name' => t('Public Files Directory')));
+    if (variable_get('file_private_path', FALSE)) {
+      $out['files_private'] = backup_migrate_create_destination('filesource', array('destination_id' => 'files_private', 'location' => 'private://', 'name' => t('Private Files Directory')));
+    }
     return $out;
   }
 
@@ -66,8 +69,8 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
    *  important to back up or migrate during development (such ass access log and watchdog)
    */
   function backup_settings_default() {
-     return array(
-      'exclude_filepaths' => "backup_migrate\nimagecache\ncss",
+    return array(
+      'exclude_filepaths' => "backup_migrate\nstyles\ncss\njs\nctools",
     );
   }
 
@@ -91,7 +94,7 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
   function backup_to_file($file, $settings) {
     if ($this->check_libs()) {
       $excluded_paths = empty($settings->filters['exclude_filepaths']) ? '' : $settings->filters['exclude_filepaths'];
-      $files = $this->get_files_to_backup($this->get_location(), $settings, $this->get_excluded_paths($excluded_paths), realpath('.') . '/');
+      $files = $this->get_files_to_backup($this->get_location(), $settings, $this->get_excluded_paths($excluded_paths));
       if ($files) {
         $file->push_type('tar');
         $gz = new Archive_Tar($file->filepath(), false);
@@ -139,7 +142,7 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
             }
             // If the directory is empty, add an empty directory.
             if (count($subdir) == 0) {
-              $out[] = str_replace($base_dir, '', $file);
+              $out[] = $file;
             }
             $out = array_merge($out, $subdir);
           }
@@ -196,7 +199,7 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
     if ($result) {
       // Try to get version in this module's includes directory first, but prevent warning texts being output.
       if (file_exists($includes_directory . '/Tar.php')) {
-        include_once $includes_directory . '/Tar.php';
+        include_once DRUPAL_ROOT . '/' . $includes_directory . '/Tar.php';
       }
       if (!class_exists('Archive_Tar')) {
         // Try to get via PEAR directory structure.
@@ -211,6 +214,14 @@ class backup_migrate_files_destination_filesource extends backup_migrate_destina
     // Restore include path.
     set_include_path($include_path_old);
     return $result;
+  }
+
+  /**
+   * Get the location as a file path.
+   */
+  function get_location() {
+    $out = parent::get_location();
+    return drupal_realpath($out);
   }
 }
 

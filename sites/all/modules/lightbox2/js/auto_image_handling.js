@@ -1,8 +1,8 @@
-/* $Id: auto_image_handling.js,v 1.1.4.33 2010/09/22 21:07:57 snpower Exp $ */
-
 // Image Node Auto-Format with Auto Image Grouping.
 // Original version by Steve McKenzie.
 // Altered by Stella Power for jQuery version.
+
+(function ($) {
 
 function parse_url(url, param) {
   param = param.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
@@ -31,14 +31,10 @@ function lightbox2_init_triggers(classes, rel_type, custom_class) {
   }
 
   $("a:has("+classes+")").each(function(i) {
-
     if ((!settings.disable_for_gallery_lists && !settings.disable_for_acidfree_gallery_lists) || (!$(this).parents("td.giAlbumCell").attr("class") && !$(this).parents(".galleries").length && !$(this).parents(".acidfree-folder").length && !$(this).parents(".acidfree-list").length) || ($(this).parents(".galleries").length && !settings.disable_for_gallery_lists) || (($(this).parents(".acidfree-folder").length || $(this).parents(".acidfree-list").length) && !settings.disable_for_acidfree_gallery_lists)) {
-
       var child = $(this).find(classes);
-
       // Ensure the child has a class attribute we can work with.
-      if ($(child).attr("class") && !$(this).parents("div.acidfree-video").length) {
-
+      if ($(child).attr("class")) {
         // Set the alt text.
         var alt = $(child).attr("alt");
         if (!alt) {
@@ -79,7 +75,6 @@ function lightbox2_init_triggers(classes, rel_type, custom_class) {
           orig_href = orig_href.replace(lang_pattern, Drupal.settings.basePath);
         }
         var frame_href = orig_href;
-
         // Handle flickr images.
         if ($(child).attr("class").match("flickr-photo-img") ||
           $(child).attr("class").match("flickr-photoset-img")) {
@@ -156,7 +151,6 @@ function lightbox2_init_triggers(classes, rel_type, custom_class) {
             rewrite = 0;
           }
         }
-
         // Modify the image url.
         var img_title = $(child).attr("title");
         if (!img_title) {
@@ -205,39 +199,7 @@ function lightbox2_init_triggers(classes, rel_type, custom_class) {
   });
 }
 
-function lightbox2_init_acidfree_video() {
-  var settings = Drupal.settings.lightbox2;
-
-  var link_target  = "";
-  if (settings.node_link_target !== 0) {
-    link_target = 'target="'+ settings.node_link_target +'"';
-  }
-
-  var link_text = settings.node_link_text;
-  var rel = "lightframe";
-
-  $("div.acidfree-video a").each(function(i) {
-
-    if (!settings.disable_for_acidfree_gallery_lists || (!$(this).parents(".acidfree-folder").length && !$(this).parents(".acidfree-list").length) || (($(this).parents(".acidfree-folder").length || $(this).parents(".acidfree-list").length) && !settings.disable_for_acidfree_gallery_lists)) {
-      var orig_href = $(this).attr("href");
-      var href = orig_href + "/lightframevideo";
-      var title = $(this).attr("title");
-      var title_link = "";
-      if (link_text.length) {
-        title_link = "<br /><a href=\"" + orig_href + "\" id=\"lightbox2-node-link-text\" "+ link_target +" >"+ link_text + "</a>";
-      }
-
-      $(this).attr({
-        rel: rel,
-        title: title + title_link,
-        href: href
-      });
-    }
-  });
-}
-
 function lightbox2_image_nodes() {
-
   var settings = Drupal.settings.lightbox2;
 
   // Don't do it on the image assist popup selection screen.
@@ -251,15 +213,14 @@ function lightbox2_image_nodes() {
     lightbox2_init_triggers(settings.trigger_slideshow_classes, "lightshow");
     lightbox2_init_triggers(settings.trigger_lightframe_classes, "lightframe_ungrouped");
     lightbox2_init_triggers(settings.trigger_lightframe_group_classes, "lightframe");
-    if (settings.enable_acidfree_videos) {
-      lightbox2_init_acidfree_video();
-    }
-
   }
 }
 
-
-Drupal.behaviors.initAutoLightbox = function (context) {
-  lightbox2_image_nodes();
+Drupal.behaviors.initAutoLightbox = {
+  attach: function(context, settings) {
+    lightbox2_image_nodes();
+  }
 };
 
+//End jQuery block
+}(jQuery));

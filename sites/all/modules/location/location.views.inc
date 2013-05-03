@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Views 2 support for Location.
+ * Views 3 support for Location.
  */
 
 /*
@@ -59,6 +59,9 @@ function location_views_handlers() {
       'location_handler_field_location_street' => array(
         'parent' => 'views_handler_field',
       ),
+      'location_handler_field_location_additional' => array(
+        'parent' => 'views_handler_field',
+      ),
       'location_views_handler_filter_proximity' => array(
         'parent' => 'views_handler_filter',
       ),
@@ -107,8 +110,8 @@ function location_views_data() {
       'left_field' => 'lid',
       'field' => 'lid',
     ),
-    // Location links to node_revisions through location_instance via lid.
-    'node_revisions' => array(
+    // Location links to node_revision through location_instance via lid.
+    'node_revision' => array(
       'left_table' => 'location_instance',
       'left_field' => 'lid',
       'field' => 'lid',
@@ -174,6 +177,24 @@ function location_views_data() {
     'field' => array(
       'handler' => 'location_handler_field_location_street',
       'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_string',
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+  );
+
+  $data['location']['additional'] = array(
+    'title' => t('Additional'),
+    'help' => t('Additional street address of the selected location.'),
+    'field' => array(
+      'click sortable' => TRUE,
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_string',
+      // 'empty field name' => t('Unknown'),
     ),
     'filter' => array(
       'handler' => 'views_handler_filter_string',
@@ -265,7 +286,7 @@ function location_views_data() {
       'click sortable' => TRUE,
     ),
     'filter' => array(
-      'handler' => 'views_handler_filter_float',
+      'handler' => 'views_handler_filter_numeric',
     ),
     'sort' => array(
       'handler' => 'views_handler_sort',
@@ -279,7 +300,7 @@ function location_views_data() {
       'click sortable' => TRUE,
     ),
     'filter' => array(
-      'handler' => 'views_handler_filter_float',
+      'handler' => 'views_handler_filter_numeric',
     ),
     'sort' => array(
       'handler' => 'views_handler_sort',
@@ -363,7 +384,7 @@ function location_views_data() {
       'left_field' => 'vid',
       'field' => 'vid',
     ),
-    'node_revisions' => array(
+    'node_revision' => array(
       'left_field' => 'vid',
       'field' => 'vid',
     ),
@@ -376,7 +397,7 @@ function location_views_data() {
     'left_field' => 'vid',
     'field' => 'vid',
   );
-  $data['node_revisions']['table']['join']['location'] = array(
+  $data['node_revision']['table']['join']['location'] = array(
     'left_table' => 'location_instance',
     'left_field' => 'vid',
     'field' => 'vid',
@@ -401,10 +422,10 @@ function location_views_proximity_get_location_field_options() {
   // Get the CCK location field options.
   $field_options = array('node' => t('Node location'));
   if (module_exists('location_cck')) {
-    $fields = content_fields();
+    $fields = field_info_fields();
     foreach ($fields as $field) {
       if ($field['module'] == 'location_cck') {
-        $field_options[$field['field_name']] = t('CCK Location: @label (@name)', array('@label' => $field['widget']['label'], '@name' => $field['field_name']));
+        $field_options[$field['field_name']] = t('CCK Location: @name', array('@name' => $field['field_name']));
       }
     }
   }
@@ -525,7 +546,11 @@ function location_views_proximity_get_reference_location($view, $options) {
           else {
             if (isset($tempnode->$field_name)) {
               $cck_location = $tempnode->$field_name;
-              if (isset($cck_location[0]['longitude']) && isset($cck_location[0]['latitude'])) {
+              if (isset($cck_location[LANGUAGE_NONE][0]['longitude']) && isset($cck_location[LANGUAGE_NONE][0]['latitude'])) {
+                $coordinates['latitude'] = (float) $cck_location[LANGUAGE_NONE][0]['latitude'];
+                $coordinates['longitude'] = (float) $cck_location[LANGUAGE_NONE][0]['longitude'];
+              }
+              else if (isset($cck_location[0]['longitude']) && isset($cck_location[0]['latitude'])) {
                 $coordinates['latitude'] = (float) $cck_location[0]['latitude'];
                 $coordinates['longitude'] = (float) $cck_location[0]['longitude'];
               }
@@ -553,6 +578,18 @@ function location_views_proximity_get_reference_location($view, $options) {
       }
       $coordinates['latitude'] = (float) $lat;
       $coordinates['longitude'] = (float) $lon;
+      break;
+    case 'geoip':
+      if (module_exists('geoip')) {
+        if ($geoip_location = geoip_city()) { // intentional assignment of $geoip
+          $coordinates['latitude'] = $geoip_location->latitude;
+          $coordinates['longitude'] = $geoip_location->longitude;
+        }
+      }
+      else if ($options['latitude'] && $options['longitude']) {
+        $coordinates['latitude'] = (float) $options['latitude'];
+        $coordinates['longitude'] = (float) $options['longitude'];
+      }
       break;
 
   }

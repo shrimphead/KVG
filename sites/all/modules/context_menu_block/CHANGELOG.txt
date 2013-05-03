@@ -1,0 +1,10 @@
+$Id: CHANGELOG.txt,v 1.6.2.3 2011/02/20 19:16:00 itafroma Exp $
+Context: Menu Block Module 7.x
+
+Context: Menu Block 7.x-3.1-beta2
+-------------------------------
+#1065802 by silloyd, Mark Trapp: Drupal install fails if Context: Menu Block is present
+
+Context: Menu Block 7.x-3.1-beta1
+---------------------------------
+Initial release of the port to Drupal 7.

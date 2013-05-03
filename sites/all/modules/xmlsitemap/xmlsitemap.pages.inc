@@ -36,7 +36,7 @@ function xmlsitemap_get_current_chunk(stdClass $sitemap) {
 function xmlsitemap_output_chunk() {
   $sitemap = xmlsitemap_sitemap_load_by_context();
   if (!$sitemap) {
-    return drupal_not_found();
+    return MENU_NOT_FOUND;
   }
 
   $chunk = xmlsitemap_get_current_chunk($sitemap);
@@ -62,7 +62,7 @@ function xmlsitemap_output_chunk() {
  */
 function xmlsitemap_output_file($file, array $headers = array()) {
   if (!file_exists($file) || !is_readable($file)) {
-    return drupal_not_found();
+    return MENU_NOT_FOUND;
   }
 
   $mtime = filemtime($file);
@@ -80,13 +80,13 @@ function xmlsitemap_output_file($file, array $headers = array()) {
   }
 
   $headers += array(
-    'Content-type: text/xml; charset=utf-8',
-    //'Content-length: ' . filesize($file),
-    'Last-modified: ' . $last_modified,
-    'Etag: ' . $etag,
-    'Expires: ' . gmdate(DATE_RFC1123, $mtime + variable_get('xmlsitemap_minimum_lifetime', 0)),
-    'Cache-Control: must-revalidate',
-    'X-Robots-Tag: noindex, follow',
+    'Content-type' => 'text/xml; charset=utf-8',
+    //'Content-length' => filesize($file),
+    'Last-modified' => $last_modified,
+    'Etag' => $etag,
+    'Expires' => gmdate(DATE_RFC1123, $mtime + variable_get('xmlsitemap_minimum_lifetime', 0)),
+    'Cache-Control' => 'must-revalidate',
+    'X-Robots-Tag' => 'noindex, follow',
   );
 
   // Transfer the file as output.
@@ -98,31 +98,31 @@ function xmlsitemap_output_file($file, array $headers = array()) {
  *
  * @see file_transfer()
  */
-function xmlsitemap_file_transfer($source, $headers) {
+function xmlsitemap_file_transfer($uri, $headers) {
   if (ob_get_level()) {
     ob_end_clean();
   }
 
-  foreach ($headers as $header) {
-    drupal_set_header($header);
+  foreach ($headers as $name => $value) {
+    drupal_add_http_header($name, $value);
   }
+  drupal_send_headers();
 
   // Attempt to increase time to transfer file.
-  xmlsitemap_set_time_limit(240);
+  drupal_set_time_limit(240);
 
+  $scheme = variable_get('file_default_scheme', 'public');
   // Transfer file in 16 KB chunks to save memory usage.
-  if ($handle = fopen($source, 'rb')) {
-    while (!feof($handle)) {
-      print fread($handle, 1024*16);
+  if ($scheme && file_stream_wrapper_valid_scheme($scheme) && $fd = fopen($uri, 'rb')) {
+    while (!feof($fd)) {
+      print fread($fd, 1024*16);
     }
-    fclose($handle);
+    fclose($fd);
   }
   else {
     drupal_not_found();
   }
-
-  module_invoke_all('exit');
-  exit();
+  drupal_exit();
 }
 
 /**
@@ -153,7 +153,7 @@ function xmlsitemap_output_xsl() {
   $xsl_content = strtr($xsl_content, $replacements);
 
   // Output the XSL content.
-  drupal_set_header('Content-type: application/xml; charset=utf-8');
-  drupal_set_header('X-Robots-Tag: noindex, follow');
+  drupal_add_http_header('Content-type', 'application/xml; charset=utf-8');
+  drupal_add_http_header('X-Robots-Tag', 'noindex, follow');
   print $xsl_content;
 }

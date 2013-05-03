@@ -40,7 +40,7 @@
   position: absolute;
   top: 40%;
   left: 45%;
-  *left: 0%;
+  /* left: 0%; */
 }
 
 #hoverNav {

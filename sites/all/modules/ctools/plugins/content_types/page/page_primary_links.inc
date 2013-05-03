@@ -26,7 +26,15 @@ $plugin = array(
  */
 function ctools_page_primary_links_content_type_render($subtype, $conf, $panel_args) {
   $block = new stdClass();
-  $block->content = theme('links', menu_primary_links(), array('class' => 'links primary-links'));
+  $block->content = theme('links', array('links' => menu_main_menu(), 'attributes' => array('class' => 'links primary-links')));
 
   return $block;
+}
+
+/**
+ * Returns an edit form for custom type settings.
+ */
+function ctools_page_primary_links_content_type_edit_form($form, &$form_state) {
+  // Empty so that we can have title override.
+  return $form;
 }

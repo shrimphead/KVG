@@ -1,3 +1,23 @@
+Current state of Tao for Drupal 7
+---------------------------------
+Many of the concepts in Tao for Drupal 6.x have been addressed by the theme
+layer of Drupal 7 in one way or another. As a result, various parts of Tao have
+been refactored and other parts are up in the air conceptually.
+
+### Key changes
+
+- $vars['attr'] is deprecated in templating and preprocessors. Use the D7 core
+  handling through $attributes_array and $classes_array instead.
+- Custom js for fieldset collapsibility is deprecated. Tao now uses the default
+  D7 js for fieldset collapsing.
+- theme_form_element() in D7 properly marks form elements with their types.
+
+### @TODO / still concepting
+
+- Future of tao-based print-friendly stack.
+- Fully update README once all major changes are stabilized.
+
+
 Tao
 ---
 Tao is a base theme for Drupal that is all about going with the flow. It is not
@@ -136,13 +156,6 @@ template. For example, for a node, the following elements are provided:
 `.node-title`, `.node-content`, `.node-links` etc. For comments, the
 corresponding classes would be `.comment-title`, `.comment-content`,
 `.comment-links` and so on.
-
-
-Issue tracking
---------------
-The code for Tao is hosted on GitHub. Please report issues and submit
-patches/fork requests at http://github.com/developmentseed/tao. You can download
-packages of the latest release of Tao at http://code.developmentseed.org/tao.
 
 
 Maintainer

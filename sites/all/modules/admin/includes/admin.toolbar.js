@@ -1,6 +1,8 @@
-// $Id: admin.toolbar.js,v 1.1.2.9 2010/07/31 21:22:44 yhahn Exp $
+// $Id: admin.toolbar.js,v 1.1.2.9.2.4 2010/12/16 22:47:18 yhahn Exp $
+(function($) {
 
-Drupal.behaviors.adminToolbar = function(context) {
+Drupal.behaviors.adminToolbar = {};
+Drupal.behaviors.adminToolbar.attach = function(context) {
   $('#admin-toolbar:not(.processed)').each(function() {
     var toolbar = $(this);
     toolbar.addClass('processed');
@@ -13,6 +15,24 @@ Drupal.behaviors.adminToolbar = function(context) {
 
     // Admin tabs.
     $('div.admin-tab', this).click(function() { Drupal.adminToolbar.tab(toolbar, $(this), true); });
+
+    $(document).bind('drupalOverlayLoad', {adminToolbar: Drupal.adminToolbar, toolbar: toolbar}, function(event) {
+      var body = $(document.body);
+      var adminToolbar = event.data.adminToolbar;
+      var expand = parseInt(adminToolbar.getState('expanded'));
+      if (!expand) {
+        $('iframe.overlay-active').contents().find('body').css({marginLeft:0, marginTop: 0});
+        return;
+      }
+      var toolbar = event.data.toolbar;
+      var size = adminToolbar.SIZE + 'px';
+      if(toolbar.attr('class').split(' ')[1] === 'vertical') {
+        $('iframe.overlay-element').contents().find('body').css('marginLeft', size);
+      }
+      else {
+        $('iframe.overlay-element').contents().find('body').css('marginTop', size);
+      }
+    });
   });
   $('div.admin-panes:not(.processed)').each(function() {
     var panes = $(this);
@@ -35,12 +55,17 @@ Drupal.behaviors.adminToolbar = function(context) {
 Drupal.adminToolbar = {};
 
 /**
+ * The width or height of the toolbar, depending on orientation.
+ */
+Drupal.adminToolbar.SIZE = 260;
+
+/**
  * Set the initial state of the toolbar.
  */
 Drupal.adminToolbar.init = function (toolbar) {
   // Set expanded state.
+  var expanded = this.getState('expanded');
   if (!$(document.body).hasClass('admin-ah')) {
-    var expanded = this.getState('expanded');
     if (expanded == 1) {
       $(document.body).addClass('admin-expanded');
     }
@@ -101,48 +126,75 @@ Drupal.adminToolbar.tab = function(toolbar, tab, animate) {
 };
 
 /**
+ * Set the width/height of the of the overlay body based on the state admin toolbar.
+ *
+ * @param vertical
+ *   A boolean indicating if the toolbar is vertical.
+ * @param expanded
+ *   A boolean indicating if the toolbar is expanded.
+ */
+Drupal.adminToolbar.setOverlayState = function(vertical, expanded) {
+  var width = this.SIZE;
+  if (!expanded) {
+    width = 0;
+  }
+  if (vertical) {
+    $('iframe.overlay-element').contents().find('body').animate({marginLeft: width+'px'}, 'fast');
+  }
+  else {
+    $('iframe.overlay-element').contents().find('body').animate({marginTop: width+'px'}, 'fast');
+  }
+};
+
+/**
  * Toggle the toolbar open or closed.
  */
 Drupal.adminToolbar.toggle = function (toolbar) {
+  var size = '0px';
   if ($(document.body).is('.admin-expanded')) {
     if ($(toolbar).is('.vertical')) {
-      $('div.admin-blocks', toolbar).animate({width:'0px'}, 'fast', function() { $(this).css('display', 'none'); });
+      $('div.admin-blocks', toolbar).animate({width:size}, 'fast');
       if ($(toolbar).is('.nw') || $(toolbar).is('sw')) {
-        $(document.body).animate({marginLeft:'0px'}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
+        $(document.body).animate({marginLeft:size}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
       }
       else {
-        $(document.body).animate({marginRight:'0px'}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
+        $(document.body).animate({marginRight:size}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
       }
+      this.setOverlayState(true, false);
     }
     else {
-      $('div.admin-blocks', toolbar).animate({height:'0px'}, 'fast');
+      $('div.admin-blocks', toolbar).animate({height:size}, 'fast');
       if ($(toolbar).is('.nw') || $(toolbar).is('ne')) {
-        $(document.body).animate({marginTop:'0px'}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
+        $(document.body).animate({marginTop:size}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
       }
       else {
-        $(document.body).animate({marginBottom:'0px'}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
+        $(document.body).animate({marginBottom:size}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
       }
     }
+    this.setOverlayState(false, false);
     this.setState('expanded', 0);
   }
   else {
+    size = this.SIZE + 'px';
     if ($(toolbar).is('.vertical')) {
-      $('div.admin-blocks', toolbar).animate({width:'260px'}, 'fast');
+      $('div.admin-blocks', toolbar).animate({width:size}, 'fast');
       if ($(toolbar).is('.nw') || $(toolbar).is('sw')) {
-        $(document.body).animate({marginLeft:'260px'}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
+        $(document.body).animate({marginLeft:size}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
       }
       else {
-        $(document.body).animate({marginRight:'260px'}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
+        $(document.body).animate({marginRight:size}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
       }
+      this.setOverlayState(true, true);
     }
     else {
-      $('div.admin-blocks', toolbar).animate({height:'260px'}, 'fast');
+      $('div.admin-blocks', toolbar).animate({height:size}, 'fast');
       if ($(toolbar).is('.nw') || $(toolbar).is('ne')) {
-        $(document.body).animate({marginTop:'260px'}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
+        $(document.body).animate({marginTop:size}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
       }
       else {
-        $(document.body).animate({marginBottom:'260px'}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
+        $(document.body).animate({marginBottom:size}, 'fast', function() { $(this).toggleClass('admin-expanded'); });
       }
+      this.setOverlayState(false, true);
     }
     if ($(document.body).hasClass('admin-ah')) {
       this.setState('expanded', 0);
@@ -192,3 +244,5 @@ Drupal.adminToolbar.setState = function(key, value) {
     $.cookie('DrupalAdminToolbar', query.join('&'), {expires: 7, path: '/'});
   }
 };
+
+})(jQuery);

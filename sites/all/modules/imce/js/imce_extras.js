@@ -226,7 +226,7 @@ imce.thumbRow = function (row) {
   if (!w) return;
   var h = row.cells[3].innerHTML * 1;
   if (imce.vars.tMaxW < w || imce.vars.tMaxH < h) {
-    if (!imce.vars.prvstyle || imce.conf.dir.indexOf('imagecache') == 0) return;
+    if (!imce.vars.prvstyle || imce.conf.dir.indexOf('styles') == 0) return;
     var img = new Image();
     img.src = imce.imagestyleURL(imce.getURL(row.id), imce.vars.prvstyle);
     img.className = 'imagestyle-' + imce.vars.prvstyle;
@@ -253,7 +253,7 @@ imce.thumbRow = function (row) {
 //convert a file URL returned by imce.getURL() to an image style(imagecache preset) URL
 imce.imagestyleURL = function (url, stylename) {
   var len = imce.conf.furl.length - 1;
-  return url.substr(0, len) + '/imagecache/' + stylename + url.substr(len);
+  return url.substr(0, len) + '/styles/' + stylename + '/' + imce.conf.scheme + url.substr(len);
 };
 
 // replace table view with box view for file list

@@ -1,6 +1,6 @@
 
 -------------------------------------------------------------------------------
-Backup and Migrate Files for Drupal 6.x
+Backup and Migrate Files for Drupal 7.x
   by Ronan Dowling, Gorton Studios - ronan (at) gortonstudios (dot) com
 -------------------------------------------------------------------------------
 

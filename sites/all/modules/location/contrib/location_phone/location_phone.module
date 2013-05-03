@@ -6,7 +6,7 @@
  */
 
 /**
- * Implementation of hook_locationapi().
+ * Implements hook_locationapi().
  */
 function location_phone_locationapi(&$location, $op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {
@@ -26,43 +26,51 @@ function location_phone_locationapi(&$location, $op, $a3 = NULL, $a4 = NULL) {
           '#size' => 31,
           '#maxlength' => 31,
           '#description' => NULL,
-          '#required' => ($a4 == 2),
+          '#required' => ($a4['collect'] == 2),
           '#default_value' => $location,
         );
       }
       break;
 
     case 'save':
-      db_query('DELETE FROM {location_phone} WHERE lid = %d', $location['lid']);
+      db_delete('location_phone')
+        ->condition('lid', $location['lid'])
+        ->execute();
       if (!empty($location['phone'])) {
-        db_query("INSERT INTO {location_phone} (lid, phone) VALUES (%d, '%s')", $location['lid'], $location['phone']);
+        db_insert('location_phone')
+          ->fields(array(
+            'lid' => $location['lid'],
+            'phone' => $location['phone'],
+          ))
+          ->execute();
       }
       break;
 
     case 'load':
-      $fields = array('phone' => '');
-      if ($row = db_fetch_object(db_query('SELECT phone FROM {location_phone} WHERE lid = %d', $location['lid']))) {
-        $fields['phone'] = $row->phone;
-      }
+      $fields = array();
+      $phone = db_query('SELECT phone FROM {location_phone} WHERE lid = :lid', array(':lid' => $location['lid']))->fetchField();
+      $fields['phone'] = $phone ? $phone : '';
       return $fields;
 
     case 'delete':
-      db_query('DELETE FROM {location_phone} WHERE lid = %d', $location['lid']);
+      db_delete('location_phone')
+        ->condition('lid', $location['lid'])
+        ->execute();
       break;
   }
 }
 
 /**
- * Implementation of hook_views_api().
+ * Implements hook_views_api().
  */
 function location_phone_views_api() {
   return array(
-    'api' => 2,
+    'api' => 3,
   );
 }
 
 /**
- * Implementation of hook_token_list().
+ * Implements hook_token_list().
  */
 function location_phone_token_list($type = 'all') {
   if ($type == 'node' || $type == 'user' || $type == 'all') {

@@ -7,8 +7,7 @@ class location_handler_filter_location_country extends views_handler_filter_in_o
 
   function option_definition() {
     $options = parent::option_definition();
-    $options['operator'] = array('default' => 'IS');
-
+    $options['operator'] = array('default' => 'in');
     return $options;
   }
 
@@ -20,10 +19,6 @@ class location_handler_filter_location_country extends views_handler_filter_in_o
   }
 
   function get_value_options() {
-    if (isset($this->value_options)) {
-      return;
-    }
-
     $this->value_options = location_get_iso3166_list();
   }
 
@@ -43,7 +38,7 @@ class location_handler_filter_location_country extends views_handler_filter_in_o
         $which = in_array($this->operator, $this->operator_values(1)) ? 'value' : 'none';
       }
       else {
-        $source = 'edit-' . form_clean_id($this->options['expose']['operator']);
+        $source = 'edit-' . drupal_clean_css_identifier($this->options['expose']['operator']);
       }
 
       if (!empty($this->options['expose']['reduce'])) {
@@ -75,25 +70,81 @@ class location_handler_filter_location_country extends views_handler_filter_in_o
       '#default_value' => $default_value,
       '#options' => $options,
       // Used by province autocompletion js.
-      '#attributes' => array('class' => 'location_auto_country'),
+      '#attributes' => array('class' => array('location_auto_country')),
       '#multiple' => TRUE, // views will change this as necessary when exposed.
     );
 
     // Let location_autocomplete.js find the correct fields to attach.
-    $form['value']['#attributes']['class'] .= ' location_auto_join_'. $this->options['expose']['identifier'];
+    $form['value']['#attributes']['class'][] = 'location_auto_join_' . $this->options['expose']['identifier'];
   }
 
-  function operator_options() {
-    if ($this->options['multiple']) {
+  function reduce_value_options($input = NULL) {
+    if (empty($this->options)) {
+      $this->get_value_options();
+    }
+    if (!empty($this->options['expose']['reduce']) && !empty($this->options['value'])) {
+      $reduced_options = array();
+      foreach ($this->options['value'] as $value) {
+        $reduced_options[$value] = $this->value_options[$value];
+      }
+      return $reduced_options;
+    }
+    return $this->get_value_options();
+  }
+
+  function accept_exposed_input($input) {
+    if (empty($this->options['exposed'])) {
+      return TRUE;
+    }
+
+
+    if (!empty($this->options['expose']['use_operator']) && !empty($this->options['expose']['operator_id']) && isset($input[$this->options['expose']['operator_id']])) {
+      $this->operator = $input[$this->options['expose']['operator_id']];
+    }
+
+    if (!empty($this->options['expose']['identifier'])) {
+      $value = $input[$this->options['expose']['identifier']];
+
+      if (empty($this->options['expose']['required'])) {
+        if ($value == 'All' || $value === array()) {
+          if (empty($this->options['value']) || (!empty($this->options['value']) && empty($this->options['expose']['reduce']))) {
+            return FALSE;
+          }
+          else {
+            $value = $this->options['value'];
+          }
+        }
+
+        if (!empty($this->always_multiple) && $value === '') {
+          return FALSE;
+        }
+      }
+
+      if (isset($value)) {
+        $this->value = $value;
+        if (empty($this->always_multiple) && empty($this->options['expose']['multiple'])) {
+          $this->value = array($value);
+        }
+      }
+      else {
+        return FALSE;
+      }
+    }
+
+    return TRUE;
+  }
+
+  function operator_options($which = 'title') {
+    if (empty($this->options['expose']['multiple'])) {
       return array(
-        'is' => t('Is one of'),
-        'is not' => t('Is not one of'),
+        'in' => t('Is'),
+        'not in' => t('Is not'),
       );
     }
     else {
       return array(
-        'is' => t('Is'),
-        'is not' => t('Is not'),
+        'in' => t('Is one of'),
+        'not in' => t('Is not one of'),
       );
     }
   }
@@ -109,7 +160,6 @@ class location_handler_filter_location_country extends views_handler_filter_in_o
     // Normalize values.
     $value = $this->value;
     if (is_array($value)) {
-      $value = array_keys($value);
       if (count($value) == 1) {
         // If multiple is allowed but only one was chosen, use a string instead.
         $value = reset($value);
@@ -118,14 +168,13 @@ class location_handler_filter_location_country extends views_handler_filter_in_o
 
     if (is_array($value)) {
       // Multiple values
-      $placeholders = db_placeholders($value, 'varchar');
-      $operator = ($this->operator == 'is') ? 'IN' : 'NOT IN';
-      $this->query->add_where($this->options['group'], "$field $operator($placeholders)", $value);
+      $operator = ($this->operator == 'in') ? 'IN' : 'NOT IN';
+      $this->query->add_where($this->options['group'], $field, $value, $operator);
     }
     else {
       // Single value
-      $operator = ($this->operator == 'is') ? '=' : '!=';
-      $this->query->add_where($this->options['group'], "$field $operator '%s'", $this->value);
+      $operator = ($this->operator == 'in') ? '=' : '!=';
+      $this->query->add_where($this->options['group'], $field, $value, $operator);
     }
   }
 }

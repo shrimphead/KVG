@@ -4,3 +4,10 @@ sites/default/files/imagecache/*
 sites/default/files/imagefield_thumbs/*
 sites/default/files/css/*
 sites/default/files/js/*
+
+# Ignore configuration files that may contain sensitive information.
+sites/*/settings*.php
+
+# Ignore paths that contain user-generated content.
+sites/*/files
+sites/*/private

@@ -35,13 +35,13 @@ class XMLSitemapMenuFunctionalTest extends XMLSitemapTestHelper {
       'xmlsitemap[status]' => '1',
       'xmlsitemap[priority]' => '1.0',
     );
-    $this->drupalPost('admin/build/menu/add', $edit, 'Save');
+    $this->drupalPost('admin/structure/menu/add', $edit, 'Save');
     $menu = menu_load($edit['menu_name']);
 
-    $this->clickLink('Add item');
+    $this->clickLink('Add link');
     $edit = array(
-      'menu[link_title]' => $this->randomName(),
-      'menu[link_path]' => 'node',
+      'link_title' => $this->randomName(),
+      'link_path' => 'node',
       'xmlsitemap[status]' => 'default',
       'xmlsitemap[priority]' => 'default',
     );

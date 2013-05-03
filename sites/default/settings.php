@@ -226,4 +226,20 @@ ini_set('url_rewriter.tags',        '');
 #   'forum'      => 'Discussion board',
 #   '@count min' => '@count minutes',
 # );
-$conf['maintenance_theme'] = 'kvg';
+// $conf['maintenance_theme'] = 'kvg';
+$databases = array (
+  'default' => 
+  array (
+    'default' => 
+    array (
+      'driver' => 'mysql',
+      'database' => 'kvg',
+      'username' => 'root',
+      'password' => 'root',
+      'host' => 'localhost',
+      'port' => '',
+      'prefix' => '',
+    ),
+  ),
+);
+$drupal_hash_salt = 'eXrcM1IUgvD1JYzS-piLUPq8X9E6hnotJ9OA7dsulFo';

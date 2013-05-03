@@ -67,7 +67,11 @@ There are two methods of inserting a Google Map using the GMap API. You may eith
     'maptype' => "Map",       // baselayer type
     'controltype' => "Small"  // size of map controls
   );
-  $output1 = theme('gmap', array('#settings' => $map_array));
+  $element1 = array(
+    '#type' => 'gmap',
+    '#gmap_settings' => $map_array1,
+  );
+  $output1 = drupal_render($element1);
 
   // a more elaborate example
   $map_array2 = array(
@@ -132,8 +136,11 @@ There are two methods of inserting a Google Map using the GMap API. You may eith
       ),
     ),
   );
-
-  $output2 = theme('gmap', array('#settings' => $map_array2));
+  $element2 = array(
+    '#type' => 'gmap',
+    '#gmap_settings' => $map_array2,
+  );
+  $output2 = drupal_render($element2);
 </pre>
 
 

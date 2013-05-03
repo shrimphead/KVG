@@ -19,13 +19,11 @@ function _webform_options_info() {
     'file' => 'includes/webform.options.inc',
   );
 
-  if (function_exists('countries_api_get_array')) {
-    $items['countries'] = array(
-      'title' => t('Countries'),
-      'options callback' => 'webform_options_countries',
-      'file' => 'includes/webform.options.inc',
-    );
-  }
+  $items['countries'] = array(
+    'title' => t('Countries'),
+    'options callback' => 'webform_options_countries',
+    'file' => 'includes/webform.options.inc',
+  );
 
   $items['united_states'] = array(
     'title' => t('US states'),
@@ -63,7 +61,8 @@ function webform_options_days($component, $flat, $filter, $arguments) {
  * Options list containing country names.
  */
 function webform_options_countries($component, $flat, $filter, $arguments) {
-  return countries_api_get_array();
+  include_once DRUPAL_ROOT . '/includes/locale.inc';
+  return country_get_list();
 }
 
 /**

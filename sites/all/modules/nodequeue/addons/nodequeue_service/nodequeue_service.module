@@ -1,18 +1,26 @@
 <?php
 
 /**
+ * @file
+ * Provides a nodequeue service.
+ *
  * @author Greg Harvey - http://www.drupaler.co.uk
  */
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_permission().
  */
-function nodequeue_service_perm() {
-  return array('get nodequeues');
+function nodequeue_service_permission() {
+  return array(
+    'get nodequeues' => array(
+      'title' => t('Get nodequeues'),
+      'description' => t('TODO Add a description for get nodequeues'),
+    ),
+  );
 }
 
 /**
- * Implementation of hook_service().
+ * Implements hook_service().
  */
 function nodequeue_service_service() {
   return array(
@@ -31,28 +39,13 @@ function nodequeue_service_service() {
       '#file' => array('file' => 'inc', 'module' => 'nodequeue_service'),
       '#args'             => array(
         array(
-          '#name'           => 'qid',
-          '#type'           => 'int',
-          '#description'    => t('A parent nodequeue queue ID.'),
+          '#name' => 'qid',
+          '#type' => 'int',
+          '#description' => t('A parent nodequeue queue ID.'),
         ),
       ),
       '#return'   => 'struct',
       '#help'     => t('Returns a keyed array by sqid of available subqueues and their settings.')
-    ),
-    array(
-      '#method'   => 'subqueue.save',
-      '#callback' => 'nodequeue_service_save_subqueue',
-      '#access callback' => 'nodequeue_service_save_subqueue_access',
-      '#file' => array('file' => 'inc', 'module' => 'nodequeue_service'),
-      '#args'             => array(
-        array(
-          '#name'           => 'subqueue',
-          '#type'           => 'struct',
-          '#description'    => t('The subqueue to update.'),
-        ),
-      ),
-      '#return'   => 'struct',
-      '#help'     => t('Save the contents of the given subqueue.')
     ),
   );
 }

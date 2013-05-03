@@ -1,4 +1,4 @@
-<?php // $Id: postal_views_handler_filter_country.inc,v 1.1 2009/08/20 05:18:11 vauxia Exp $
+<?php
 
 class postal_views_handler_filter_country extends views_handler_filter_in_operator {
   var $value_form_type = 'select';

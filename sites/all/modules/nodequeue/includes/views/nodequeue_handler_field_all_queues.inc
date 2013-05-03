@@ -7,14 +7,16 @@
  * @ingroup views_field_handlers
  */
 class nodequeue_handler_field_all_queues extends views_handler_field_prerender_list {
-  function option_definition() {
-    $options = parent::option_definition();
-    $options['link_to_queue'] = array('default' => TRUE);
-    $options['limit'] = array('default' => FALSE);
-    $options['qids'] = array('default' => array());
-    return $options;
+  /**
+   * Provide meaningful defaults.
+   */
+  function options(&$options) {
+    parent::options($options);
+    $options['link_to_queue'] = TRUE;
+    $options['limit'] = FALSE;
+    $options['qids'] = array();
   }
-  
+
   /**
    * Provide "link to term" option.
    */
@@ -33,7 +35,7 @@ class nodequeue_handler_field_all_queues extends views_handler_field_prerender_l
     );
 
     $options = array();
-    $queues = nodequeue_load_queues(nodequeue_get_all_qids(NULL));
+    $queues = nodequeue_load_queues(nodequeue_get_all_qids());
     foreach ($queues as $queue) {
       $options[$queue->qid] = $queue->title;
     }
@@ -45,8 +47,11 @@ class nodequeue_handler_field_all_queues extends views_handler_field_prerender_l
       '#title' => t('Queues'),
       '#options' => $options,
       '#default_value' => $this->options['qids'],
-      '#process' => array('expand_checkboxes', 'views_process_dependency'),
-      '#dependency' => array('edit-options-limit' => array(TRUE)),
+      '#states' => array(
+        'visible' => array(
+          ':input[name="options[limit]"]' => array('checked' => TRUE)
+        ),
+      ),
     );
   }
 
@@ -64,12 +69,12 @@ class nodequeue_handler_field_all_queues extends views_handler_field_prerender_l
 
       $result = db_query("SELECT nn.nid, nn.qid, nq.title FROM {nodequeue_nodes} nn INNER JOIN {nodequeue_queue} nq ON nq.qid = nn.qid WHERE nn.nid IN (" . implode(', ', $nids) . ")$queue ORDER BY nq.title");
 
-      while ($queue = db_fetch_object($result)) {
+      foreach ($result as $queue) {
         if (empty($this->options['link_to_queue'])) {
           $this->items[$queue->nid][$queue->qid] = check_plain($queue->title);
         }
         else {
-          $this->items[$queue->nid][$queue->qid] = l($queue->title, "admin/content/nodequeue/$queue->qid");
+          $this->items[$queue->nid][$queue->qid] = l($queue->title, "admin/structure/nodequeue/$queue->qid");
         }
       }
     }

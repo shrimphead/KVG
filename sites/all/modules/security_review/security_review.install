@@ -2,25 +2,19 @@
 
 /**
  * @file
- * Install file for security_review module creates security_review table.
+ * Install, update and uninstall functions for the security_review module.
+ *
  */
 
 /**
- * Implementation of hook_install().
- */
-function security_review_install() {
-  drupal_install_schema('security_review');
-}
-
-/**
- * Implementation of hook_enable().
+ * Implements hook_enable().
  */
 function security_review_enable() {
-  drupal_set_message(t('Security Review module enabled. You should first set the module access permissions at !link. Be sure to grant permissions to trusted users only as this module can show senstive site information.', array('!link' => l('admin/user/permissions', 'admin/user/permissions'))));
+  drupal_set_message(t('Security Review module enabled. You should first set the module access permissions at !link. Be sure to grant permissions to trusted users only as this module can show senstive site information.', array('!link' => l('admin/people/permissions', 'admin/people/permissions'))));
 }
 
 /**
- * Implementation of hook_schema().
+ * Implements hook_schema().
  */
 function security_review_schema() {
   $schema['security_review'] = array(
@@ -64,15 +58,22 @@ function security_review_schema() {
     ),
     'primary key' => array('namespace', 'reviewcheck'),
   );
-  
+
   return $schema;
 }
 
 /**
- * Implementation of hook_uninstall().
+ * Implements hook_uninstall().
  */
 function security_review_uninstall() {
-  drupal_uninstall_schema('security_review');
   variable_del('security_review_untrusted_roles');
   variable_del('security_review_log');
+}
+
+/**
+ * Empty Security Review check result table for a fresh start on Drupal 7.
+ */
+function security_review_update_7000(&$sandbox) {
+  db_truncate('security_review')->execute();
+  return t('Security Review table truncated.');
 }

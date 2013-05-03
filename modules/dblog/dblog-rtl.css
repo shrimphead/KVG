@@ -1,5 +1,10 @@
+/**
+ * @file
+ * Right-to-Left styling for the Database Logging module.
+ */
 
-#edit-type-wrapper, #edit-severity-wrapper {
+.form-item-type,
+.form-item-severity {
   float: right;
   padding-right: 0;
   padding-left: .8em;

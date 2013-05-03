@@ -6,7 +6,7 @@
  */
 
 // Define the version of this file in case it's used outside of its module.
-define('SECURITY_REVIEW_VERSION', '6.x-1.2');
+define('SECURITY_REVIEW_VERSION', '7.x-1.0');
 
 /**
  * Public function for running Security Review checklist and returning results.
@@ -79,7 +79,7 @@ function _security_review_run_check($module, $check_name, $check, $log, $store =
     $return = call_user_func($function, $last_check);
   }
   $check_result = array_merge($check, $return);
-  $check_result['lastrun'] = time();
+  $check_result['lastrun'] = REQUEST_TIME;
 
   if ($log && !is_null($return['result'])) { // Do not log if result is NULL.
     $variables = array('!name' => $check_result['title']);
@@ -94,7 +94,7 @@ function _security_review_run_check($module, $check_name, $check, $log, $store =
 }
 
 /**
- * Checks for security_review_security_checks() or security_review_get_checks().
+ * Implements hook_security_checks().
  */
 function _security_review_security_checks() {
   $checks['file_perms'] = array(
@@ -104,22 +104,16 @@ function _security_review_security_checks() {
     'failure' => t('Some files and directories in your install are writable by the server.'),
   );
   $checks['input_formats'] = array(
-    'title' => t('Input formats'),
+    'title' => t('Text formats'),
     'callback' => 'security_review_check_input_formats',
     'success' => t('Untrusted users are not allowed to input dangerous HTML tags.'),
     'failure' => t('Untrusted users are allowed to input dangerous HTML tags.'),
   );
-  $checks['nodes'] = array(
+  $checks['field'] = array(
     'title' => t('Content'),
-    'callback' => 'security_review_check_nodes',
-    'success' => t('Dangerous tags were not found in the body of any nodes.'),
-    'failure' => t('Dangerous tags were found in the body of nodes.'),
-  );
-  $checks['comments'] = array(
-    'title' => t('Comments'),
-    'callback' => 'security_review_check_comments',
-    'success' => t('Dangerous tags were not found in any comments.'),
-    'failure' => t('Dangerous tags were found in comments.'),
+    'callback' => 'security_review_check_field',
+    'success' => t('Dangerous tags were not found in any submitted content (fields).'),
+    'failure' => t('Dangerous tags were found in submitted content (fields).'),
   );
   $checks['error_reporting'] = array(
     'title' => t('Error reporting'),
@@ -132,12 +126,6 @@ function _security_review_security_checks() {
     'callback' => 'security_review_check_private_files',
     'success' => t('Private files directory is outside the web server root.'),
     'failure' => t('Private files is enabled but the specified directory is not secure outside the web server root.'),
-  );
-  $checks['upload_extensions'] = array(
-    'title' => t('Allowed upload extensions'),
-    'callback' => 'security_review_check_upload_extensions',
-    'success' => t('Only safe extensions are allowed for uploaded files.'),
-    'failure' => t('Unsafe file extensions are allowed in uploads.'),
   );
   // Checks dependent on dblog.
   if (module_exists('dblog')) {
@@ -155,24 +143,24 @@ function _security_review_security_checks() {
       'failure' => t('Failed login attempts from the same IP. These may be a brute-force attack to gain access to your site.'),
     );
   }
-  $checks['admin_permissions'] = array(
-    'title' => t('Drupal admin permissions'),
-    'callback' => 'security_review_check_admin_permissions',
-    'success' => t('Untrusted roles do not have administrative permissions.'),
-    'failure' => t('Untrusted roles have been granted administrative permissions.'),
+  $checks['upload_extensions'] = array(
+    'title' => t('Allowed upload extensions'),
+    'callback' => 'security_review_check_upload_extensions',
+    'success' => t('Only safe extensions are allowed for uploaded files and images.'),
+    'failure' => t('Unsafe file extensions are allowed in uploads.'),
   );
-  $checks['name_passwords'] = array(
+  $checks['admin_permissions'] = array(
+    'title' => t('Drupal permissions'),
+    'callback' => 'security_review_check_admin_permissions',
+    'success' => t('Untrusted roles do not have administrative or trusted Drupal permissions.'),
+    'failure' => t('Untrusted roles have been granted administrative or trusted Drupal permissions.'),
+  );
+  /*$checks['name_passwords'] = array(
     'title' => t('Username as password'),
     'callback' => 'security_review_check_name_passwords',
     'success' => t('Trusted accounts do not have their password set to their username.'),
     'failure' => t('Some trusted accounts have set their password the same as their username.'),
-  );
-  $checks['password_in_emails'] = array(
-    'title' => t('Password included in user emails'),
-    'callback' => 'security_review_check_email_passwords',
-    'success' => t('User passwords are not included in emails.'),
-    'failure' => t('User passwords are included in emails.'),
-  );
+  );*/
   // Check dependent on PHP filter being enabled.
   if (module_exists('php')) {
     $checks['untrusted_php'] = array(
@@ -187,44 +175,12 @@ function _security_review_security_checks() {
 }
 
 /**
- * Checks for security_review_get_checks() when Filefield is enabled.
- */
-function _filefield_security_checks() {
-  $checks['filefield_extensions'] = array(
-    'title' => t('Filefield allowed uploads'),
-    'callback' => 'security_review_check_filefield_extensions',
-    'success' => t('Only safe extensions are allowed for Filefield uploaded files.'),
-    'failure' => t('Unsafe file extensions are allowed in Filefield uploads.'),
-    'module' => 'security_review',
-    // Specify this file because the callback is here.
-    'file' => 'security_review',
-  );
-  return array('filefield' => $checks);
-}
-
-/**
- * Checks for security_review_get_checks() when Views is enabled.
- */
-function _views_security_checks() {
-  $checks['access'] = array(
-    'title' => t('Views access'),
-    'callback' => 'security_review_check_views_access',
-    'success' => t('Views are access controlled.'),
-    'failure' => t('There are Views that do not provide any access checks.'),
-    'module' => 'security_review',
-    // Specify this file because the callback is here.
-    'file' => 'security_review',
-  );
-  return array('views' => $checks);
-}
-
-/**
  * Check that files aren't writeable by the server.
  */
 function security_review_check_file_perms() {
   $result = TRUE;
   // Extract ending folder for file directory path.
-  $file_path = rtrim(file_directory_path(), '/');
+  $file_path = rtrim(variable_get('file_public_path', conf_path() . '/files'), '/');
   $file_path = substr($file_path, strrpos($file_path, '/') + 1);
   // Set files to ignore.
   $ignore = array('..', 'CVS', $file_path);
@@ -256,10 +212,10 @@ function security_review_check_file_perms() {
 
 function _security_review_check_file_perms_scan($directory, $ignore) {
   $items = array();
-  if (is_readable($directory) && $handle = opendir($directory)) {
+  if ($handle = opendir($directory)) {
     while (($file = readdir($handle)) !== FALSE) {
-      // Don't check hidden files or ones we said to ignore, or subdir site links.
-      if ($file[0] != "." && !in_array($file, $ignore) && !(is_link($file) && readlink($file) == '.')) {
+      // Don't check hidden files or ones we said to ignore.
+      if ($file[0] != "." && !in_array($file, $ignore)) {
         $file = $directory . "/" . $file;
         if (is_dir($file)) {
           $items = array_merge($items, _security_review_check_file_perms_scan($file, $ignore));
@@ -286,39 +242,29 @@ function security_review_check_input_formats() {
   $check_result_value = array();
   // Check formats that are accessible by untrusted users.
   $untrusted_roles = security_review_untrusted_roles();
-  // The default format is usable by all users even if no roles are listed on it.
-  $default_format = variable_get('filter_default_format', FILTER_FORMAT_DEFAULT);
+  $untrusted_roles = array_keys($untrusted_roles);
   foreach ($formats as $id => $format) {
-    $format_roles = array_filter(explode(',', $format->roles));
-    if ($format->format == $default_format) {
-      // The default format is available to all roles.
-      $intersect = drupal_map_assoc(array_keys(user_roles()));
-    }
-    else {
-      $intersect = array_intersect($format_roles, $untrusted_roles);
-    }
+    $format_roles = filter_get_roles_by_format($format);
+    $intersect = array_intersect(array_keys($format_roles), $untrusted_roles);
     if (!empty($intersect)) {
       // Untrusted users can use this format.
       $filters = filter_list_format($format->format);
-      // Check format for HTML filter.
-      if (in_array('filter/0', array_keys($filters))) {
-        // Using HTML Filter, good! Now check allowed tags if the filter is stripping instead of escaping.
-        $setting = variable_get("filter_html_" . $format->format, FILTER_HTML_STRIP);
-        if ($setting == FILTER_HTML_STRIP) {
-          // Check for unsafe tags in allowed tags.
-          $allowed_tags = variable_get("allowed_html_" . $format->format, '');
-          $unsafe_tags = security_review_unsafe_tags();
-          foreach ($unsafe_tags as $tag) {
-            if (strpos($allowed_tags, '<' . $tag . '>') !== FALSE) {
-              // Found an unsafe tag
-              $check_result_value['tags'][$id] = $tag;
-            }
+      // Check format for enabled HTML filter.
+      if (in_array('filter_html', array_keys($filters)) && $filters['filter_html']->status) {
+        $filter = $filters['filter_html'];
+        // Check for unsafe tags in allowed tags.
+        $allowed_tags = $filter->settings['allowed_html'];
+        $unsafe_tags = security_review_unsafe_tags();
+        foreach ($unsafe_tags as $tag) {
+          if (strpos($allowed_tags, '<' . $tag . '>') !== FALSE) {
+            // Found an unsafe tag
+            $check_result_value['tags'][$id] = $tag;
           }
         }
       }
-      else {
-        // Format is usable by untrusted users but does not contain the HTML Filter.
-        $check_result_value['formats'][$id] = $format->name;
+      elseif (!in_array('filter_html_escape', array_keys($filters)) || !$filters['filter_html_escape']->status) {
+        // Format is usable by untrusted users but does not contain the HTML Filter or the HTML escape.
+        $check_result_value['formats'][$id] = $format;
       }
     }
   }
@@ -335,26 +281,17 @@ function security_review_check_php_filter() {
   $check_result_value = array();
   // Check formats that are accessible by untrusted users.
   $untrusted_roles = security_review_untrusted_roles();
-  // The default format is usable by all users even if no roles are listed on it.
-  $default_format = variable_get('filter_default_format', FILTER_FORMAT_DEFAULT);
-  // Loop through each format and look for the PHP filter.
+  $untrusted_roles = array_keys($untrusted_roles);
   foreach ($formats as $id => $format) {
-    $format_roles = array_filter(explode(',', $format->roles));
-    if ($format->format == $default_format) {
-      // The default format is available to all roles.
-      $intersect = drupal_map_assoc(array_keys(user_roles()));
-    }
-    else {
-      $intersect = array_intersect($format_roles, $untrusted_roles);
-    }
+    $format_roles = filter_get_roles_by_format($format);
+    $intersect = array_intersect(array_keys($format_roles), $untrusted_roles);
     if (!empty($intersect)) {
       // Untrusted users can use this format.
       $filters = filter_list_format($format->format);
-      // Check format for PHP filter.
-      if (in_array('php/0', array_keys($filters))) {
+      // Check format for enabled PHP filter.
+      if (in_array('php_code', array_keys($filters)) && $filters['php_code']->status) {
         $result = FALSE;
-        $check_result_value['formats'][$id] = $format->name;
-        $check_result_value['roles'] = $intersect;
+        $check_result_value['formats'][$id] = $format;
       }
     }
   }
@@ -364,8 +301,8 @@ function security_review_check_php_filter() {
 
 function security_review_check_error_reporting() {
   $error_level = variable_get('error_level', NULL);
-  if (is_null($error_level) || intval($error_level) == 1) {
-    // When the variable isn't set, or its set to 1 errors are printed to the screen.
+  if (is_null($error_level) || intval($error_level) >= 1) {
+    // When the variable isn't set, or its set to 1 or 2 errors are printed to the screen.
     $result = FALSE;
   }
   else {
@@ -380,9 +317,11 @@ function security_review_check_error_reporting() {
  * There is ample room for the user to get around this check. @TODO get more sophisticated?
  */
 function security_review_check_private_files() {
-  $file_downloads = variable_get('file_downloads', FILE_DOWNLOADS_PUBLIC);
-  if ($file_downloads == FILE_DOWNLOADS_PRIVATE) {
-    $file_directory_path = file_directory_path();
+  // Get the default download method.
+  $scheme = variable_get('file_default_scheme', '');
+  // Most insecure configurations will be using the local private wrapper.
+  if ($scheme == 'private') {
+    $file_directory_path = variable_get('file_private_path', '');
     if (strpos($file_directory_path, '/') === 0) {
       // Path begins at root.
       $result = TRUE;
@@ -402,46 +341,19 @@ function security_review_check_private_files() {
   return array('result' => $result);
 }
 
-/**
- * Check for unsafe allowed extensions.
- */
-function security_review_check_upload_extensions() {
-  $result = TRUE;
-  $check_result_value = array();
-  if (module_exists('upload')) {
-    // First, check if any unsafe extensions are even allowed.
-    $extensions = variable_get('upload_extensions_default', NULL);
-    if (!is_null($extensions)) {
-      $unsafe_extensions = security_review_unsafe_extensions();
-      foreach ($unsafe_extensions as $unsafe_extension) {
-        if (strpos($extensions, $unsafe_extension) !== FALSE) {
-          // Found an unsafe extension.
-          $check_result_value[] = $unsafe_extension;
-        }
-      }
-    }
-    if (!empty($check_result_value)) {
-      $result = FALSE;
-    }
-  }
-  else {
-    $result = NULL;
-  }
-  return array('result' => $result, 'value' => $check_result_value);
-}
-
 function security_review_check_query_errors($last_check = NULL) {
   $timestamp = NULL;
   $check_result_value = array();
-  $sql = "SELECT message, hostname FROM {watchdog} WHERE type = 'php' AND severity = %d";
-  if (!is_null($last_check)) {
-    $sql .= " AND timestamp >= %d";
-    $timestamp = $last_check['lastrun'];
+  $query = db_select('watchdog', 'w')->fields('w', array('message', 'hostname'))
+    ->condition('type', 'php')
+    ->condition('severity', WATCHDOG_ERROR);
+  if (isset($last_check['lastrun'])) {
+    $query->condition('timestamp', $last_check['lastrun'], '>=');
   }
-  $results = db_query($sql, WATCHDOG_ERROR, $timestamp);
-  while ($row = db_fetch_array($results)) {
-    if (strpos($row['message'], 'SELECT') !== FALSE) {
-      $entries[$row['hostname']][] = $row;
+  $result = $query->execute();
+  foreach ($result as $row) {
+    if (strpos($row->message, 'SELECT') !== FALSE) {
+      $entries[$row->hostname][] = $row;
     }
   }
   $result = TRUE;
@@ -466,15 +378,16 @@ function security_review_check_failed_logins($last_check = NULL) {
   $result = TRUE;
   $timestamp = NULL;
   $check_result_value = array();
-  $sql = "SELECT message, hostname FROM {watchdog} WHERE type = 'user' AND severity = %d";
-  if (!is_null($last_check)) {
-    $sql .= " AND timestamp >= %d";
-    $timestamp = $last_check['lastrun'];
+  $query = db_select('watchdog', 'w')->fields('w', array('message', 'hostname'))
+    ->condition('type', 'php')
+    ->condition('severity', WATCHDOG_NOTICE);
+  if (isset($last_check['lastrun'])) {
+    $query->condition('timestamp', $last_check['lastrun'], '>=');
   }
-  $results = db_query($sql, WATCHDOG_NOTICE, $timestamp);
-  while ($row = db_fetch_array($results)) {
-    if (strpos($row['message'], 'Login attempt failed') !== FALSE) {
-      $entries[$row['hostname']][] = $row;
+  $result = $query->execute();
+  foreach ($result as $row) {
+    if (strpos($row->message, 'Login attempt failed') !== FALSE) {
+      $entries[$row->hostname][] = $row;
     }
   }
   if (!empty($entries)) {
@@ -500,72 +413,98 @@ function security_review_check_failed_logins($last_check = NULL) {
 function security_review_check_admin_permissions() {
   $result = TRUE;
   $check_result_value = array();
-  // Collect the permissions untrusted roles have.
-  $untrusted = security_review_untrusteds_permissions();
-  // Admin permissions.
-  $admin_perms = security_review_admin_permissions();
-  // Check for intersections.
-  foreach ($untrusted as $rid => $permissions) {
-    $intersect = array_intersect($permissions, $admin_perms);
-    if (!empty($intersect)) {
-      $check_result_value[$rid] = $intersect;
+  $untrusted_roles = security_review_untrusted_roles();
+  // Collect permissions marked as for trusted users only.
+  $all_permissions = module_invoke_all('permission');
+  $all_keys = array_keys($all_permissions);
+  // Get permissions for untrusted roles.
+  $untrusted_permissions = user_role_permissions($untrusted_roles);
+  foreach ($untrusted_permissions as $rid => $permissions) {
+    $intersect = array_intersect($all_keys, array_keys($permissions));
+    foreach ($intersect as $permission) {
+      if (isset($all_permissions[$permission]['restrict access'])) {
+        $check_result_value[$rid][] = $permission;
+      }
     }
   }
+
   if (!empty($check_result_value)) {
     $result = FALSE;
   }
   return array('result' => $result, 'value' => $check_result_value);
 }
 
-function security_review_check_nodes($last_check = NULL) {
-  $result = TRUE;
-  $check_result_value = array();
+function security_review_check_field($last_check = NULL) {
+  $check_result = TRUE;
+  $check_result_value = $tables = $found = array();
   $timestamp = NULL;
-  
-  $sql = "SELECT n.nid FROM {node} n INNER JOIN {node_revisions} r ON n.vid = r.vid WHERE r.body LIKE '%s' ";
-  // If the check passed before only look at nodes since the last run.
-  if (!is_null($last_check) && $last_check['result'] == '1') {
-    $sql .= " AND n.changed >= %d";
-    $timestamp = $last_check['lastrun'];
-  }
-  foreach (array('Javascript' => '%<script%', 'PHP' => '%<?php%') as $description => $comparison) {
-    $results = pager_query($sql, 50, 0, NULL, $comparison, $timestamp);
-    while ($row = db_fetch_array($results)) {
-      $check_result_value[] = array($description => $row['nid']);
+  $instances = field_info_instances();
+  // Loop through instances checking for fields of type text.
+  foreach ($instances as $entity_type => $type_bundles) {
+    foreach ($type_bundles as $bundle => $bundle_instances) {
+      foreach ($bundle_instances as $field_name => $instance) {
+        $field = field_info_field($field_name);
+        // Check into text fields that are stored in SQL.
+        if ($field['module'] == 'text' && $field['storage']['module'] == 'field_sql_storage') {
+          // Build array of tables and columns to search.
+          $current_table = key($field['storage']['details']['sql'][FIELD_LOAD_CURRENT]);
+          $revision_table = key($field['storage']['details']['sql'][FIELD_LOAD_REVISION]);
+          if (!array_key_exists($current_table, $tables)) {
+            $tables[$current_table] = $field['storage']['details']['sql'][FIELD_LOAD_CURRENT][$current_table]['value'];
+          }
+          if (!array_key_exists($revision_table, $tables)) {
+            $tables[$revision_table] = $field['storage']['details']['sql'][FIELD_LOAD_REVISION][$revision_table]['value'];
+          }
+        }
+      }
     }
-    if (!empty($check_result_value)) {
-      $result = FALSE;
+  }
+  if (empty($tables)) {
+    return array('result' => $check_result, 'value' => $check_result_value);
+  }
+  // Search for PHP or Javascript tags in text columns.
+  foreach ($tables as $table => $column) {
+    $sql = "SELECT DISTINCT entity_id, entity_type FROM {" . $table . "} WHERE " . $column . " LIKE :text";
+    // Handle changed? @todo
+    foreach (array('Javascript' => '%<script%', 'PHP' => '%<?php%') as $description => $comparison) {
+      $results = db_query($sql, array(':text' => $comparison)); // @pager query?
+      foreach ($results as $result) {
+        $check_result = FALSE;
+        if (!isset($check_result_value[$result->entity_type]) || !array_key_exists($result->entity_id, $check_result_value[$result->entity_type])) {
+          $check_result_value[$result->entity_type][$result->entity_id] = $description;
+        }
+      }
     }
   }
 
-  return array('result' => $result, 'value' => $check_result_value);
+  return array('result' => $check_result, 'value' => $check_result_value);
 }
 
-function security_review_check_comments($last_check = NULL) {
-  $result = TRUE;
+function security_review_check_upload_extensions($last_check = NULL) {
+  $check_result = TRUE;
   $check_result_value = array();
-  $timestamp = NULL;
-  if (module_exists('comment')) {
-    $sql = "SELECT nid, cid FROM {comments} WHERE comment LIKE '%s'" ;
-    // If the check passed before only look at comments since the last run.
-    if (!is_null($last_check) && $last_check['result'] == '1') {
-      $sql .= " AND timestamp >= %d";
-      $timestamp = $last_check['lastrun'];
-    }
-    foreach (array('Javascript' => '%<script%', 'PHP' => '%<?php%') as $description => $comparison) {
-      $results = pager_query($sql, 20, 0, NULL, $comparison, $timestamp);
-      while ($row = db_fetch_array($results)) {
-        $check_result_value[$row['cid']] = array($description => $row['nid']);
-      }
-      if (!empty($check_result_value)) {
-        $result = FALSE;
+  $instances = field_info_instances();
+  $unsafe_extensions = security_review_unsafe_extensions();
+  // Loop through instances checking for fields of file.
+  foreach ($instances as $entity_type => $type_bundles) {
+    foreach ($type_bundles as $bundle => $bundle_instances) {
+      foreach ($bundle_instances as $field_name => $instance) {
+        $field = field_info_field($field_name);
+        if ($field['module'] == 'image' || $field['module'] == 'file') {
+          // Check instance file_extensions.
+          foreach ($unsafe_extensions as $unsafe_extension) {
+            if (strpos($instance['settings']['file_extensions'], $unsafe_extension) !== FALSE) {
+              // Found an unsafe extension.
+              $check_result_value[$instance['field_name']][] = $unsafe_extension;
+              $check_result = FALSE;
+            }
+          }
+        }
       }
     }
   }
-  else {
-    $result = NULL;
-  }
-  return array('result' => $result, 'value' => $check_result_value);
+
+  return array('result' => $check_result, 'value' => $check_result_value);
 }
 
 function security_review_check_name_passwords($last_check = NULL) {
@@ -573,7 +512,7 @@ function security_review_check_name_passwords($last_check = NULL) {
   $check_result_value = array();
   $timestamp = NULL;
 
-  // We check whether trusted roles have weak passwords.
+  // Check whether trusted roles have weak passwords.
   $trusted_roles = security_review_trusted_roles();
   if (!empty($trusted_roles)) {
     $trusted_roles = array_keys($trusted_roles);
@@ -590,11 +529,12 @@ function _security_review_weak_passwords($trusted_roles) {
   $weak_users = array();
 
   // Select users with a trusted role whose password is their username.
+  // @todo need to generate passwords in PHP to get salt.
   $sql = "SELECT u.uid, u.name, COUNT(rid) AS count FROM {users} u LEFT JOIN
-    {users_roles} ur ON u.uid = ur.uid AND ur.rid in (" . db_placeholders($trusted_roles) . ")
+    {users_roles} ur ON u.uid = ur.uid AND ur.rid in (:rids)
     WHERE pass = md5(name) GROUP BY uid";
-  $results = db_query($sql, $trusted_roles); // @todo pager_query?
-  while ($row = db_fetch_object($results)) {
+  $results = db_query($sql, array(':rids' => $trusted_roles)); // @todo pager_query?
+  foreach ($results as $row) {
     $record[] = $row;
     if ($row->count > 0) {
       $weak_users[$row->uid] = $row->name;
@@ -611,109 +551,16 @@ function _security_review_weak_passwords($trusted_roles) {
 }
 
 /**
- * A Security Review check for allowed extensions on Filefield fields.
+ * Helper function allows for collection of this file's security checks.
  */
-function security_review_check_filefield_extensions($last_check = NULL) {
-  $result = TRUE;
-  $check_result_value = array();
-  $unsafe_extensions = security_review_unsafe_extensions();
-
-  // Collect list of untrusted roles' permissions.
-  $untrusted = security_review_untrusteds_permissions();
-  // Get Filefields and check widget file_extensions.
-  $fields = filefield_get_field_list();
-  foreach ($fields as $field) {
-    /* @TODO Add this back in when also checking upload use on content types.
-    // Initialize an empty array of roles IDs that can use this field.
-    $rids = array();
-    // Check if untrusted users can create or edit the content type that holds
-    // this field.
-    $field_type_permissions = array(
-      'create ' . $field['type_name'] . ' content',
-      'edit own ' . $field['type_name'] . ' content',
-      'edit any ' . $field['type_name'] . ' content',
-    );
-    foreach ($untrusted as $rid => $permissions) {
-      $intersect = array_intersect($permissions, $field_type_permissions);
-      if (empty($intersect)) {
-        // No intersection is good.
-        continue;
-      }
-      else {
-        $rids[] = $rid;
-      }
-    }
-    // Do not continue check if no untrusted roles can use this field.
-    if (empty($rids)) {
-      continue;
-    }*/
-
-    $extensions = $field['widget']['file_extensions'];
-    if (empty($extensions)) {
-      // No extensions set, so field allows all unsafe extensions.
-      $check_result_value[$field['field_name']]['empty'] = TRUE;
-    }
-    else {
-      // Check if specific unsafe extensions are allowed.
-      foreach ($unsafe_extensions as $unsafe_extension) {
-        if (strpos($extensions, $unsafe_extension) !== FALSE) {
-          // Found an unsafe extension.
-          $check_result_value[$field['field_name']]['extensions'][] = $unsafe_extension;
-        }
-      }
-    }
-  }
-  if (!empty($check_result_value)) {
-    $result = FALSE;
-  }
-  return array('result' => $result, 'value' => $check_result_value);
-}
-
-function security_review_check_views_access($last_check = NULL) {
-  $result = TRUE;
-  $check_result_value = array();
-  $timestamp = NULL;
-  // Load and loop through every view, checking the access type in displays.
-  $views = views_get_all_views();
-  foreach ($views as $view) {
-    if ($view->disabled !== TRUE) {
-      // Access is set in display options of a display.
-      foreach ($view->display as $display_name => $display) {
-        if (isset($display->display_options['access']) && $display->display_options['access']['type'] == 'none') {
-          $check_result_value[$view->name][] = $display_name;
-        }
-      }
-    }
-  }
-  if (!empty($check_result_value)) {
-    $result = FALSE;
-  }
-  return array('result' => $result, 'value' => $check_result_value);
-}
-
-function security_review_check_email_passwords($last_check = NULL) {
-  $result = TRUE;
-
-  drupal_load('module', 'user');
-  $mail_templates = array('register_no_approval_required_subject', 'register_no_approval_required_body', 'register_admin_created_subject', 'register_admin_created_body', 'register_pending_approval_subject', 'register_pending_approval_admin_subject', 'register_pending_approval_body', 'register_pending_approval_admin_body', 'password_reset_subject', 'password_reset_body', 'status_activated_subject', 'status_activated_body', 'status_blocked_subject', 'status_blocked_body', 'status_deleted_subject', 'status_deleted_body');
-
-  $check_result_value = array();
-  foreach ($mail_templates as $template_name) {
-    $text = _user_mail_text($template_name);
-    if (strpos($text, '!password') !== FALSE) {
-      $check_result_value[] = $template_name;
-    }
-  }
-
-  if (!empty($check_result_value)) {
-    $result = FALSE;
-  }
-  return array('result' => $result, 'value' => $check_result_value);
+function security_review_get_checks() {
+  $checks = _security_review_security_checks();
+  return $checks;
 }
 
 /**
  * Helper function defines HTML tags that are considered unsafe.
- * 
+ *
  * Based on wysiwyg_filter_get_elements_blacklist().
  */
 function security_review_unsafe_tags() {
@@ -752,8 +599,6 @@ function security_review_unsafe_tags() {
     'textarea',
     'title',
     'tr',
-    'audio',
-    'video',
   );
 }
 
@@ -779,28 +624,32 @@ function security_review_unsafe_extensions() {
 /**
  * Helper function defines the default untrusted Drupal roles.
  */
-function security_review_default_untrusted_roles() {
-  $rids = array(DRUPAL_ANONYMOUS_RID);
+function _security_review_default_untrusted_roles() {
+  $roles = array(DRUPAL_ANONYMOUS_RID => t('anonymous user'));
   $user_register = variable_get('user_register', 1);
-  if ($user_register == 1) {
-    $rids[] = DRUPAL_AUTHENTICATED_RID;
+  // If visitors are allowed to create accounts they are considered untrusted.
+  if ($user_register != USER_REGISTER_ADMINISTRATORS_ONLY) {
+    $roles[DRUPAL_AUTHENTICATED_RID] = t('authenticated user');
   }
-  return $rids;
+  return $roles;
 }
 
 /**
  * Helper function for user-defined or default unstrusted Drupal roles.
+ *
+ * @return An associative array with the role id as the key and the role name as value.
  */
 function security_review_untrusted_roles() {
-  $defaults = security_review_default_untrusted_roles();
+  $defaults = _security_review_default_untrusted_roles();
   $roles = variable_get('security_review_untrusted_roles', $defaults);
+  // array_filter() to remove roles with 0 (meaning they are trusted) @todo
   return array_filter($roles);
 }
 
 /**
  * Helper function collects the permissions untrusted roles have.
  */
-function security_review_untrusteds_permissions() {
+function security_review_untrusted_permissions() {
   static $permissions;
   if (empty($permissions)) {
     $permissions = array();
@@ -808,9 +657,10 @@ function security_review_untrusteds_permissions() {
     $untrusted_roles = security_review_untrusted_roles();
     foreach ($untrusted_roles as $rid) {
       $perms = array();
-      $results = db_fetch_array(db_query('SELECT r.rid, p.perm FROM {role} r LEFT JOIN {permission} p ON r.rid = p.rid WHERE r.rid = %d', $rid));
+      $results = db_query('SELECT r.rid, p.permission FROM {role} r LEFT JOIN {role_permission} p ON r.rid = p.rid WHERE r.rid = :rid', array(':rid' => $rid))
+        ->fetchArray();
       if ($results !== FALSE) {
-        $perms = explode(',', str_replace(', ', ',', $results['perm']));
+        $perms = explode(',', str_replace(', ', ',', $results['permission']));
         $permissions[$rid] = $perms;
       }
     }
@@ -824,60 +674,25 @@ function security_review_untrusteds_permissions() {
 function security_review_trusted_roles() {
   $trusted_roles = array();
   $untrusted_roles = security_review_untrusted_roles();
-  $result = db_query('SELECT rid, name FROM {role} WHERE rid NOT IN (' . db_placeholders($untrusted_roles) . ')', $untrusted_roles);
-  while ($role = db_fetch_object($result)) {
+  $results = db_query('SELECT rid, name FROM {role} WHERE rid NOT IN (:rids)', array(':rids' => $untrusted_roles));
+  foreach ($results as $role) {
     $trusted_roles[$role->rid] = $role->name;
   }
   return array_filter($trusted_roles);
 }
 
 /**
- * Helper function defines super-admin Drupal permissions.
- */
-function security_review_admin_permissions() {
-  return array(
-    'administer users',
-    'administer permissions',
-    'administer site configuration',
-    'administer filters',
-    'administer content types',
-    'administer nodes',
-  );
-}
-
-/**
- * Helper function checks if role has been granted a permission.
+ * Check if role has been granted a permission.
  */
 function security_review_role_permission($rid, $permission) {
   $return = FALSE;
-  $result = db_fetch_array(db_query("SELECT perm FROM {permission} WHERE rid = %d", $rid));
-  if ($result['perm'] && strpos($result['perm'], $permission) !== FALSE) {
+  $result = db_select('role_permission', 'p')->fields('p', array('permission'))->condition('rid', $rid)->execute()->fetchField();
+  if ($result['permission'] && strpos($result['permission'], $permission) !== FALSE) {
     $return = TRUE;
   }
   return $return;
 }
 
-/**
- * Helper function allows for collection of this file's security checks.
- */
-function security_review_get_checks() {
-  $checks = _security_review_security_checks();
-  if (module_exists('filefield') && function_exists('filefield_get_field_list')) {
-    $filefield = _filefield_security_checks();
-    $checks = array_merge($checks, $filefield);
-  }
-  if (module_exists('views') && function_exists('views_get_all_views')) {
-    $views = _views_security_checks();
-    $checks = array_merge($checks, $views);
-  }
-  return $checks;
-}
-
-/**
- * Internal log helper function.
- *
- * Separated from directly using watchdog() in other functions to allow for extended reporting.
- */
 function _security_review_log($module, $check_name, $message, $variables, $type) {
   module_invoke_all('security_review_log', $module, $check_name, $message, $variables, $type);
 }

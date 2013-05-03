@@ -24,9 +24,9 @@ function location_latlon_rough_au($location = array()) {
     return NULL;
   }
 
-  $result = db_query("SELECT latitude, longitude FROM {zipcodes} WHERE country = '%s' AND zip = '%s'", $location['country'], substr(str_pad($location['postal_code'], 4, '0', STR_PAD_LEFT), 0, 4));
+  $row = db_query("SELECT latitude, longitude FROM {zipcodes} WHERE country = :country AND zip = :zip", array(':country' => $location['country'], ':zip' => substr(str_pad($location['postal_code'], 4, '0', STR_PAD_LEFT), 0, 4)))->fetchObject();
 
-  if ($row = db_fetch_object($result)) {
+  if ($row) {
     return array('lat' => $row->latitude, 'lon' => $row->longitude);
   }
   else {
@@ -59,8 +59,8 @@ function _location_latlon_postalcode_au($location = array()) {
   }
 
   // Now we pad the thing and query.
-  $res = db_query("SELECT * FROM {zipcodes} where country = '%s' AND zip = '%s'", $location['country'], str_pad($location['postal_code'], 4, "0", STR_PAD_LEFT));
-  if ($row = db_fetch_object($res)) {
+  $row = db_query("SELECT * FROM {zipcodes} where country = :country AND zip = :zip", array(':country' => $location['country'], ':zip' => str_pad($location['postal_code'], 4, "0", STR_PAD_LEFT)))->fetchObject();
+  if ($row) {
     return array('lat' => $row->latitude, 'lon' => $row->longitude, 'city' => $row->city, 'province' => $row->state, 'country' => $row->country);
   }
   else {
@@ -122,7 +122,7 @@ function _location_latlon_exact_au_geocoder($location = array()) {
     return NULL;
   }
 
-  $result = xmlrpc('http://rpc.geocoder.us/service/xmlrpc', 'geocode', $location_string);
+  $result = xmlrpc('http://rpc.geocoder.us/service/xmlrpc', array('geocode' => array($location_string)));
 
   if (is_array($result) && is_array($result[0]) && isset($result[0]['lat']) && is_numeric($result[0]['lat']) && isset($result[0]['long']) && is_numeric($result[0]['long'])) {
     return array('lat' => $result[0]['lat'], 'lon' => $result[0]['long']);

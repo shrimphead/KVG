@@ -132,7 +132,13 @@ function hook_webform_submission_presave($node, &$submission) {
  */
 function hook_webform_submission_insert($node, $submission) {
   // Insert a record into a 3rd-party module table when a submission is added.
-  db_query("INSERT INTO {mymodule_table} nid = %d, sid = %d, foo = '%s'", $node->nid, $submission->sid, 'foo_data');
+  db_insert('mymodule_table')
+    ->fields(array(
+      'nid' => $node->nid,
+      'sid' => $submission->sid,
+      'foo' => 'foo_data',
+    ))
+    ->execute();
 }
 
 /**
@@ -149,7 +155,13 @@ function hook_webform_submission_insert($node, $submission) {
  */
 function hook_webform_submission_update($node, $submission) {
   // Update a record in a 3rd-party module table when a submission is updated.
-  db_query("UPDATE {mymodule_table} SET (foo) VALUES ('%s') WHERE nid = %d, sid = %d", 'foo_data', $node->nid, $submission->sid);
+  db_update('mymodule_table')
+    ->fields(array(
+      'foo' => 'foo_data',
+    ))
+    ->condition('nid', $node->nid)
+    ->condition('sid', $submission->sid)
+    ->execute();
 }
 
 /**
@@ -162,7 +174,10 @@ function hook_webform_submission_update($node, $submission) {
  */
 function hook_webform_submission_delete($node, $submission) {
   // Delete a record from a 3rd-party module table when a submission is deleted.
-  db_query("DELETE FROM {mymodule_table} WHERE nid = %d, sid = %d", $node->nid, $submission->sid);
+  db_delete('mymodule_table')
+    ->condition('nid', $node->nid)
+    ->condition('sid', $submission->sid)
+    ->execute();
 }
 
 /**
@@ -219,15 +234,15 @@ function hook_webform_submission_render_alter(&$renderable) {
  * Modify a loaded Webform component.
  *
  * IMPORTANT: This hook does not actually exist because components are loaded
- * in bulk as part of webform_node_load(). Use hook_nodeapi() to modify loaded
+ * in bulk as part of webform_node_load(). Use hook_node_load() to modify loaded
  * components when the node is loaded. This example is provided merely to point
- * to hook_nodeapi().
+ * to hook_node_load().
  *
  * @see hook_nodeapi()
  * @see webform_node_load()
  */
 function hook_webform_component_load() {
-  // This hook does not exist. Instead use hook_nodeapi().
+  // This hook does not exist. Instead use hook_node_load().
 }
 
 /**
@@ -252,7 +267,13 @@ function hook_webform_component_presave(&$component) {
  */
 function hook_webform_component_insert($component) {
   // Insert a record into a 3rd-party module table when a component is inserted.
-  db_query("INSERT INTO {mymodule_table} (nid, cid) VALUES (%d, %d)", $component['nid'], $component['cid']);
+  db_insert('mymodule_table')
+    ->fields(array(
+      'nid' => $component['nid'],
+      'cid' => $component['cid'],
+      'foo' => 'foo_data',
+    ))
+    ->execute();
 }
 
 /**
@@ -260,7 +281,13 @@ function hook_webform_component_insert($component) {
  */
 function hook_webform_component_update($component) {
   // Update a record in a 3rd-party module table when a component is updated.
-  db_query('UPDATE {mymodule_table} SET value "%s" WHERE nid = %d AND cid = %d)', 'foo', $component['nid'], $component['cid']);
+  db_update('mymodule_table')
+    ->fields(array(
+      'foo' => 'foo_data',
+    ))
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid'])
+    ->execute();
 }
 
 /**
@@ -268,7 +295,10 @@ function hook_webform_component_update($component) {
  */
 function hook_webform_component_delete($component) {
   // Delete a record in a 3rd-party module table when a component is deleted.
-  db_query('DELETE FROM {mymodule_table} WHERE nid = %d AND cid = %d)', $component['nid'], $component['cid']);
+  db_delete('mymodule_table')
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid'])
+    ->execute();
 }
 
 /**
@@ -427,10 +457,9 @@ function hook_webform_component_info_alter(&$components) {
  */
 function _webform_attachments_component($component, $value) {
   $files = array();
-  $files[] = db_fetch_array(db_query("SELECT * FROM {files} WHERE fid = %d", $value[0]));
+  $files[] = (array) file_load($value[0]);
   return $files;
 }
-
 
 /**
  * @}
@@ -520,7 +549,7 @@ function _webform_edit_component($component) {
  *
  * @see _webform_client_form_add_component()
  */
-function _webform_render_component($component, $value = NULL) {
+function _webform_render_component($component, $value = NULL, $filter = TRUE) {
   $form_item = array(
     '#type' => 'textfield',
     '#title' => $filter ? _webform_filter_xss($component['name']) : $component['name'],
@@ -528,7 +557,7 @@ function _webform_render_component($component, $value = NULL) {
     '#weight' => $component['weight'],
     '#description'   => $filter ? _webform_filter_descriptions($component['extra']['description']) : $component['extra']['description'],
     '#default_value' => $filter ? _webform_filter_values($component['value']) : $component['value'],
-    '#prefix' => '<div class="webform-component-' . $component['type'] . '" id="webform-component-' . $component['form_key'] . '">',
+    '#prefix' => '<div class="webform-component-textfield" id="webform-component-' . $component['form_key'] . '">',
     '#suffix' => '</div>',
   );
 
@@ -642,7 +671,7 @@ function _webform_delete_component($component, $value) {
  */
 function _webform_help_component($section) {
   switch ($section) {
-    case 'admin/settings/webform#grid_description':
+    case 'admin/config/content/webform#grid_description':
       return t('Allows creation of grid questions, denoted by radio buttons.');
   }
 }
@@ -655,11 +684,11 @@ function _webform_help_component($section) {
 function _webform_theme_component() {
   return array(
     'webform_grid' => array(
-      'arguments' => array('grid_element' => NULL),
+      'render element' => 'element',
       'file' => 'components/grid.inc',
     ),
     'webform_display_grid' => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'file' => 'components/grid.inc',
     ),
   );
@@ -687,20 +716,26 @@ function _webform_theme_component() {
  */
 function _webform_analysis_component($component, $sids = array(), $single = FALSE) {
   // Generate the list of options and questions.
-  $options = _webform_component_options($component['extra']['options']);
-  $questions = array_values(_webform_component_options($component['extra']['questions']));
+  $options = _webform_select_options_from_text($component['extra']['options'], TRUE);
+  $questions = _webform_select_options_from_text($component['extra']['questions'], TRUE);
 
   // Generate a lookup table of results.
-  $sidfilter = count($sids) ? " AND sid in (" . db_placeholders($sids, 'int') . ")" : "";
-  $query = 'SELECT no, data, count(data) as datacount '.
-    ' FROM {webform_submitted_data} '.
-    ' WHERE nid = %d '.
-    ' AND cid = %d '.
-    " AND data != '' ". $sidfilter .
-    ' GROUP BY no, data';
-  $result = db_query($query, array_merge(array($component['nid'], $component['cid']), $sids));
+  $query = db_select('webform_submitted_data', 'wsd')
+    ->fields('wsd', array('no', 'data'))
+    ->condition('nid', $component['nid'])
+    ->condition('cid', $component['cid'])
+    ->condition('data', '', '<>')
+    ->groupBy('no')
+    ->groupBy('data');
+  $query->addExpression('COUNT(sid)', 'datacount');
+
+  if (count($sids)) {
+    $query->condition('sid', $sids, 'IN');
+  }
+
+  $result = $query->execute();
   $counts = array();
-  while ($data = db_fetch_object($result)) {
+  foreach ($result as $data) {
     $counts[$data->no][$data->data] = $data->datacount;
   }
 
@@ -721,7 +756,7 @@ function _webform_analysis_component($component, $sids = array(), $single = FALS
     }
     $rows[] = $row;
   }
-  $output = theme('table', $header, $rows, array('class' => 'webform-grid'));
+  $output = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('class' => array('webform-grid'))));
 
   return array(array(array('data' => $output, 'colspan' => 2)));
 }

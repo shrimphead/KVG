@@ -16,13 +16,6 @@ class XMLSitemapTestHelper extends DrupalWebTestCase {
   function setUp($modules = array()) {
     array_unshift($modules, 'xmlsitemap');
     parent::setUp($modules);
-
-    // Reset any of our module's static variables.
-    xmlsitemap_static_reset();
-
-    // Ensure the files directory is created and writable during testing.
-    // @todo This can be removed when http://drupal.org/node/654752 is backported to Drupal 6.
-    $this->checkFilesDirectory();
   }
 
   function tearDown() {
@@ -181,7 +174,7 @@ class XMLSitemapTestHelper extends DrupalWebTestCase {
   }
 
   protected function addSitemapLink(array $link = array()) {
-    $last_id = &xmlsitemap_static(__FUNCTION__, 1);
+    $last_id = &drupal_static(__FUNCTION__, 1);
 
     $link += array(
       'type' => 'testing',
@@ -209,7 +202,7 @@ class XMLSitemapTestHelper extends DrupalWebTestCase {
   }
 
   protected function assertXMLSitemapProblems($problem_text = FALSE) {
-    $this->drupalGet('admin/settings/xmlsitemap');
+    $this->drupalGet('admin/config/search/xmlsitemap');
     $this->assertText(t('One or more problems were detected with your XML sitemap configuration'));
     if ($problem_text) {
       $this->assertText($problem_text);
@@ -217,7 +210,7 @@ class XMLSitemapTestHelper extends DrupalWebTestCase {
   }
 
   protected function assertNoXMLSitemapProblems() {
-    $this->drupalGet('admin/settings/xmlsitemap');
+    $this->drupalGet('admin/config/search/xmlsitemap');
     $this->assertNoText(t('One or more problems were detected with your XML sitemap configuration'));
   }
 
@@ -228,41 +221,25 @@ class XMLSitemapTestHelper extends DrupalWebTestCase {
    */
   protected function getWatchdogMessages(array $conditions = array(), $reset = FALSE) {
     static $seen_ids = array();
-    static $watchdog_schema;
 
     if (!module_exists('dblog') || $reset) {
       $seen_ids = array();
-      return;
-    }
-    if (!isset($watchdog_schema)) {
-      $watchdog_schema = drupal_get_schema('watchdog');
+      return array();
     }
 
-    $sql = "SELECT wid, type, severity, message, variables, timestamp FROM {watchdog}";
-
-    $args = array();
+    $query = db_select('watchdog');
+    $query->fields('watchdog', array('wid', 'type', 'severity', 'message', 'variables', 'timestamp'));
     foreach ($conditions as $field => $value) {
-      $conditions[$field] = $field . ' = ' . db_type_placeholder($watchdog_schema['fields'][$field]['type']);
       if ($field == 'variables' && !is_string($value)) {
         $value = serialize($value);
       }
-      $args[] = $value;
+      $query->condition($field, $value);
     }
     if ($seen_ids) {
-      $conditions[] = 'wid NOT IN (' . db_placeholders($seen_ids) . ')';
-      $args = array_merge($args, $seen_ids);
+      $query->condition('wid', $seen_ids, 'NOT IN');
     }
-
-    if ($conditions) {
-      $sql .= " WHERE " . implode(' AND ', $conditions);
-    }
-    $sql .= " ORDER BY timestamp";
-    $query = db_query($sql, $args);
-
-    $messages = array();
-    while ($message = db_fetch_object($query)) {
-      $messages[$message->wid] = $message;
-    }
+    $query->orderBy('timestamp');
+    $messages = $query->execute()->fetchAllAssoc('wid');
 
     $seen_ids = array_merge($seen_ids, array_keys($messages));
     return $messages;
@@ -285,7 +262,7 @@ class XMLSitemapTestHelper extends DrupalWebTestCase {
 
     foreach ($messages as $message) {
       $message->text = $this->formatWatchdogMessage($message);
-      if (in_array($message->severity, array(WATCHDOG_EMERG, WATCHDOG_ALERT, WATCHDOG_CRITICAL, WATCHDOG_ERROR, WATCHDOG_WARNING))) {
+      if (in_array($message->severity, array(WATCHDOG_EMERGENCY, WATCHDOG_ALERT, WATCHDOG_CRITICAL, WATCHDOG_ERROR, WATCHDOG_WARNING))) {
         $this->fail($message->text);
       }
       $verbose[] = $message->text;
@@ -321,7 +298,7 @@ class XMLSitemapTestHelper extends DrupalWebTestCase {
       '@timestamp' => $message->timestamp,
       '@severity' => $levels[$message->severity],
       '@type' => $message->type,
-      '!message' => _dblog_format_message($message),
+      '!message' => theme_dblog_message(array('event' => $message, 'link' => FALSE)),
     ));
   }
 
@@ -341,8 +318,8 @@ class XMLSitemapTestHelper extends DrupalWebTestCase {
    */
   protected function verbose($verbose_message, $message = 'Verbose message') {
     if ($id = simpletest_verbose($verbose_message)) {
-      $url = $GLOBALS['base_url'] . '/' . $this->originalFileDirectory . '/simpletest/verbose/' . get_class($this) . '-' . $id . '.html';
-      $this->pass(l($message, $url, array('attributes' => array('target' => '_blank'))), 'User notice');
+      $url = file_create_url($this->originalFileDirectory . '/simpletest/verbose/' . get_class($this) . '-' . $id . '.html');
+      $this->error(l($message, $url, array('attributes' => array('target' => '_blank'))), 'User notice');
     }
   }
 }
@@ -409,12 +386,12 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
     variable_set('xmlsitemap_chunk_size', 4);
 
     // Make the total number of links just equal to the chunk size.
-    $count = db_result(db_query("SELECT COUNT(id) FROM {xmlsitemap}"));
+    $count = db_query("SELECT COUNT(id) FROM {xmlsitemap}")->fetchField();
     for ($i = $count; $i < 4; $i++) {
       $this->addSitemapLink();
       $this->assertEqual(xmlsitemap_get_chunk_count(TRUE), 1);
     }
-    $this->assertEqual(db_result(db_query("SELECT COUNT(id) FROM {xmlsitemap}")), 4);
+    $this->assertEqual(db_query("SELECT COUNT(id) FROM {xmlsitemap}")->fetchField(), 4);
 
     // Add a disabled link, should not change the chunk count.
     $this->addSitemapLink(array('status' => FALSE));
@@ -431,7 +408,7 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
 
     // Delete all links. The chunk count should be 1 not 0.
     db_query("DELETE FROM {xmlsitemap}");
-    $this->assertEqual(db_result(db_query("SELECT COUNT(id) FROM {xmlsitemap}")), 0);
+    $this->assertEqual(db_query("SELECT COUNT(id) FROM {xmlsitemap}")->fetchField(), 0);
     $this->assertEqual(xmlsitemap_get_chunk_count(TRUE), 1);
   }
 
@@ -518,7 +495,7 @@ class XMLSitemapUnitTest extends XMLSitemapTestHelper {
     $this->assertEqual($user->uid, $original_user->uid);
 
     // Attempt to switch to an invalid user ID.
-    $invalid_uid = db_result(db_query("SELECT MAX(uid) FROM {users}")) + 100;
+    $invalid_uid = db_query("SELECT MAX(uid) FROM {users}")->fetchField() + 100;
     $this->assertEqual(xmlsitemap_switch_user($invalid_uid), FALSE);
     $this->assertEqual($user->uid, $original_user->uid);
     $this->assertEqual(xmlsitemap_restore_user(), FALSE);
@@ -735,19 +712,19 @@ class XMLSitemapFunctionalTest extends XMLSitemapTestHelper {
    */
   function testBaseURL() {
     $edit = array('xmlsitemap_base_url' => '');
-    $this->drupalPost('admin/settings/xmlsitemap/settings', $edit, t('Save configuration'));
+    $this->drupalPost('admin/config/search/xmlsitemap/settings', $edit, t('Save configuration'));
     $this->assertText(t('Default base URL field is required.'));
 
     $edit = array('xmlsitemap_base_url' => 'invalid');
-    $this->drupalPost('admin/settings/xmlsitemap/settings', $edit, t('Save configuration'));
+    $this->drupalPost('admin/config/search/xmlsitemap/settings', $edit, t('Save configuration'));
     $this->assertText(t('Invalid base URL.'));
 
     $edit = array('xmlsitemap_base_url' => 'http://example.com/ ');
-    $this->drupalPost('admin/settings/xmlsitemap/settings', $edit, t('Save configuration'));
+    $this->drupalPost('admin/config/search/xmlsitemap/settings', $edit, t('Save configuration'));
     $this->assertText(t('Invalid base URL.'));
 
     $edit = array('xmlsitemap_base_url' => 'http://example.com/');
-    $this->drupalPost('admin/settings/xmlsitemap/settings', $edit, t('Save configuration'));
+    $this->drupalPost('admin/config/search/xmlsitemap/settings', $edit, t('Save configuration'));
     $this->assertText(t('The configuration options have been saved.'));
 
     $this->regenerateSitemap();
@@ -800,7 +777,7 @@ class XMLSitemapRobotsTxtIntegrationTest extends XMLSitemapTestHelper {
   function testRobotsTxt() {
     // Request the un-clean robots.txt path so this will work in case there is
     // still the robots.txt file in the root directory.
-    $this->drupalGet('', array('query' => 'q=robots.txt'));
+    $this->drupalGet('', array('query' => array('q' => 'robots.txt')));
     $this->assertRaw('Sitemap: ' . url('sitemap.xml', array('absolute' => TRUE)));
   }
 }

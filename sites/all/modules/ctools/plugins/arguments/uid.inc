@@ -23,6 +23,7 @@ $plugin = array(
   'default' => array('to_arg' => TRUE),
   'path placeholder' => '%pm_uid_arg', // This is in pagemanager.
   'path placeholder to_arg' => TRUE,
+  'no ui' => TRUE,
 );
 
 /**
@@ -43,7 +44,7 @@ function ctools_argument_uid_context($arg = NULL, $conf = NULL, $empty = FALSE) 
     return NULL;
   }
 
-  $account = user_load(array('uid' => $arg));
+  $account = user_load($arg);
   if (!$account) {
     return NULL;
   }

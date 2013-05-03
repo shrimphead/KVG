@@ -3,7 +3,7 @@
 
 /**
  * Implementation of hook_requirements().
- */
+ *
 function imageapi_requirements($phase) {
   $requirements = array();
   // Ensure translations don't break at install time.
@@ -29,13 +29,12 @@ function imageapi_requirements($phase) {
 
   return $requirements;
 }
-function imageapi_install() {
-}
+*/
 
 /**
- * Implementation of hook_uninstall().
- *
+ * Remove the old ImageAPI toolkit setting.
  */
-function imageapi_uninstall() {
+function imageapi_update_7000() {
   variable_del('imageapi_image_toolkit');
+  return array();
 }

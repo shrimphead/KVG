@@ -37,7 +37,8 @@ function xmlsitemap_modal_get_form() {
         $commands[] = ctools_ajax_command_redirect($_GET['destination']);
       }
     }
-    return ctools_ajax_render($commands);
+    return ajax_render($commands);
+    //return ctools_ajax_render($commands);
   }
   else {
     array_unshift($args, $form_id);
@@ -63,7 +64,7 @@ function xmlsitemap_modal_xmlsitemap_operation_link_alter(array &$link) {
       drupal_add_css(drupal_get_path('module', 'xmlsitemap_modal') . '/xmlsitemap_modal.css');
     }
 
-    $link['attributes']['class'] = 'ctools-use-modal';
+    $link['attributes']['class'][] = 'ctools-use-modal';
 
     if (strpos($link['href'], 'nojs') === FALSE) {
       $link['href'] .= '/nojs';

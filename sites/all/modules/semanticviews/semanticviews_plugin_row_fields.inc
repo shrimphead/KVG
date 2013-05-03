@@ -1,5 +1,4 @@
 <?php
-// $Id: semanticviews_plugin_row_fields.inc,v 1.1.2.14 2010/04/10 00:21:20 bangpound Exp $
 /**
  * @file
  * Contains the semantic row style plugin.

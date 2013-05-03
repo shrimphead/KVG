@@ -59,14 +59,14 @@ class location_handler_field_location_distance extends views_handler_field {
       '#type' => 'textfield',
       '#title' => t('Latitude'),
       '#default_value' => $this->options['latitude'],
-      '#process' => array('views_process_dependency'),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('edit-options-origin' => array('hybrid', 'static')),
     );
     $form['longitude'] = array(
       '#type' => 'textfield',
       '#title' => t('Longitude'),
       '#default_value' => $this->options['longitude'],
-      '#process' => array('views_process_dependency'),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('edit-options-origin' => array('hybrid', 'static')),
     );
 
@@ -74,15 +74,17 @@ class location_handler_field_location_distance extends views_handler_field {
       '#type' => 'textfield',
       '#title' => t('Postal code'),
       '#default_value' => $this->options['postal_code'],
-      '#process' => array('views_process_dependency'),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('edit-options-origin' => array('postal', 'postal_default')),
+      '#maxlength' => 16
     );
+
     $form['country'] = array(
       '#type' => 'select',
       '#title' => t('Country'),
       '#options' => array('' => '') + location_get_iso3166_list(),
       '#default_value' => $this->options['country'],
-      '#process' => array('views_process_dependency'),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('edit-options-origin' => array('postal')),
     );
 
@@ -90,7 +92,7 @@ class location_handler_field_location_distance extends views_handler_field {
       '#type' => 'textarea',
       '#title' => t('PHP code for latitude, longitude'),
       '#default_value' => $this->options['php_code'],
-      '#process' => array('views_process_dependency'),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('edit-options-origin' => array('php')),
       '#description' => t("Enter PHP code that returns a latitude/longitude.  Do not use &lt;?php ?&gt;. You must return only an array with float values set for the 'latitude' and 'longitude' keys."),
     );
@@ -104,7 +106,7 @@ class location_handler_field_location_distance extends views_handler_field {
       '#options' => $nid_argument_options,
       '#default_value' => $this->options['nid_arg'],
       '#description' => empty($nid_argument_options) ? t("Select which of the view's arguments to use as the node ID.  The latitude / longitude of the first location of that node will be used as the origin. Use the 'Global: Null' argument if you don't want to also restrict results to that node ID. You must have added arguments to the view to use this option.") : t("Select which of the view's arguments to use as the node ID.  The latitude / longitude of the first location of that node will be used as the origin. Use the 'Global: Null' argument if you don't want to also restrict results to that node ID."),
-      '#process' => array('views_process_dependency'),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('edit-options-origin' => array('nid_arg')),
     );
     $form['nid_loc_field'] = array(
@@ -113,7 +115,7 @@ class location_handler_field_location_distance extends views_handler_field {
       '#options' => $nid_loc_field_options,
       '#default_value' => $this->options['nid_loc_field'],
       '#description' => t("Select which of the node's locations to use as the origin.  Either the node locations or a CCK location field.  If the location supports multiple entries the first one will be used."),
-      '#process' => array('views_process_dependency'),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('edit-options-origin' => array('nid_arg')),
     );
     $form['uid_arg'] = array(
@@ -122,7 +124,7 @@ class location_handler_field_location_distance extends views_handler_field {
       '#options' => $uid_argument_options,
       '#default_value' => $this->options['uid_arg'],
       '#description' => empty($uid_argument_options) ? t("Select which of the view's arguments to use as the user ID.  The latitude / longitude of the first location of that user will be used as the origin. Use the 'Global: Null' argument if you don't want to also restrict results to that user ID. You must have added arguments to the view to use this option.") : t("Select which of the view's arguments to use as the user ID.  The latitude / longitude of the first location of that user will be used as the origin. Use the 'Global: Null' argument if you don't want to also restrict results to that user ID."),
-      '#process' => array('views_process_dependency'),
+      '#process' => array('ctools_dependent_process'),
       '#dependency' => array('edit-options-origin' => array('uid_arg')),
     );
   }
@@ -143,11 +145,11 @@ class location_handler_field_location_distance extends views_handler_field {
     $dist = (float)$values->{$this->field_alias};
     if ($this->options['units'] == 'km') {
       $dist = $dist / 1000.0;
-      return theme('location_distance', $dist, 'km');
+      return theme('location_distance', array('distance' => $dist, 'units' => 'km'));
     }
     else {
       $dist = $dist / 1609.347;
-      return theme('location_distance', $dist, 'mi');
+      return theme('location_distance', array('distance' => $dist, 'units' => 'mi'));
     }
   }
 

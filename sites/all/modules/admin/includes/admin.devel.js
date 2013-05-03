@@ -1,6 +1,8 @@
-// $Id: admin.devel.js,v 1.1.2.1 2009/11/20 02:44:32 yhahn Exp $
+// $Id: admin.devel.js,v 1.1.2.1.2.2 2010/09/16 18:30:47 yhahn Exp $
+(function($) {
 
-Drupal.behaviors.adminDevel = function(context) {
+Drupal.behaviors.adminDevel = {};
+Drupal.behaviors.adminDevel.attach = function(context) {
   $('#block-admin-devel:not(.admin-processed)').each(function() {
     var devel = $(this);
     devel.addClass('admin-processed');
@@ -17,7 +19,7 @@ Drupal.behaviors.adminDevel = function(context) {
     // Query list show handler.
     $('input.dev-querylog-show', devel).click(function() {
       $(this).hide().siblings('input.dev-querylog-hide').show();
-      $('body > *:not(#admin-toolbar, .devel-querylog)').addClass('devel-hide');
+      $('body > *:not(#admin-toolbar, .region-page-bottom, .devel-querylog)').addClass('devel-hide');
       $('body > .devel-querylog').show();
       return false;
     });
@@ -25,9 +27,11 @@ Drupal.behaviors.adminDevel = function(context) {
     // Query list hide handler.
     $('input.dev-querylog-hide').click(function() {
       $(this).hide().siblings('input.dev-querylog-show').show();
-      $('body > *:not(#admin-toolbar, .devel-querylog)').removeClass('devel-hide');
+      $('body > *:not(#admin-toolbar, .region-page-bottom, .devel-querylog)').removeClass('devel-hide');
       $('body > .devel-querylog').hide();
       return false;
     });
   });
 };
+
+})(jQuery);

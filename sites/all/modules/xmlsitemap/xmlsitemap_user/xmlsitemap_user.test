@@ -47,42 +47,4 @@ class XMLSitemapUserFunctionalTest extends XMLSitemapTestHelper {
     $this->assertText('The changes have been saved.');
     $this->assertSitemapLinkNotVisible('user', $this->normal_user->uid);
   }
-
-  /*function testUserAdminRegister() {
-    $this->drupalLogin($this->admin_user);
-
-    $this->drupalGet('admin/user/user/create');
-    $this->assertFieldByName('xmlsitemap[status]', 'default');
-    $this->assertFieldByName('xmlsitemap[priority]', 'default');
-
-    $edit = array(
-      'name' => $this->randomName(),
-      'mail' => $this->randomName() . '@example.com',
-      'pass[pass1]' => 'test',
-      'pass[pass2]' => 'test',
-    );
-    $this->drupalPost(NULL, $edit, 'Create new account');
-    $this->assertText('Created a new user account');
-  }*/
-
-  /*function testUserRegister() {
-    variable_set('user_email_verification', 0);
-
-    $this->drupalGet('user/register');
-    $this->assertNoFieldByName('xmlsitemap[status]');
-    $this->assertNoFieldByName('xmlsitemap[priority]');
-
-    $edit = array(
-      'name' => $this->randomName(),
-      'mail' => $this->randomName() . '@example.com',
-      'pass[pass1]' => 'test',
-      'pass[pass2]' => 'test',
-    );
-    $this->drupalPost(NULL, $edit, 'Create new account');
-    $this->assertText('Registration successful. You are now logged in.');
-
-    $account = user_load(array('name' => $edit['name']));
-    $this->assertUserSitemapLinkVisible($account);
-    $link = xmlsitemap_link_load('user', $account->uid);
-  }*/
 }

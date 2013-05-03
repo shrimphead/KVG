@@ -1,465 +1,283 @@
 <?php
-// $Id: semanticviews.views_default.inc,v 1.1.2.4 2010/04/10 03:27:17 bangpound Exp $
 
 /**
  * Implementation of hook_views_default_views().
  */
 function semanticviews_views_default_views() {
-  /*
-   * View 'semantic_demo'
-   */
   $view = new view;
   $view->name = 'semantic_demo';
   $view->description = '';
   $view->tag = '';
-  $view->view_php = '';
   $view->base_table = 'node';
-  $view->is_cacheable = FALSE;
-  $view->api_version = 2;
-  $view->disabled = TRUE;
+  $view->api_version = '3.0-alpha1';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');
-  $handler->override_option('fields', array(
+  $handler->display->display_options['title'] = 'Semantic Views demo';
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['row_plugin'] = 'fields';
+  /* Field: Node: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  /* Field: Node: Type */
+  $handler->display->display_options['fields']['type']['id'] = 'type';
+  $handler->display->display_options['fields']['type']['table'] = 'node';
+  $handler->display->display_options['fields']['type']['field'] = 'type';
+  $handler->display->display_options['fields']['type']['label'] = '';
+  $handler->display->display_options['fields']['type']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['type']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['type']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['type']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['type']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['type']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['type']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['type']['link_to_node'] = 0;
+  /* Field: Fields: body */
+  $handler->display->display_options['fields']['entity_id']['id'] = 'entity_id';
+  $handler->display->display_options['fields']['entity_id']['table'] = 'field_data_body';
+  $handler->display->display_options['fields']['entity_id']['field'] = 'entity_id';
+  $handler->display->display_options['fields']['entity_id']['label'] = '';
+  $handler->display->display_options['fields']['entity_id']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['entity_id']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['entity_id']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['entity_id']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['entity_id']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['entity_id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['entity_id']['type'] = 'text_summary_or_trimmed';
+  $handler->display->display_options['fields']['entity_id']['settings'] = array(
+    'trim_length' => '600',
+  );
+  /* Field: Node: Delete link */
+  $handler->display->display_options['fields']['delete_node']['id'] = 'delete_node';
+  $handler->display->display_options['fields']['delete_node']['table'] = 'node';
+  $handler->display->display_options['fields']['delete_node']['field'] = 'delete_node';
+  $handler->display->display_options['fields']['delete_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['delete_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['delete_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['delete_node']['alter']['html'] = 0;
+  /* Field: Node: Edit link */
+  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['table'] = 'node';
+  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['edit_node']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['edit_node']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['edit_node']['alter']['html'] = 0;
+  /* Filter: Node: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = '1';
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+
+  /* Display: Unformatted (default) */
+  $handler = $view->new_display('page', 'Unformatted (default)', 'page_1');
+  $handler->display->display_options['path'] = 'semantic-views-demo/unformatted';
+  $handler->display->display_options['menu']['type'] = 'default tab';
+  $handler->display->display_options['menu']['title'] = 'Unformatted';
+  $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['tab_options']['type'] = 'normal';
+  $handler->display->display_options['tab_options']['title'] = 'Semantic Views demo';
+  $handler->display->display_options['tab_options']['weight'] = '0';
+
+  /* Display: Grid (default) */
+  $handler = $view->new_display('page', 'Grid (default)', 'page_2');
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'grid';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['path'] = 'semantic-views-demo/grid';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Grid';
+  $handler->display->display_options['menu']['weight'] = '1';
+
+  /* Display: List (default) */
+  $handler = $view->new_display('page', 'List (default)', 'page_3');
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'list';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['path'] = 'semantic-views-demo/list';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'List';
+  $handler->display->display_options['menu']['weight'] = '2';
+
+  /* Display: Unformatted (semantic) */
+  $handler = $view->new_display('page', 'Unformatted (semantic)', 'page_4');
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'semanticviews_default';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'semanticviews_fields';
+  $handler->display->display_options['row_options']['skip_blank'] = 1;
+  $handler->display->display_options['row_options']['semantic_html'] = array(
     'title' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'link_to_node' => 1,
-      'exclude' => 0,
-      'id' => 'title',
-      'table' => 'node',
-      'field' => 'title',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Override',
-      ),
+      'element_type' => 'h2',
+      'class' => 'title',
     ),
     'type' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'link_to_node' => 0,
-      'exclude' => 0,
-      'id' => 'type',
-      'table' => 'node',
-      'field' => 'type',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Override',
-      ),
+      'element_type' => 'div',
+      'class' => 'node-type',
     ),
-    'teaser' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'exclude' => 0,
-      'id' => 'teaser',
-      'table' => 'node_revisions',
-      'field' => 'teaser',
-      'relationship' => 'none',
+    'entity_id' => array(
+      'element_type' => 'div',
+      'class' => 'teaser',
     ),
     'delete_node' => array(
-      'label' => 'Delete link',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'text' => '',
-      'exclude' => 0,
-      'id' => 'delete_node',
-      'table' => 'node',
-      'field' => 'delete_node',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
+      'element_type' => 'div',
+      'class' => 'delete',
+      'label_element_type' => 'label',
+      'label_class' => '',
     ),
     'edit_node' => array(
-      'label' => 'Edit link',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'strip_tags' => 0,
-        'html' => 0,
-      ),
-      'text' => '',
-      'exclude' => 0,
-      'id' => 'edit_node',
-      'table' => 'node',
-      'field' => 'edit_node',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('filters', array(
-    'status' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'status',
-      'table' => 'node',
-      'field' => 'status',
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('access', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('cache', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('title', 'Semantic Views demo');
-  $handler->override_option('row_options', array(
-    'inline' => array(),
-    'separator' => '',
-  ));
-  $handler = $view->new_display('page', 'Unformatted (default)', 'page_1');
-  $handler->override_option('path', 'semantic-views-demo/unformatted');
-  $handler->override_option('menu', array(
-    'type' => 'default tab',
-    'title' => 'Unformatted',
-    'description' => '',
-    'weight' => '0',
-    'name' => 'navigation',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'normal',
-    'title' => 'Semantic Views demo',
-    'description' => '',
-    'weight' => '0',
-    'name' => 'navigation',
-  ));
-  $handler = $view->new_display('page', 'Grid (default)', 'page_2');
-  $handler->override_option('style_plugin', 'grid');
-  $handler->override_option('style_options', array(
-    'grouping' => '',
-    'columns' => '4',
-    'alignment' => 'horizontal',
-  ));
-  $handler->override_option('path', 'semantic-views-demo/grid');
-  $handler->override_option('menu', array(
-    'type' => 'tab',
-    'title' => 'Grid',
-    'description' => '',
-    'weight' => '1',
-    'name' => 'navigation',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
-  ));
-  $handler = $view->new_display('page', 'List (default)', 'page_3');
-  $handler->override_option('style_plugin', 'list');
-  $handler->override_option('style_options', array(
-    'grouping' => '',
-    'type' => 'ul',
-  ));
-  $handler->override_option('path', 'semantic-views-demo/list');
-  $handler->override_option('menu', array(
-    'type' => 'tab',
-    'title' => 'List',
-    'description' => '',
-    'weight' => '2',
-    'name' => 'navigation',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => 0,
-    'name' => 'navigation',
-  ));
-  $handler = $view->new_display('page', 'Unformatted (semantic)', 'page_4');
-  $handler->override_option('style_plugin', 'semanticviews_default');
-  $handler->override_option('style_options', array(
-    'grouping' => '',
-    'group' => array(
-      'element_type' => 'h3',
-      'class' => 'title',
-    ),
-    'list' => array(
-      'element_type' => '',
-      'class' => '',
-    ),
-    'row' => array(
       'element_type' => 'div',
-      'class' => '',
-      'last_every_nth' => '0',
-      'first_class' => 'first',
-      'last_class' => 'last',
-      'striping_classes' => 'odd even',
+      'class' => 'edit',
+      'label_element_type' => 'label',
+      'label_class' => '',
     ),
-  ));
-  $handler->override_option('row_plugin', 'semanticviews_fields');
-  $handler->override_option('row_options', array(
-    'semantic_html' => array(
-      'title' => array(
-        'element_type' => 'h2',
-        'class' => 'title',
-      ),
-      'type' => array(
-        'element_type' => 'div',
-        'class' => 'node-type',
-      ),
-      'teaser' => array(
-        'element_type' => '',
-        'class' => '',
-      ),
-      'delete_node' => array(
-        'element_type' => 'div',
-        'class' => '',
-        'label_element_type' => '',
-        'label_class' => '',
-      ),
-      'edit_node' => array(
-        'element_type' => 'div',
-        'class' => '',
-        'label_element_type' => '',
-        'label_class' => '',
-      ),
-    ),
-    'skip_blank' => 1,
-  ));
-  $handler->override_option('path', 'semantic-views-demo/unformatted-semantic');
-  $handler->override_option('menu', array(
-    'type' => 'tab',
-    'title' => 'Unformatted (semantic)',
-    'description' => '',
-    'weight' => '0',
-    'name' => 'navigation',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => '0',
-    'name' => 'navigation',
-  ));
+  );
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['path'] = 'semantic-views-demo/unformatted-semantic';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Unformatted (semantic)';
+  $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['tab_options']['weight'] = '0';
+
+  /* Display: Grid (semantic) */
   $handler = $view->new_display('page', 'Grid (semantic)', 'page_5');
-  $handler->override_option('header', '<style>
-  .grid-unit {
-    width: 20%;
-    margin-right: 5%;
-    float: left;
-  }
-  .first {
-    clear: left;
-  }
-  .last {
-    margin-right: 0;
-  }
-  </style>');
-  $handler->override_option('header_format', '2');
-  $handler->override_option('header_empty', 0);
-  $handler->override_option('style_plugin', 'semanticviews_default');
-  $handler->override_option('style_options', array(
-    'grouping' => '',
-    'group' => array(
-      'element_type' => 'h3',
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'semanticviews_default';
+  $handler->display->display_options['style_options']['row']['class'] = 'grid-unit';
+  $handler->display->display_options['style_options']['row']['last_every_nth'] = '4';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'semanticviews_fields';
+  $handler->display->display_options['row_options']['skip_blank'] = 1;
+  $handler->display->display_options['row_options']['semantic_html'] = array(
+    'title' => array(
+      'element_type' => 'h2',
       'class' => 'title',
     ),
-    'list' => array(
-      'element_type' => '',
-      'class' => '',
-    ),
-    'row' => array(
+    'type' => array(
       'element_type' => 'div',
-      'class' => 'grid-unit',
-      'last_every_nth' => '4',
-      'first_class' => 'first',
-      'last_class' => 'last',
-      'striping_classes' => 'odd even',
+      'class' => 'node-type',
     ),
-  ));
-  $handler->override_option('row_plugin', 'semanticviews_fields');
-  $handler->override_option('row_options', array(
-    'semantic_html' => array(
-      'title' => array(
-        'element_type' => 'h2',
-        'class' => 'title',
-      ),
-      'type' => array(
-        'element_type' => 'div',
-        'class' => 'node-type',
-      ),
-      'teaser' => array(
-        'element_type' => '',
-        'class' => '',
-      ),
-      'delete_node' => array(
-        'element_type' => 'div',
-        'class' => '',
-        'label_element_type' => '',
-        'label_class' => '',
-      ),
-      'edit_node' => array(
-        'element_type' => 'div',
-        'class' => '',
-        'label_element_type' => '',
-        'label_class' => '',
-      ),
+    'entity_id' => array(
+      'element_type' => 'div',
+      'class' => 'teaser',
     ),
-    'skip_blank' => 1,
-  ));
-  $handler->override_option('path', 'semantic-views-demo/grid-semantic');
-  $handler->override_option('menu', array(
-    'type' => 'tab',
-    'title' => 'Grid (semantic)',
-    'description' => '',
-    'weight' => '1',
-    'name' => 'navigation',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => '0',
-    'name' => 'navigation',
-  ));
+    'delete_node' => array(
+      'element_type' => 'div',
+      'class' => 'delete',
+      'label_element_type' => 'label',
+      'label_class' => '',
+    ),
+    'edit_node' => array(
+      'element_type' => 'div',
+      'class' => 'edit',
+      'label_element_type' => 'label',
+      'label_class' => '',
+    ),
+  );
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['header'] = FALSE;
+  /* Header: Global: Text area */
+  $handler->display->display_options['header']['text']['id'] = 'area';
+  $handler->display->display_options['header']['text']['table'] = 'views';
+  $handler->display->display_options['header']['text']['field'] = 'area';
+  $handler->display->display_options['header']['text']['empty'] = FALSE;
+  $handler->display->display_options['header']['text']['content'] = '<style>
+    .grid-unit {
+      width: 20%;
+      margin-right: 5%;
+      float: left;
+    }
+    .first {
+      clear: left;
+    }
+    .last {
+      margin-right: 0;
+    }
+    </style>';
+  $handler->display->display_options['header']['text']['format'] = '2';
+  $handler->display->display_options['path'] = 'semantic-views-demo/grid-semantic';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'Grid (semantic)';
+  $handler->display->display_options['menu']['weight'] = '1';
+  $handler->display->display_options['tab_options']['weight'] = '0';
+
+  /* Display: List (semantic) */
   $handler = $view->new_display('page', 'List (semantic)', 'page_6');
-  $handler->override_option('style_plugin', 'semanticviews_default');
-  $handler->override_option('style_options', array(
-    'grouping' => '',
-    'group' => array(
-      'element_type' => 'h3',
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'semanticviews_default';
+  $handler->display->display_options['style_options']['list']['element_type'] = 'ul';
+  $handler->display->display_options['style_options']['row']['element_type'] = 'li';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'semanticviews_fields';
+  $handler->display->display_options['row_options']['skip_blank'] = 1;
+  $handler->display->display_options['row_options']['semantic_html'] = array(
+    'title' => array(
+      'element_type' => 'h2',
       'class' => 'title',
     ),
-    'list' => array(
-      'element_type' => 'ul',
-      'class' => '',
+    'type' => array(
+      'element_type' => 'div',
+      'class' => 'node-type',
     ),
-    'row' => array(
-      'element_type' => 'li',
-      'class' => '',
-      'last_every_nth' => '0',
-      'first_class' => 'first',
-      'last_class' => 'last',
-      'striping_classes' => 'odd even',
+    'entity_id' => array(
+      'element_type' => 'div',
+      'class' => 'teaser',
     ),
-  ));
-  $handler->override_option('row_plugin', 'semanticviews_fields');
-  $handler->override_option('row_options', array(
-    'semantic_html' => array(
-      'title' => array(
-        'element_type' => 'h2',
-        'class' => 'title',
-      ),
-      'type' => array(
-        'element_type' => 'div',
-        'class' => 'node-type',
-      ),
-      'teaser' => array(
-        'element_type' => '',
-        'class' => '',
-      ),
-      'delete_node' => array(
-        'element_type' => 'div',
-        'class' => '',
-        'label_element_type' => '',
-        'label_class' => '',
-      ),
-      'edit_node' => array(
-        'element_type' => 'div',
-        'class' => '',
-        'label_element_type' => '',
-        'label_class' => '',
-      ),
+    'delete_node' => array(
+      'element_type' => 'div',
+      'class' => 'delete',
+      'label_element_type' => 'label',
+      'label_class' => '',
     ),
-    'skip_blank' => 1,
-  ));
-  $handler->override_option('path', 'semantic-views-demo/list-semantic');
-  $handler->override_option('menu', array(
-    'type' => 'tab',
-    'title' => 'List (semantic)',
-    'description' => '',
-    'weight' => '2',
-    'name' => 'navigation',
-  ));
-  $handler->override_option('tab_options', array(
-    'type' => 'none',
-    'title' => '',
-    'description' => '',
-    'weight' => '0',
-    'name' => 'navigation',
-  ));
+    'edit_node' => array(
+      'element_type' => 'div',
+      'class' => 'edit',
+      'label_element_type' => 'label',
+      'label_class' => '',
+    ),
+  );
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['path'] = 'semantic-views-demo/list-semantic';
+  $handler->display->display_options['menu']['type'] = 'tab';
+  $handler->display->display_options['menu']['title'] = 'List (semantic)';
+  $handler->display->display_options['menu']['weight'] = '2';
+  $handler->display->display_options['tab_options']['weight'] = '0';
   $views[$view->name] = $view;
 
   return $views;

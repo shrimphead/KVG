@@ -70,8 +70,8 @@ function imagerotate(&$im, $angle, $bgcolor) {
   $rotate = imagecreatetruecolor($rot_width, $rot_height);
   $bg = imagecolorallocatealpha($rotate, $r, $g, $b, $a);
   imagefilledrectangle($rotate, 0, 0, $rot_width, $rot_height, $bg);
-  imagealphablending($rotate, FALSE);
-  imagesavealpha($rotate, TRUE);
+  imagealphablending($rotate, false);
+  imagesavealpha($rotate, true);
 
   switch ($angle) {
     case 90:

@@ -5,8 +5,12 @@
  * @author
  *   Stella Power, <http://drupal.org/user/66894>
  */
+var Lightvideo;
 
-var Lightvideo = {
+// start jQuery block
+(function ($) {
+
+Lightvideo = {
 
   // startVideo()
   startVideo: function (href) {
@@ -204,3 +208,6 @@ var Lightvideo = {
   }
 
 };
+
+//End jQuery block
+}(jQuery));

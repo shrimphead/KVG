@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Installation functions for Wysiwyg module.
+ */
+
+/**
  * Implementation of hook_schema().
  */
 function wysiwyg_schema() {
@@ -8,11 +13,11 @@ function wysiwyg_schema() {
     'description' => 'Stores Wysiwyg profiles.',
     'fields' => array(
       'format' => array(
-        'description' => 'The {filter_formats}.format of the text format.',
-        'type' => 'int',
+        'description' => 'The {filter_format}.format of the text format.',
+        'type' => 'varchar',
+        'length' => 255,
         // Primary keys are implicitly not null.
         'not null' => TRUE,
-        'default' => 0,
       ),
       'editor' => array(
         'description' => 'Internal name of the editor attached to the text format.',
@@ -25,12 +30,13 @@ function wysiwyg_schema() {
         'description' => 'Configuration settings for the editor.',
         'type' => 'text',
         'size' => 'normal',
+        'serialize' => TRUE,
       ),
     ),
     'primary key' => array('format'),
     'foreign keys' => array(
       'format' => array(
-        'table' => 'filter_formats',
+        'table' => 'filter_format',
         'columns' => array('format' => 'format'),
       ),
     ),
@@ -46,8 +52,9 @@ function wysiwyg_schema() {
         'default' => 0,
       ),
       'format' => array(
-        'description' => 'The {filter_formats}.format of the text format.',
-        'type' => 'int',
+        'description' => 'The {filter_format}.format of the text format.',
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => FALSE,
       ),
       'status' => array(
@@ -69,26 +76,12 @@ function wysiwyg_schema() {
         'columns' => array('uid' => 'uid'),
       ),
       'format' => array(
-        'table' => 'filter_formats',
+        'table' => 'filter_format',
         'columns' => array('format' => 'format'),
       ),
     ),
   );
   return $schema;
-}
-
-/**
- * Implementation of hook_install().
- */
-function wysiwyg_install() {
-  drupal_install_schema('wysiwyg');
-}
-
-/**
- * Implementation of hook_uninstall()
- */
-function wysiwyg_uninstall() {
-  drupal_uninstall_schema('wysiwyg');
 }
 
 /**
@@ -121,6 +114,19 @@ function wysiwyg_enable() {
     'xstandard',
     'yui_editor',
   ));
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function wysiwyg_update_dependencies() {
+  // Ensure that format columns are only changed after Filter module has changed
+  // the primary records.
+  $dependencies['wysiwyg'][7000] = array(
+    'filter' => 7010,
+  );
+
+  return $dependencies;
 }
 
 /**
@@ -238,12 +244,24 @@ function wysiwyg_update_6200() {
 }
 
 /**
+ * Change {wysiwyg}.format into a string.
+ */
+function wysiwyg_update_7000() {
+  db_drop_primary_key('wysiwyg');
+  db_change_field('wysiwyg', 'format', 'format', array(
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => TRUE,
+  ));
+  db_add_primary_key('wysiwyg', array('format'));
+}
+
+/**
  * Create the {wysiwyg_user} table.
  */
-function wysiwyg_update_6201() {
-  $ret = array();
+function wysiwyg_update_7200() {
   if (!db_table_exists('wysiwyg_user')) {
-    db_create_table($ret, 'wysiwyg_user', array(
+    db_create_table('wysiwyg_user', array(
       'description' => 'Stores user preferences for wysiwyg profiles.',
       'fields' => array(
         'uid' => array(
@@ -254,8 +272,9 @@ function wysiwyg_update_6201() {
           'default' => 0,
         ),
         'format' => array(
-          'description' => 'The {filter_formats}.format of the text format.',
-          'type' => 'int',
+          'description' => 'The {filter_format}.format of the text format.',
+          'type' => 'varchar',
+          'length' => 255,
           'not null' => FALSE,
         ),
         'status' => array(
@@ -277,11 +296,18 @@ function wysiwyg_update_6201() {
           'columns' => array('uid' => 'uid'),
         ),
         'format' => array(
-          'table' => 'filter_formats',
+          'table' => 'filter_format',
           'columns' => array('format' => 'format'),
         ),
       ),
     ));
   }
-  return $ret;
+  else {
+    db_change_field('wysiwyg_user', 'format', 'format', array(
+      'description' => 'The {filter_format}.format of the text format.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+    ));
+  }
 }

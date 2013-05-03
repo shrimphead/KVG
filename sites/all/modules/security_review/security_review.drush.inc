@@ -51,18 +51,18 @@ function security_review_drush_help($section) {
  * Run checklist and display results command.
  */
 function security_review_drush() {
-  module_load_include('inc', 'security_review');
+  // Retrieve the checklist.
+  $checklist = module_invoke_all('security_checks');
 
   $store = drush_get_option('store');
   $log = drush_get_option('log');
   $lastrun = drush_get_option('lastrun');
-  $checklist = module_invoke_all('security_checks');
   if (!$lastrun) {
     // Unset file_perms of security_review because drush is running as a
     // different user.
     unset($checklist['security_review']['file_perms']);
+    // Remove checks that are being skipped if storing.
     if ($store) {
-      // Remove checks that are being skipped.
       $skipped = security_review_skipped_checks();
       if (!empty($skipped)) {
         foreach ($skipped as $module => $checks) {
@@ -76,7 +76,7 @@ function security_review_drush() {
       }
     }
     // Run the checklist.
-    $checklist_results = security_review_run($checklist, $log);
+    $checklist_results = security_review_run($checklist, $log ? TRUE : NULL);
     if ($store) {
       security_review_store_results($checklist_results);
     }
@@ -102,8 +102,8 @@ function security_review_drush() {
   elseif ($lastrun) {
     // Retrieve results from last run of the checklist.
     $results = db_query("SELECT namespace, reviewcheck, result, lastrun, skip, skiptime, skipuid FROM {security_review}");
-    while ($result = db_fetch_array($results)) {
-      $checks[] = $result;
+    while($record = $results->fetchAssoc()) {
+      $checks[] = $record;
     }
     // Print results.
     if (!empty($checks)) {
@@ -161,7 +161,7 @@ function security_review_drush_hash_setup() {
       while (!feof($handle)) {
         $buffer = fgets($handle, 4096);
         $word = trim($buffer);
-        $hash = md5($word);
+        $hash = md5($hash);
         $sql = "INSERT INTO {security_review_rainbow} (hash_word, hash_hash) VALUES ('%s', '%s')";
         db_query($sql, $word, $hash);
         $count++;
