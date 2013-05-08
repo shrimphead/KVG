@@ -38,3 +38,9 @@ REGION: [featured-teaser-one] = Featured Teaser One
 TO CHANGE THE IMAGE:
   - Taxonomy term 'section'
   - Update the image associated with each image' season
+
+
+DIRECTORY
+- free ads
+  Must select FREE option
+

@@ -245,7 +245,7 @@ div.pager {
 .pager li.pager-current span,
 .primary-tabs li.active a {
   color:#fff;
-  text-shadow:#38a 0px 1px 0px;  
+  text-shadow:#38a 0px 1px 0px;
   }
 
 /* Secondary tabs, nested */

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the KG Directory feature.
+ */
+
+include_once 'kg_directory.features.inc';

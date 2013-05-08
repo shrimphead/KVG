@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the KG Admin feature.
+ */
+
+include_once 'kg_admin.features.inc';

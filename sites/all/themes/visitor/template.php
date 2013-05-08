@@ -2,11 +2,15 @@
 /**
 * Set default main menu.
 */
-//function visitor_links__system_main_menu($variables) {
-//    $pid = variable_get('menu_main_links_source', 'menu-directory');
-//    $tree = menu_tree($pid);
-//	return drupal_render($tree);
-//}
+
+
+/**
+* Implementation of hook_page
+*/
+#function visitor_page_alter($page) {
+#  dpm($page);
+#}
+
 
 /**
 * Override or insert variables into the html template.
@@ -109,10 +113,16 @@ function visitor_breadcrumb($variables){
 
 }
 
+
+
 /**
  * Page alter.
  */
 function visitor_page_alter($page) {
+
+ // dpm($page);
+
+
 
 	if (theme_get_setting('responsive_meta','visitor')):
 		$mobileoptimized = array(

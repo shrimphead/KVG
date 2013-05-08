@@ -755,11 +755,26 @@ for($link = 0; $link < $total;  $link++) {
   $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['row_options']['hide_empty'] = TRUE;
   $handler->display->display_options['row_options']['default_field_elements'] = FALSE;
+  /* Field: Taxonomy term: Name */
+  $handler->display->display_options['fields']['name']['id'] = 'name';
+  $handler->display->display_options['fields']['name']['table'] = 'taxonomy_term_data';
+  $handler->display->display_options['fields']['name']['field'] = 'name';
+  $handler->display->display_options['fields']['name']['label'] = '';
+  $handler->display->display_options['fields']['name']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['name']['alter']['path'] = '[name]';
+  $handler->display->display_options['fields']['name']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['name']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['name']['element_type'] = 'div';
+  $handler->display->display_options['fields']['name']['element_class'] = 'featured-teaser-title';
+  $handler->display->display_options['fields']['name']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['name']['element_default_classes'] = FALSE;
   /* Field: Taxonomy term: Summer */
   $handler->display->display_options['fields']['field_summer']['id'] = 'field_summer';
   $handler->display->display_options['fields']['field_summer']['table'] = 'field_data_field_summer';
   $handler->display->display_options['fields']['field_summer']['field'] = 'field_summer';
   $handler->display->display_options['fields']['field_summer']['label'] = '';
+  $handler->display->display_options['fields']['field_summer']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['field_summer']['alter']['path'] = '[name]';
   $handler->display->display_options['fields']['field_summer']['element_type'] = 'div';
   $handler->display->display_options['fields']['field_summer']['element_class'] = 'featured-teaser-image';
   $handler->display->display_options['fields']['field_summer']['element_label_colon'] = FALSE;
@@ -767,7 +782,7 @@ for($link = 0; $link < $total;  $link++) {
   $handler->display->display_options['fields']['field_summer']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_summer']['settings'] = array(
     'image_style' => 'front-teaser_horizontal_small',
-    'image_link' => 'content',
+    'image_link' => '',
   );
   /* Field: Taxonomy term: Fall */
   $handler->display->display_options['fields']['field_fall']['id'] = 'field_fall';
@@ -775,6 +790,8 @@ for($link = 0; $link < $total;  $link++) {
   $handler->display->display_options['fields']['field_fall']['field'] = 'field_fall';
   $handler->display->display_options['fields']['field_fall']['label'] = '';
   $handler->display->display_options['fields']['field_fall']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_fall']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['field_fall']['alter']['path'] = '[name]';
   $handler->display->display_options['fields']['field_fall']['element_type'] = 'div';
   $handler->display->display_options['fields']['field_fall']['element_class'] = 'featured-teaser-image';
   $handler->display->display_options['fields']['field_fall']['element_label_colon'] = FALSE;
@@ -782,7 +799,7 @@ for($link = 0; $link < $total;  $link++) {
   $handler->display->display_options['fields']['field_fall']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_fall']['settings'] = array(
     'image_style' => 'front-teaser_horizontal_small',
-    'image_link' => 'content',
+    'image_link' => '',
   );
   /* Field: Taxonomy term: Spring */
   $handler->display->display_options['fields']['field_spring']['id'] = 'field_spring';
@@ -790,6 +807,8 @@ for($link = 0; $link < $total;  $link++) {
   $handler->display->display_options['fields']['field_spring']['field'] = 'field_spring';
   $handler->display->display_options['fields']['field_spring']['label'] = '';
   $handler->display->display_options['fields']['field_spring']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_spring']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['field_spring']['alter']['path'] = '[name]';
   $handler->display->display_options['fields']['field_spring']['element_type'] = 'div';
   $handler->display->display_options['fields']['field_spring']['element_class'] = 'featured-teaser-image';
   $handler->display->display_options['fields']['field_spring']['element_label_colon'] = FALSE;
@@ -797,7 +816,7 @@ for($link = 0; $link < $total;  $link++) {
   $handler->display->display_options['fields']['field_spring']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_spring']['settings'] = array(
     'image_style' => 'front-teaser_horizontal_small',
-    'image_link' => 'content',
+    'image_link' => '',
   );
   /* Field: Taxonomy term: Winter */
   $handler->display->display_options['fields']['field_winter']['id'] = 'field_winter';
@@ -805,6 +824,8 @@ for($link = 0; $link < $total;  $link++) {
   $handler->display->display_options['fields']['field_winter']['field'] = 'field_winter';
   $handler->display->display_options['fields']['field_winter']['label'] = '';
   $handler->display->display_options['fields']['field_winter']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_winter']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['field_winter']['alter']['path'] = '[name]';
   $handler->display->display_options['fields']['field_winter']['element_type'] = 'div';
   $handler->display->display_options['fields']['field_winter']['element_class'] = 'featured-teaser-image';
   $handler->display->display_options['fields']['field_winter']['element_label_colon'] = FALSE;
@@ -812,7 +833,7 @@ for($link = 0; $link < $total;  $link++) {
   $handler->display->display_options['fields']['field_winter']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_winter']['settings'] = array(
     'image_style' => 'front-teaser_horizontal_small',
-    'image_link' => 'content',
+    'image_link' => '',
   );
   /* Field: PHP: Image selector */
   $handler->display->display_options['fields']['php']['id'] = 'php';
@@ -830,17 +851,6 @@ print($row->field_summer);
 ?>';
   $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
   $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
-  /* Field: Taxonomy term: Name */
-  $handler->display->display_options['fields']['name']['id'] = 'name';
-  $handler->display->display_options['fields']['name']['table'] = 'taxonomy_term_data';
-  $handler->display->display_options['fields']['name']['field'] = 'name';
-  $handler->display->display_options['fields']['name']['label'] = '';
-  $handler->display->display_options['fields']['name']['alter']['word_boundary'] = FALSE;
-  $handler->display->display_options['fields']['name']['alter']['ellipsis'] = FALSE;
-  $handler->display->display_options['fields']['name']['element_type'] = 'div';
-  $handler->display->display_options['fields']['name']['element_class'] = 'featured-teaser-title';
-  $handler->display->display_options['fields']['name']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['name']['element_default_classes'] = FALSE;
   /* Field: Taxonomy vocabulary: Description */
   $handler->display->display_options['fields']['description']['id'] = 'description';
   $handler->display->display_options['fields']['description']['table'] = 'taxonomy_vocabulary';

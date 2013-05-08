@@ -1,6 +1,7 @@
 name = KG Layout
 core = 7.x
 package = KG
+php = 5.2.4
 version = 7.x-1.0-alpha
 project = kg_layout
 dependencies[] = block
