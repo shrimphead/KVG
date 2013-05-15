@@ -26,22 +26,10 @@ function kg_layout_context_default_contexts() {
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'search-form' => array(
-          'module' => 'search',
-          'delta' => 'form',
-          'region' => 'header',
-          'weight' => '-10',
-        ),
         'menu-menu-front-menu-links' => array(
           'module' => 'menu',
           'delta' => 'menu-front-menu-links',
           'region' => 'header',
-          'weight' => '-9',
-        ),
-        'system-main-menu' => array(
-          'module' => 'system',
-          'delta' => 'main-menu',
-          'region' => 'main-menu',
           'weight' => '-9',
         ),
         'views-dd5fbe9aac0ece627d032e79fd327b5e' => array(
@@ -74,10 +62,16 @@ function kg_layout_context_default_contexts() {
           'region' => 'content',
           'weight' => '-10',
         ),
-        'views-featured_article-block_1' => array(
+        'views-04b6fce622057da31b562c1ea3e16923' => array(
           'module' => 'views',
-          'delta' => 'featured_article-block_1',
+          'delta' => '04b6fce622057da31b562c1ea3e16923',
           'region' => 'sidebar_first',
+          'weight' => '-10',
+        ),
+        'menu-menu-articles' => array(
+          'module' => 'menu',
+          'delta' => 'menu-articles',
+          'region' => 'sidebar_second',
           'weight' => '-10',
         ),
         'block-2' => array(

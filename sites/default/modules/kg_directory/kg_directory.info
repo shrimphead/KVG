@@ -9,6 +9,7 @@ dependencies[] = conditional_fields
 dependencies[] = email
 dependencies[] = field_group
 dependencies[] = kg_layout
+dependencies[] = lightbox2
 dependencies[] = link
 dependencies[] = list
 dependencies[] = node

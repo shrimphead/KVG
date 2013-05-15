@@ -22,7 +22,7 @@ function kg_directory_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => -7,
+        'weight' => 4,
       ),
       'teaser' => array(
         'label' => 'hidden',
@@ -68,7 +68,7 @@ function kg_directory_field_default_field_instances() {
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
-        'weight' => 1,
+        'weight' => 6,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -110,7 +110,7 @@ function kg_directory_field_default_field_instances() {
         'module' => 'email',
         'settings' => array(),
         'type' => 'email_default',
-        'weight' => -1,
+        'weight' => 2,
       ),
       'full' => array(
         'label' => 'hidden',
@@ -168,7 +168,7 @@ function kg_directory_field_default_field_instances() {
         'module' => 'list',
         'settings' => array(),
         'type' => 'list_default',
-        'weight' => 2,
+        'weight' => 8,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -208,9 +208,8 @@ function kg_directory_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'list',
         'settings' => array(),
-        'type' => 'list_default',
+        'type' => 'hidden',
         'weight' => 3,
       ),
       'teaser' => array(
@@ -255,7 +254,7 @@ function kg_directory_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(),
         'type' => 'text_default',
-        'weight' => -4,
+        'weight' => 5,
       ),
       'full' => array(
         'label' => 'hidden',
@@ -316,7 +315,7 @@ function kg_directory_field_default_field_instances() {
           'image_style' => '',
         ),
         'type' => 'image',
-        'weight' => -3,
+        'weight' => 2,
       ),
       'full' => array(
         'label' => 'hidden',
@@ -418,16 +417,19 @@ function kg_directory_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'file',
+        'module' => 'lightbox2',
         'settings' => array(),
-        'type' => 'file_default',
-        'weight' => -3,
+        'type' => 'lightbox2__lightbox__large__original',
+        'weight' => 1,
       ),
       'full' => array(
         'label' => 'hidden',
-        'module' => 'file',
-        'settings' => array(),
-        'type' => 'file_default',
+        'module' => 'image',
+        'settings' => array(
+          'image_link' => '',
+          'image_style' => '',
+        ),
+        'type' => 'image',
         'weight' => -3,
       ),
       'rss' => array(
@@ -488,7 +490,7 @@ function kg_directory_field_default_field_instances() {
     'weight' => -3,
     'widget' => array(
       'active' => 0,
-      'module' => 'file',
+      'module' => 'image',
       'settings' => array(
         'filefield_source_attach_absolute' => 0,
         'filefield_source_attach_mode' => 'move',
@@ -516,9 +518,10 @@ function kg_directory_field_default_field_instances() {
           'link' => FALSE,
         ),
         'insert_width' => '',
+        'preview_image_style' => 'thumbnail',
         'progress_indicator' => 'bar',
       ),
-      'type' => 'file_generic',
+      'type' => 'image_image',
       'weight' => 3,
     ),
     'widget_type' => 'filefield_widget',
@@ -532,11 +535,11 @@ function kg_directory_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'inline',
         'module' => 'taxonomy',
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
-        'weight' => 0,
+        'weight' => 3,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -577,7 +580,7 @@ function kg_directory_field_default_field_instances() {
         'module' => 'link',
         'settings' => array(),
         'type' => 'link_url',
-        'weight' => -2,
+        'weight' => 1,
       ),
       'full' => array(
         'label' => 'hidden',
@@ -647,10 +650,9 @@ function kg_directory_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'list',
         'settings' => array(),
-        'type' => 'list_default',
-        'weight' => -4,
+        'type' => 'hidden',
+        'weight' => 2,
       ),
       'full' => array(
         'label' => 'hidden',

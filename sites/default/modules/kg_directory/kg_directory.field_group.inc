@@ -18,15 +18,13 @@ function kg_directory_field_group_info() {
   $field_group->entity_type = 'node';
   $field_group->bundle = 'directory';
   $field_group->mode = 'default';
-  $field_group->parent_name = '';
+  $field_group->parent_name = 'group_info';
   $field_group->data = array(
     'label' => 'Contact',
-    'weight' => '-6',
+    'weight' => '7',
     'children' => array(
-      0 => 'field_email',
-      1 => 'field_hours',
-      2 => 'field_phone',
-      3 => 'field_website',
+      0 => 'field_website',
+      1 => 'field_email',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
@@ -101,16 +99,28 @@ function kg_directory_field_group_info() {
   $field_group->parent_name = '';
   $field_group->data = array(
     'label' => 'Information',
-    'weight' => '-8',
+    'weight' => '1',
     'children' => array(
-      0 => 'field_kvg_ad',
-      1 => 'field_section',
-      2 => 'field_year',
+      0 => 'body',
+      1 => 'field_hours',
+      2 => 'field_section',
+      3 => 'field_accommodation_type',
+      4 => 'field_facilities',
+      5 => 'field_free_ad',
+      6 => 'group_contact',
     ),
-    'format_type' => 'fieldset',
+    'format_type' => 'div',
     'format_settings' => array(
+      'label' => 'Information',
+      'instance_settings' => array(
+        'classes' => 'grid_4 omega',
+        'description' => '',
+        'show_label' => '0',
+        'label_element' => 'h3',
+        'effect' => 'none',
+        'speed' => 'fast',
+      ),
       'formatter' => 'collapsible',
-      'instance_settings' => array(),
     ),
   );
   $export['group_info|node|directory|default'] = $field_group;
@@ -183,15 +193,24 @@ function kg_directory_field_group_info() {
   $field_group->mode = 'default';
   $field_group->parent_name = '';
   $field_group->data = array(
-    'label' => 'Optional',
-    'weight' => '-5',
+    'label' => '',
+    'weight' => '0',
     'children' => array(
       0 => 'field_image',
+      1 => 'field_kvg_ad',
     ),
-    'format_type' => 'fieldset',
+    'format_type' => 'div',
     'format_settings' => array(
-      'formatter' => 'collapsible',
-      'instance_settings' => array(),
+      'label' => '',
+      'instance_settings' => array(
+        'classes' => 'grid_8 alpha',
+        'description' => '',
+        'show_label' => '0',
+        'label_element' => 'h3',
+        'effect' => 'none',
+        'speed' => 'fast',
+      ),
+      'formatter' => 'open',
     ),
   );
   $export['group_optional|node|directory|default'] = $field_group;

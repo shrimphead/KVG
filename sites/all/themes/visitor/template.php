@@ -115,47 +115,43 @@ function visitor_breadcrumb($variables){
 
 
 
+/* FROM TAO THEME */
 /**
- * Page alter.
+ * Implementation of hook_theme().
  */
-function visitor_page_alter($page) {
+ function visitor_theme() {
+   $items = array();
 
- // dpm($page);
+   // Consolidate a variety of theme functions under a single template type.
+   $items['block'] = array(
+     'arguments' => array('block' => NULL),
+     'template' => 'object',
+     'path' => drupal_get_path('theme', 'tao') .'/templates',
+   );
+   $items['comment'] = array(
+     'arguments' => array('comment' => NULL, 'node' => NULL, 'links' => array()),
+     'template' => 'object',
+     'path' => drupal_get_path('theme', 'tao') .'/templates',
+   );
+   $items['node'] = array(
+     'arguments' => array('node' => NULL, 'teaser' => FALSE, 'page' => FALSE),
+     'template' => 'node',
+     'path' => drupal_get_path('theme', 'tao') .'/templates',
+   );
+   $items['fieldset'] = array(
+     'arguments' => array('element' => array()),
+     'template' => 'fieldset',
+     'path' => drupal_get_path('theme', 'tao') .'/templates',
+   );
 
+   // Split out pager list into separate theme function.
+   $items['pager_list'] = array('arguments' => array(
+     'tags' => array(),
+     'limit' => 10,
+     'element' => 0,
+     'parameters' => array(),
+     'quantity' => 9,
+   ));
 
-
-	if (theme_get_setting('responsive_meta','visitor')):
-		$mobileoptimized = array(
-			'#type' => 'html_tag',
-			'#tag' => 'meta',
-			'#attributes' => array(
-			'name' =>  'MobileOptimized',
-			'content' =>  'width'
-			)
-		);
-
-		$handheldfriendly = array(
-			'#type' => 'html_tag',
-			'#tag' => 'meta',
-			'#attributes' => array(
-			'name' =>  'HandheldFriendly',
-			'content' =>  'true'
-			)
-		);
-
-		$viewport = array(
-			'#type' => 'html_tag',
-			'#tag' => 'meta',
-			'#attributes' => array(
-			'name' =>  'viewport',
-			'content' =>  'width=device-width, initial-scale=1'
-			)
-		);
-
-		drupal_add_html_head($mobileoptimized, 'MobileOptimized');
-		drupal_add_html_head($handheldfriendly, 'HandheldFriendly');
-		drupal_add_html_head($viewport, 'viewport');
-	endif;
-}
-
-?>
+   return $items;
+ }

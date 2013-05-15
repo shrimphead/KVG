@@ -33,47 +33,50 @@ function kg_directory_views_default_views() {
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = '5';
+  $handler->display->display_options['pager']['options']['tags']['first'] = 'first';
+  $handler->display->display_options['pager']['options']['tags']['previous'] = 'previous';
+  $handler->display->display_options['pager']['options']['tags']['next'] = 'next';
+  $handler->display->display_options['pager']['options']['tags']['last'] = 'last';
   $handler->display->display_options['style_plugin'] = 'semanticviews_default';
   $handler->display->display_options['style_options']['list']['element_type'] = 'ul';
   $handler->display->display_options['style_options']['list']['class'] = 'directory-item-list grid_8 alpha omega';
   $handler->display->display_options['style_options']['row']['class'] = 'directory-item-row grid_8 alpha omega node';
   $handler->display->display_options['row_plugin'] = 'semanticviews_fields';
-  $handler->display->display_options['row_options']['skip_blank'] = 0;
+  $handler->display->display_options['row_options']['skip_blank'] = 1;
   $handler->display->display_options['row_options']['semantic_html'] = array(
-    'field_kvg_ad' => array(
+    'field_kvg_ad_1' => array(
       'element_type' => 'div',
-      'class' => 'kg-ad grid_3 alpha',
+      'class' => 'kg-ad-featured grid_3 alpha',
+    ),
+    'edit_node' => array(
+      'element_type' => 'div',
+      'class' => 'admin-edit-link',
     ),
     'title' => array(
       'element_type' => 'div',
-      'class' => 'kg-title grid_5 omega',
+      'class' => 'kg-title-featured grid_5 omega',
     ),
     'body' => array(
       'element_type' => 'div',
-      'class' => 'kg-body grid_5 omega',
+      'class' => 'kg-body kg-body-featured grid_5 omega',
+    ),
+    'phone' => array(
+      'element_type' => 'div',
+      'class' => 'kg-body kg-body-phone',
+      'label_element_type' => '',
+      'label_class' => '',
+    ),
+    'street' => array(
+      'element_type' => 'div',
+      'class' => 'kg-body kg-body-address ',
+      'label_element_type' => '',
+      'label_class' => '',
+    ),
+    'city' => array(
+      'element_type' => 'div',
+      'class' => 'kg-body kg-body-city',
     ),
   );
-  /* Field: Content: KVG Ad */
-  $handler->display->display_options['fields']['field_kvg_ad']['id'] = 'field_kvg_ad';
-  $handler->display->display_options['fields']['field_kvg_ad']['table'] = 'field_data_field_kvg_ad';
-  $handler->display->display_options['fields']['field_kvg_ad']['field'] = 'field_kvg_ad';
-  $handler->display->display_options['fields']['field_kvg_ad']['label'] = '';
-  $handler->display->display_options['fields']['field_kvg_ad']['alter']['text'] = 'a href=\'[field_kvg_ad]\' class=\'kvg-ad-image\'';
-  $handler->display->display_options['fields']['field_kvg_ad']['element_type'] = 'div';
-  $handler->display->display_options['fields']['field_kvg_ad']['element_class'] = 'kg-ad-field';
-  $handler->display->display_options['fields']['field_kvg_ad']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_kvg_ad']['click_sort_column'] = 'fid';
-  $handler->display->display_options['fields']['field_kvg_ad']['type'] = 'file_url_plain';
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'node';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
-  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  $handler->display->display_options['fields']['title']['element_type'] = 'div';
-  $handler->display->display_options['fields']['title']['element_class'] = 'kg-title';
-  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   /* Field: Content: Link */
   $handler->display->display_options['fields']['view_node']['id'] = 'view_node';
   $handler->display->display_options['fields']['view_node']['table'] = 'views_entity_node';
@@ -82,6 +85,34 @@ function kg_directory_views_default_views() {
   $handler->display->display_options['fields']['view_node']['exclude'] = TRUE;
   $handler->display->display_options['fields']['view_node']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['view_node']['text'] = '…more';
+  /* Field: Content: KVG Ad */
+  $handler->display->display_options['fields']['field_kvg_ad_1']['id'] = 'field_kvg_ad_1';
+  $handler->display->display_options['fields']['field_kvg_ad_1']['table'] = 'field_data_field_kvg_ad';
+  $handler->display->display_options['fields']['field_kvg_ad_1']['field'] = 'field_kvg_ad';
+  $handler->display->display_options['fields']['field_kvg_ad_1']['label'] = '';
+  $handler->display->display_options['fields']['field_kvg_ad_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_kvg_ad_1']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_kvg_ad_1']['settings'] = array(
+    'image_style' => 'smart-thumbnail-med-print',
+    'image_link' => 'content',
+  );
+  /* Field: Content: Edit link */
+  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
+  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
+  $handler->display->display_options['fields']['edit_node']['label'] = '';
+  $handler->display->display_options['fields']['edit_node']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['edit_node']['text'] = 'EDIT';
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_type'] = 'div';
+  $handler->display->display_options['fields']['title']['element_class'] = 'kg-title-featured';
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   /* Field: Content: Body */
   $handler->display->display_options['fields']['body']['id'] = 'body';
   $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
@@ -99,6 +130,32 @@ function kg_directory_views_default_views() {
   $handler->display->display_options['fields']['body']['settings'] = array(
     'trim_length' => '80',
   );
+  /* Field: Location: Phone */
+  $handler->display->display_options['fields']['phone']['id'] = 'phone';
+  $handler->display->display_options['fields']['phone']['table'] = 'location_phone';
+  $handler->display->display_options['fields']['phone']['field'] = 'phone';
+  $handler->display->display_options['fields']['phone']['element_type'] = 'div';
+  $handler->display->display_options['fields']['phone']['element_class'] = 'kg-phone-featured';
+  $handler->display->display_options['fields']['phone']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['phone']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['phone']['empty_zero'] = TRUE;
+  /* Field: Location: Street */
+  $handler->display->display_options['fields']['street']['id'] = 'street';
+  $handler->display->display_options['fields']['street']['table'] = 'location';
+  $handler->display->display_options['fields']['street']['field'] = 'street';
+  $handler->display->display_options['fields']['street']['label'] = '';
+  $handler->display->display_options['fields']['street']['element_type'] = 'div';
+  $handler->display->display_options['fields']['street']['element_class'] = 'kg-address-featured';
+  $handler->display->display_options['fields']['street']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['street']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['street']['empty_zero'] = TRUE;
+  /* Field: Location: City */
+  $handler->display->display_options['fields']['city']['id'] = 'city';
+  $handler->display->display_options['fields']['city']['table'] = 'location';
+  $handler->display->display_options['fields']['city']['field'] = 'city';
+  $handler->display->display_options['fields']['city']['label'] = '';
+  $handler->display->display_options['fields']['city']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['city']['hide_empty'] = TRUE;
   /* Sort criterion: Content: Title */
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
@@ -418,6 +475,7 @@ function kg_directory_views_default_views() {
     ),
   );
   $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['header'] = FALSE;
   $handler->display->display_options['defaults']['footer'] = FALSE;
   /* Footer: Global: Text area */
   $handler->display->display_options['footer']['area']['id'] = 'area';
@@ -472,13 +530,15 @@ function kg_directory_views_default_views() {
   $handler->display->display_options['fields']['body']['label'] = '';
   $handler->display->display_options['fields']['body']['alter']['text'] = '[body] [view_node]';
   $handler->display->display_options['fields']['body']['alter']['trim_whitespace'] = TRUE;
-  $handler->display->display_options['fields']['body']['alter']['max_length'] = '80';
+  $handler->display->display_options['fields']['body']['alter']['max_length'] = '40';
   $handler->display->display_options['fields']['body']['alter']['more_link'] = TRUE;
+  $handler->display->display_options['fields']['body']['alter']['more_link_path'] = '[view_node]';
   $handler->display->display_options['fields']['body']['alter']['strip_tags'] = TRUE;
   $handler->display->display_options['fields']['body']['alter']['trim'] = TRUE;
   $handler->display->display_options['fields']['body']['element_type'] = 'div';
   $handler->display->display_options['fields']['body']['element_class'] = 'kg-body';
   $handler->display->display_options['fields']['body']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['body']['type'] = 'text_trimmed';
   $handler->display->display_options['fields']['body']['settings'] = array(
     'trim_length' => '80',
   );

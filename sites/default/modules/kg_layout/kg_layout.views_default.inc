@@ -116,13 +116,28 @@ function kg_layout_views_default_views() {
 
   /* Display: Featured */
   $handler = $view->new_display('block', 'Featured', 'block');
-  $handler->display->display_options['block_description'] = 'Featured Teaser';
-
-  /* Display: Current Edition */
-  $handler = $view->new_display('block', 'Current Edition', 'block_1');
-  $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Read the print edition.';
-  $handler->display->display_options['display_description'] = 'Current Magazine Cover';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'semanticviews_default';
+  $handler->display->display_options['style_options']['row']['class'] = 'featured';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'semanticviews_fields';
+  $handler->display->display_options['row_options']['skip_blank'] = 0;
+  $handler->display->display_options['row_options']['semantic_html'] = array(
+    'field_image_horizontal' => array(
+      'element_type' => 'div',
+      'class' => 'featured-image',
+    ),
+    'title' => array(
+      'element_type' => 'div',
+      'class' => 'featured-title',
+    ),
+    'body' => array(
+      'element_type' => 'div',
+      'class' => 'featured-body',
+    ),
+  );
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: Content: Main Image */
   $handler->display->display_options['fields']['field_image_horizontal']['id'] = 'field_image_horizontal';
@@ -137,7 +152,82 @@ function kg_layout_views_default_views() {
   $handler->display->display_options['fields']['field_image_horizontal']['empty_zero'] = TRUE;
   $handler->display->display_options['fields']['field_image_horizontal']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_image_horizontal']['settings'] = array(
-    'image_style' => 'medium',
+    'image_style' => 'front-highlight_large',
+    'image_link' => 'content',
+  );
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_type'] = 'div';
+  $handler->display->display_options['fields']['title']['element_class'] = 'featured-title';
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_default_classes'] = FALSE;
+  /* Field: Content: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = '';
+  $handler->display->display_options['fields']['body']['alter']['trim_whitespace'] = TRUE;
+  $handler->display->display_options['fields']['body']['alter']['max_length'] = '180';
+  $handler->display->display_options['fields']['body']['alter']['more_link'] = TRUE;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = TRUE;
+  $handler->display->display_options['fields']['body']['alter']['trim'] = TRUE;
+  $handler->display->display_options['fields']['body']['element_type'] = 'div';
+  $handler->display->display_options['fields']['body']['element_class'] = 'featured-body';
+  $handler->display->display_options['fields']['body']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['body']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['body']['type'] = 'text_plain';
+  $handler->display->display_options['fields']['body']['settings'] = array(
+    'trim_length' => '80',
+  );
+  $handler->display->display_options['block_description'] = 'Featured Teaser';
+
+  /* Display: Current Edition */
+  $handler = $view->new_display('block', 'Current Edition', 'current_edition');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Read the print edition.';
+  $handler->display->display_options['display_description'] = 'Current Magazine Cover';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'semanticviews_default';
+  $handler->display->display_options['style_options']['row']['class'] = 'current-edition';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'semanticviews_fields';
+  $handler->display->display_options['row_options']['skip_blank'] = 1;
+  $handler->display->display_options['row_options']['semantic_html'] = array(
+    'field_image_horizontal' => array(
+      'element_type' => 'div',
+      'class' => 'current-edition-image',
+    ),
+    'title' => array(
+      'element_type' => 'div',
+      'class' => 'current-edition-title',
+    ),
+    'body' => array(
+      'element_type' => 'div',
+      'class' => 'current-edition-body',
+    ),
+  );
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Main Image */
+  $handler->display->display_options['fields']['field_image_horizontal']['id'] = 'field_image_horizontal';
+  $handler->display->display_options['fields']['field_image_horizontal']['table'] = 'field_data_field_image_horizontal';
+  $handler->display->display_options['fields']['field_image_horizontal']['field'] = 'field_image_horizontal';
+  $handler->display->display_options['fields']['field_image_horizontal']['label'] = '';
+  $handler->display->display_options['fields']['field_image_horizontal']['element_type'] = 'div';
+  $handler->display->display_options['fields']['field_image_horizontal']['element_class'] = 'featured-image';
+  $handler->display->display_options['fields']['field_image_horizontal']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_image_horizontal']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['field_image_horizontal']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['field_image_horizontal']['empty_zero'] = TRUE;
+  $handler->display->display_options['fields']['field_image_horizontal']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_image_horizontal']['settings'] = array(
+    'image_style' => 'med_tall_rect',
     'image_link' => 'content',
   );
   /* Field: Content: Title */
@@ -636,6 +726,14 @@ for($link = 0; $link < $total;  $link++) {
 <!--EOF:#slide-nav-->
 ';
   $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Link */
+  $handler->display->display_options['fields']['view_node']['id'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['table'] = 'views_entity_node';
+  $handler->display->display_options['fields']['view_node']['field'] = 'view_node';
+  $handler->display->display_options['fields']['view_node']['label'] = '';
+  $handler->display->display_options['fields']['view_node']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['view_node']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['view_node']['element_default_classes'] = FALSE;
   /* Field: Content: Main Image */
   $handler->display->display_options['fields']['field_image_horizontal']['id'] = 'field_image_horizontal';
   $handler->display->display_options['fields']['field_image_horizontal']['table'] = 'field_data_field_image_horizontal';
@@ -655,65 +753,29 @@ for($link = 0; $link < $total;  $link++) {
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['alter']['text'] = '[title] [edit_node]';
+  $handler->display->display_options['fields']['title']['alter']['text'] = '[title] <span class=\'admin-edit-link\'>[edit_node]</span>';
   $handler->display->display_options['fields']['title']['element_type'] = 'div';
   $handler->display->display_options['fields']['title']['element_class'] = 'slider-item-title, light';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title']['element_default_classes'] = FALSE;
-  /* Field: Content: Edit link */
-  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['label'] = '';
-  $handler->display->display_options['fields']['edit_node']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['edit_node']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['edit_node']['alter']['text'] = '<span class=\'edit-slideshow-node\'>[edit_node]</span>';
-  $handler->display->display_options['fields']['edit_node']['element_type'] = 'span';
-  $handler->display->display_options['fields']['edit_node']['element_class'] = 'admin-edit-link';
-  $handler->display->display_options['fields']['edit_node']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['edit_node']['element_default_classes'] = FALSE;
-  $handler->display->display_options['fields']['edit_node']['hide_empty'] = TRUE;
-  $handler->display->display_options['fields']['edit_node']['empty_zero'] = TRUE;
-  $handler->display->display_options['fields']['edit_node']['text'] = 'EDIT';
-  /* Field: Content: Link */
-  $handler->display->display_options['fields']['view_node']['id'] = 'view_node';
-  $handler->display->display_options['fields']['view_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['view_node']['field'] = 'view_node';
-  $handler->display->display_options['fields']['view_node']['label'] = '';
-  $handler->display->display_options['fields']['view_node']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['view_node']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['view_node']['element_default_classes'] = FALSE;
   /* Field: Content: Body */
   $handler->display->display_options['fields']['body']['id'] = 'body';
   $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
   $handler->display->display_options['fields']['body']['field'] = 'body';
   $handler->display->display_options['fields']['body']['label'] = '';
-  $handler->display->display_options['fields']['body']['alter']['text'] = ' [body] [view_node]';
+  $handler->display->display_options['fields']['body']['alter']['text'] = '<a href=\'[view_node]\'>[body]</a>';
   $handler->display->display_options['fields']['body']['alter']['make_link'] = TRUE;
   $handler->display->display_options['fields']['body']['alter']['path'] = '[view_node]';
   $handler->display->display_options['fields']['body']['alter']['max_length'] = '100';
+  $handler->display->display_options['fields']['body']['alter']['more_link_path'] = '[view_node]';
   $handler->display->display_options['fields']['body']['alter']['trim'] = TRUE;
-  $handler->display->display_options['fields']['body']['element_type'] = 'div';
-  $handler->display->display_options['fields']['body']['element_class'] = 'slider-item-body';
+  $handler->display->display_options['fields']['body']['element_type'] = 'p';
   $handler->display->display_options['fields']['body']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['body']['element_default_classes'] = FALSE;
-  $handler->display->display_options['fields']['body']['type'] = 'text_trimmed';
+  $handler->display->display_options['fields']['body']['type'] = 'text_plain';
   $handler->display->display_options['fields']['body']['settings'] = array(
-    'trim_length' => '120',
+    'trim_length' => '80',
   );
-  /* Field: Global: Body with links */
-  $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
-  $handler->display->display_options['fields']['nothing']['table'] = 'views';
-  $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
-  $handler->display->display_options['fields']['nothing']['ui_name'] = 'Global: Body with links';
-  $handler->display->display_options['fields']['nothing']['label'] = '';
-  $handler->display->display_options['fields']['nothing']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['nothing']['alter']['text'] = '<div class=\'slider-item-body\'>[edit_node] [body] [view_node]</div>';
-  $handler->display->display_options['fields']['nothing']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['nothing']['alter']['path'] = '[view_node]';
-  $handler->display->display_options['fields']['nothing']['element_type'] = '0';
-  $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['nothing']['element_default_classes'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published or admin */
